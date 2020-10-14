@@ -72,15 +72,17 @@ class TicketInfoForm extends React.Component {
         // if sales_start_date == ticketType.sales_end_date == null then the ticket type could be sell all the registration period
 
         if (ticketType.quantity_2_sell > 0 && ( (ticketType.sales_start_date == null && ticketType.sales_end_date == null) || (now >= ticketType.sales_start_date && now <= ticketType.sales_end_date )) ) {
+            const ticketLabel = orderedTickets.length > 1 ? 
+              T.translate("step_two.tickets") : T.translate("step_two.ticket")
             return (
                 <div className="ticket-info-wrapper">
                   <hr/>
                     <div className="row">
                         <div className="col-md-6">
-                            <h3>{ticketType.name} {T.translate("step_two.tickets")} {orderedTickets.length > 0 ? `(${orderedTickets.length})` : ''}</h3>
+                            <h3>{ticketType.name} {orderedTickets.length > 0 ? `${ticketLabel} (${orderedTickets.length})` : ''}</h3>
                         </div>
                         <div className="col-md-6">
-                            <h5><strong>{T.translate("step_two.asterisks_bold")}</strong>{T.translate("step_two.asterisks")}</h5>
+                            <h5><strong>{T.translate("step_two.asterisks_bold")}</strong> {T.translate("step_two.asterisks")}</h5>
                         </div>
                     </div>
                     { orderedTickets.map((tix, i) => (                  

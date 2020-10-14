@@ -196,13 +196,13 @@ class StepFourPage extends React.Component {
                           </Link>
                         */}
                         </span>                
-            
-                      
-
                         <span>
                         <br/><br/>
                           {T.translate("step_four.help_text")} 
-                          <a href={`mailto:${summit.hasOwnProperty('support_email') && summit.support_email ? summit.support_email : window.SUPPORT_EMAIL}`} target="_blank">{summit.hasOwnProperty('support_email') && summit.support_email ? summit.support_email : window.SUPPORT_EMAIL}</a>
+                          <a href={`mailto:${summit.hasOwnProperty('support_email') && 
+                            summit.support_email ? summit.support_email : window.SUPPORT_EMAIL}`} 
+                            target="_blank">{summit.hasOwnProperty('support_email') && 
+                            summit.support_email ? summit.support_email : window.SUPPORT_EMAIL}</a>.
                         </span>
                     </div>
                     <div className="col-md-4">

@@ -124,7 +124,7 @@ class StepOnePage extends React.Component {
                         {!member &&
                         <React.Fragment> 
                                   <br/><br/><br/>
-                                  <h4>Want to checkout faster?  </h4> 
+                                  <h4>Want to check out faster?  </h4> 
  
                        <button className="btn btn-primary manage-btn" onClick={this.onClickLogin}>
                             {T.translate("step_one.signin")}

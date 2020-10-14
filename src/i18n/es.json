@@ -1,7 +1,7 @@
 {
   "landing": {
     "sign_out"            : "Sign out",
-    "sign_in"              : "fnID Sign In",
+    "sign_in"              : "FNid Sign In",
     "not_logged_in"       : "You are not logged in. Please log in to continue:"
   },
   "errors": {
@@ -34,7 +34,7 @@
     "calendar"      : "Add to Calendar"
   },
   "step_one": {
-    "choose_tickets"        : "Choose your tickets",
+    "choose_tickets"        : "Choose your ticket(s)",
     "choose_tickets_desc"   : "a description",
     "expiration"            : "Ticket(s) available until ",
     "free"                  : "Free",
@@ -59,7 +59,7 @@
     "asterisks"         : "Ticket holders will immediately receive an email to finalize their attendee information.",
     "code"              : "Promo Code:",
     "assign"            : "Assign to:",
-    "add_ticket"        : "Add additional tickets to this order",
+    "add_ticket"        : "Add additional ticket(s) to this order",
     "no_tickets"        : "No tickets selected.",
     "placeholders": {
       "coupon"          : "Coupon (Optional)",
@@ -109,7 +109,7 @@
     "member_text_1"       : "\" page to review your ticket(s) and complete any required details. Visit the \"", 
     "member_link_orders"  : "My Orders",
     "member_text_2"       : "\" page to manage your purchase, assign ticket(s), and edit attendee details.",
-    "required_text"       : "PLEASE NOTE! Tickets must be assigned and all additional details must be completed before official ticket(s) are issued.",
+    "required_text"       : "PLEASE NOTE! Ticket(s) must be assigned and all additional details must be completed before official ticket(s) are issued.",
     "register_text"       : "An FNid is required to manage order(s) and assign ticket(s) ",
     "register_link_text"  : "create one",
     "register_text_2"     : " with the email ",
