@@ -12,27 +12,19 @@
  **/
 
 import React from 'react'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import T from 'i18n-react/dist/i18n-react'
 
 
-export default class StepRow extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-        };
-
-    }
-
+class StepRow extends React.Component {
     render() {
-        let {step, optional } = this.props;
-        if(!optional) optional = false;
-
+        let { step, totalSteps, optional } = this.props;
+        if (!optional) optional = false;
         return (
             <div className="row step-row">
                 <div className="col-md-6">
-                {optional ? "Optional": ""} Step {step} of 4 
+                {optional ? "Optional": ""} Step {step} of {totalSteps} 
                 </div>
                 {((step === 2 || step === 3) && !optional)?
                 <div className="col-md-6">                    
@@ -43,6 +35,15 @@ export default class StepRow extends React.Component {
                 }
             </div>
         );
-
     }
 }
+
+StepRow.propTypes = {
+    step: PropTypes.number.isRequired,
+};
+
+const mapStateToProps = ({ wizzardState }) => ({
+    totalSteps: wizzardState.totalSteps,
+})
+
+export default connect(mapStateToProps)(StepRow);

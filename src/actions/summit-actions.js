@@ -25,6 +25,7 @@ import {
 import Swal from 'sweetalert2';
 
 import { LOGOUT_USER } from "openstack-uicore-foundation/lib/actions";
+import { setTotalSteps } from "./wizzard-actions";
 
 
 export const GET_SUMMIT_BY_SLUG        = 'GET_SUMMIT_BY_SLUG';
@@ -172,7 +173,6 @@ export const selectSummit = (summit, updateSummit = true) => (dispatch, getState
   dispatch(startLoading());
 
   dispatch(getSummitBySlug(summit.slug, updateSummit));
-
 }
 
 export const selectPurchaseSummit = (slug) => (dispatch, getState) => {
@@ -184,6 +184,12 @@ export const selectPurchaseSummit = (slug) => (dispatch, getState) => {
   let summit = suggestedSummits.find(s => s.slug === slug);    
 
   dispatch(createAction(SELECT_PURCHASE_SUMMIT)(summit));
+
+  const { ticket_types } = summit;
+
+  //const totalSteps = ticket_types.length > 0 && ticket_types[0].cost === 0 ? 3 : 4; 
+
+  dispatch(setTotalSteps(4));
 
   history.push(`/a/${slug}/`);
 };

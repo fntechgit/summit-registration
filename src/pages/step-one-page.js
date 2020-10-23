@@ -45,9 +45,6 @@ class StepOnePage extends React.Component {
     }
 
     componentDidMount() {
-    }
-
-    componentWillMount() {
         this.props.handleResetOrder();
         
         let {order, member} = this.props;
@@ -81,10 +78,9 @@ class StepOnePage extends React.Component {
     }
 
     render(){
-
         let {summit, order, member, now} = this.props;
-
-        if((Object.entries(summit).length === 0 && summit.constructor === Object) ) return null;
+        
+        if ((Object.entries(summit).length === 0 && summit.constructor === Object) ) return null;
 
         // let now = this.props.getNow();
         order.status = 'Reserved';

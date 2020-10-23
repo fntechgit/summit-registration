@@ -41,11 +41,11 @@ class SubmitButtons extends React.Component {
     }
 
     reservationClick(ev) {
-        let {errors, dirty, createReservation, order} = this.props;
+        let {errors, dirty, createReservation, order, summit: { ticket_types }} = this.props;
         ev.preventDefault();
         if((Object.keys(errors).length === 0)) {
             let {email, first_name, last_name, company, tickets} = order;            
-            createReservation(email, first_name, last_name, company, tickets);
+            createReservation(email, first_name, last_name, company, tickets, ticket_types);
         } else {
             return dirty.call();
         }
@@ -64,6 +64,7 @@ class SubmitButtons extends React.Component {
     payClick(ev) {
         let {dirty, errors, stripe, card, free} = this.props;
         ev.preventDefault();
+
         if(free && Object.keys(errors.errors).length === 0) {          
           this.props.payReservation();
         } else if (Object.keys(errors.errors).length === 0 && errors.stripeForm) {
@@ -71,7 +72,6 @@ class SubmitButtons extends React.Component {
         } else {
             return dirty.call();
         }
-
     }
 
     render() {

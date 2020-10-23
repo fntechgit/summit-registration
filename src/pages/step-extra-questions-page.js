@@ -70,7 +70,7 @@ class StepExtraQuestionsPage extends React.Component {
     }
 
     onSkip(ev){
-        let { history } = this.props;
+        let { history, match } = this.props;
         ev.preventDefault();
         history.push('done');
         return null;
@@ -145,37 +145,37 @@ class StepExtraQuestionsPage extends React.Component {
                     <div className="col-md-8 order-result">
                     
                         {T.translate("ticket_popup.do_it_later_exp")}
-                    {this.state.tickets.map((ticket, index) => {
-                        let model = new TicketModel(ticket, summit, now);
-                        let status = model.getStatus();
-                        return (
-                            <React.Fragment key={ticket.id}>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <h4>{`Ticket # ${index + 1}`} <i className={`fa ${status.icon} ${status.class}`}></i></h4>
+                        {this.state.tickets.map((ticket, index) => {
+                            let model = new TicketModel(ticket, summit, now);
+                            let status = model.getStatus();
+                            return (
+                                <React.Fragment key={ticket.id}>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <h4>{`Ticket # ${index + 1}`} <i className={`fa ${status.icon} ${status.class}`}></i></h4>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <TicketAssignForm key={ticket.id}
-                                                          shouldEditBasicInfo={true}
-                                                          showCancel={false}
-                                                          ticket={ticket}
-                                                          status={status.text}
-                                                          ownedTicket={true}
-                                                          orderOwned={true}
-                                                          extraQuestions={extraQuestions}
-                                                          readOnly={false}
-                                                          onChange={this.handleChange}
-                                                          cancelTicket={this.handleTicketCancel}
-                                                          summit={summit}
-                                                          now={now}
-                                                          errors={ticket.errors}/>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <TicketAssignForm key={ticket.id}
+                                                            shouldEditBasicInfo={true}
+                                                            showCancel={false}
+                                                            ticket={ticket}
+                                                            status={status.text}
+                                                            ownedTicket={true}
+                                                            orderOwned={true}
+                                                            extraQuestions={extraQuestions}
+                                                            readOnly={false}
+                                                            onChange={this.handleChange}
+                                                            cancelTicket={this.handleTicketCancel}
+                                                            summit={summit}
+                                                            now={now}
+                                                            errors={ticket.errors}/>
+                                        </div>
                                     </div>
-                                </div>
-                            </React.Fragment>
-                        );
-                    })}
+                                </React.Fragment>
+                            );
+                        })}
                     </div>
                     <div className="col-md-4">
                         <OrderSummary order={order} summit={summit} type={'desktop'} /><br/>

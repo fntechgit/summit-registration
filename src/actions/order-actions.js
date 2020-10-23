@@ -72,10 +72,10 @@ export const handleOrderChange = (order, errors = {}) => (dispatch, getState) =>
         });        
         dispatch(createAction(CHANGE_ORDER)({order, errors}));
     } else if(currentStep === 3) {     
-        if (validator.isEmpty(order.billing_country)) errors.billing_country = T.translate("step_three.validator.billing_country");
-        if (validator.isEmpty(order.billing_address)) errors.billing_address = T.translate("step_three.validator.billing_address");
-        if (validator.isEmpty(order.billing_city)) errors.billing_city = T.translate("step_three.validator.billing_city");
-        if (validator.isEmpty(order.billing_state)) errors.billing_state = T.translate("step_three.validator.billing_state");
+        // if (validator.isEmpty(order.billing_country)) errors.billing_country = T.translate("step_three.validator.billing_country");
+        // if (validator.isEmpty(order.billing_address)) errors.billing_address = T.translate("step_three.validator.billing_address");
+        // if (validator.isEmpty(order.billing_city)) errors.billing_city = T.translate("step_three.validator.billing_city");
+        // if (validator.isEmpty(order.billing_state)) errors.billing_state = T.translate("step_three.validator.billing_state");
         if (validator.isEmpty(order.billing_zipcode)) errors.billing_zipcode = T.translate("step_three.validator.billing_zipcode");
         dispatch(createAction(CHANGE_ORDER)({order, errors}));
     } else {
@@ -88,9 +88,10 @@ export const validateStripe = (value) => (dispatch, getState) => {
     dispatch(createAction(VALIDATE_STRIPE)({value}));
 }
 
-export const createReservation = (owner_email, owner_first_name, owner_last_name, owner_company, tickets) => (dispatch, getState) => {
+export const createReservation = (owner_email, owner_first_name, owner_last_name, owner_company, tickets, ticket_types) => (dispatch, getState) => {
     let { summitState } = getState();    
     let { purchaseSummit }  = summitState;
+    const isFree = ticket_types.length > 0 && ticket_types[0].cost === 0;
 
     dispatch(startLoading());
 
@@ -126,7 +127,7 @@ export const createReservation = (owner_email, owner_first_name, owner_last_name
     )(params)(dispatch)
         .then((payload) => {
             dispatch(stopLoading());
-            history.push(stepDefs[2]);
+            history.push(isFree ? stepDefs[4] : stepDefs[2]);   //free tickets -> skip billing step
             return (payload)
         })
         .catch(e => {
@@ -205,6 +206,7 @@ export const payReservation = (card=null, stripe=null) => (dispatch, getState) =
                   return (payload);
               }
               dispatch(createAction(CLEAR_RESERVATION)({}));
+ 
               history.push(stepDefs[3]);
               return (payload);
           })
@@ -245,10 +247,11 @@ export const payReservation = (card=null, stripe=null) => (dispatch, getState) =
                   .then((payload) => {                    
                       dispatch(stopLoading());
                       if(reservation.hasOwnProperty('tickets') && reservation.tickets.length <= window.MAX_TICKET_QTY_TO_EDIT && hasTicketExtraQuestion){
-                          history.push(stepDefs[4]);
-                          return (payload);
+                        history.push(stepDefs[4]);
+                        return (payload);
                       }
                       dispatch(createAction(CLEAR_RESERVATION)({}));
+
                       history.push(stepDefs[3]);
                       return (payload);
                   })

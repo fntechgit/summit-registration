@@ -80,13 +80,14 @@ class TicketAssignForm extends React.Component {
     }
 
     render() {
-
         let {guest, ownedTicket, owner, ticket, extraQuestions, status, summit, orderOwned, readOnly, now, shouldEditBasicInfo} = this.props;
         let showCancel = true;
         if(!shouldEditBasicInfo) shouldEditBasicInfo = false;
         if(this.props.hasOwnProperty('showCancel'))
             showCancel = this.props.showCancel;
         let {extra_questions, input_email} = this.state;
+        ticket.disclaimer_accepted = ticket.disclaimer_accepted == null ? false : ticket.disclaimer_accepted
+
         return (
             <div className="ticket-assign-form">
                 <div className="row popup-basic-info">
@@ -335,7 +336,6 @@ class TicketAssignForm extends React.Component {
                         <div>
                             <div className="form-check abc-checkbox">
                                 <input type="checkbox"
-
                                        id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
                                        disabled={readOnly} onChange={this._innerOnChange} className="form-check-input"/>
                                 <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>

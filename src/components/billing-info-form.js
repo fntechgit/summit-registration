@@ -54,7 +54,7 @@ class BillingInfoForm extends React.Component {
                     <div className="col-md-12">
                     </div>
                 </div>                
-                <div className="row field-wrapper">
+                {/* <div className="row field-wrapper">
                     <div className="col-md-4">
                         <label>{T.translate("step_three.billing_address")} *</label>
                     </div>
@@ -109,7 +109,7 @@ class BillingInfoForm extends React.Component {
                             value={order.billing_state}
                         />
                     </div>
-                </div>
+                </div> */}
                 <div className="row field-wrapper">
                     <div className="col-md-4">
                         <label>{T.translate("step_three.billing_zipcode")} *</label>
@@ -124,7 +124,7 @@ class BillingInfoForm extends React.Component {
                         />
                     </div>
                 </div>
-                <div className="row field-wrapper">
+                {/* <div className="row field-wrapper">
                     <div className="col-md-4">
                         <label>{T.translate("step_three.billing_country")} *</label>
                     </div>
@@ -136,7 +136,7 @@ class BillingInfoForm extends React.Component {
                             value={order.billing_country} 
                         />                        
                     </div>
-                </div>
+                </div> */}
             </div>
         );
     }

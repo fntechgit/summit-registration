@@ -38,9 +38,10 @@ class StepFourPage extends React.Component {
     }
 
     componentDidMount() {
-      let {order:{checkout}} = this.props;
+      let { order: { checkout }, summit: { ticket_types }} = this.props;
+      const isFree = ticket_types.length > 0 && ticket_types[0].cost === 0;
       const stepDefs = ['start', 'details', 'checkout', 'done'];
-      if(Object.entries(checkout).length === 0 && checkout.constructor === Object) {
+      if (!isFree && Object.entries(checkout).length === 0 && checkout.constructor === Object) {
         history.push(stepDefs[0]);
       } else {
         window.scrollTo(0, 0);
