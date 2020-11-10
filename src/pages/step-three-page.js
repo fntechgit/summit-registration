@@ -57,7 +57,7 @@ class StepThreePage extends React.Component {
 
     componentWillMount() {
       let {summit: {slug}} = this.props;
-      const stepDefs = ['start', 'details', 'checkout', 'done']; 
+      const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
       let url = URI(window.location.href);
       let location = url.pathname();
@@ -71,7 +71,7 @@ class StepThreePage extends React.Component {
 
     componentDidMount() {
         let {order:{reservation}, summit} = this.props;
-        const stepDefs = ['start', 'details', 'checkout', 'done'];
+        const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
         if(Object.entries(reservation).length === 0 && reservation.constructor === Object) {
           history.push(stepDefs[0]);

@@ -17,7 +17,7 @@ import T from 'i18n-react/dist/i18n-react'
 import history from '../history'
 import { createReservation, payReservation, deleteReservation } from '../actions/order-actions'
 
-const stepDefs = ['start', 'details', 'checkout', 'done'];
+const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
 class SubmitButtons extends React.Component {
 
@@ -35,26 +35,26 @@ class SubmitButtons extends React.Component {
     }
 
     continueClick(ev) {
-        let {step} = this.props;
+        let { step } = this.props;
         ev.preventDefault();
-        history.push(stepDefs[step]);        
+        history.push(stepDefs[step]);
     }
 
     reservationClick(ev) {
-        let {errors, dirty, createReservation, order, summit: { ticket_types }} = this.props;
+        let { errors, dirty, createReservation, order } = this.props;
         ev.preventDefault();
-        if((Object.keys(errors).length === 0)) {
-            let {email, first_name, last_name, company, tickets} = order;            
-            createReservation(email, first_name, last_name, company, tickets, ticket_types);
+        if ((Object.keys(errors).length === 0)) {
+            let { email, first_name, last_name, company, tickets } = order;
+            createReservation(email, first_name, last_name, company, tickets);
         } else {
             return dirty.call();
         }
     }
 
     backClick(ev) {
-        let {step} = this.props;
-        if(step === 3) {
-          this.props.deleteReservation();
+        let { step } = this.props;
+        if (step === 3) {
+            this.props.deleteReservation();
         }
         let backStep = step - 2; // step is one plus the stepDef index
         ev.preventDefault();
@@ -62,11 +62,11 @@ class SubmitButtons extends React.Component {
     }
 
     payClick(ev) {
-        let {dirty, errors, stripe, card, free} = this.props;
+        let { dirty, errors, stripe, card, free } = this.props;
         ev.preventDefault();
 
-        if(free && Object.keys(errors.errors).length === 0) {          
-          this.props.payReservation();
+        if (free && Object.keys(errors.errors).length === 0) {
+            this.props.payReservation();
         } else if (Object.keys(errors.errors).length === 0 && errors.stripeForm) {
             this.props.payReservation(card, stripe);
         } else {
@@ -75,35 +75,35 @@ class SubmitButtons extends React.Component {
     }
 
     render() {
-        let {step, canContinue, stripe = null, free = false} = this.props;
+        let { step, canContinue, stripe = null, free = false } = this.props;
 
         return (
             <div className="row submit-buttons-wrapper">
                 <div className="col-md-12">
                     {step > 1 &&
-                    <a href="" className="back-btn" onClick={this.backClick}>
-                        <i className="fa fa-chevron-left" aria-hidden="true"></i>
-                        {T.translate("general.back")}
-                    </a>
+                        <a href="" className="back-btn" onClick={this.backClick}>
+                            <i className="fa fa-chevron-left" aria-hidden="true"></i>
+                            {T.translate("general.back")}
+                        </a>
                     }
 
                     {step == 1 &&
-                    <button className="btn btn-primary continue-btn" onClick={this.continueClick} disabled={!canContinue}>
-                        {T.translate("general.continue")}
-                    </button>
+                        <button className="btn btn-primary continue-btn" onClick={this.continueClick} disabled={!canContinue}>
+                            {T.translate("general.continue")}
+                        </button>
                     }
 
                     {step == 2 &&
-                    <button className="btn btn-primary continue-btn" onClick={this.reservationClick} disabled={!canContinue}>
-                        {T.translate("general.save_and_continue")}
-                    </button>
+                        <button className="btn btn-primary continue-btn" onClick={this.reservationClick} disabled={!canContinue}>
+                            {T.translate("general.save_and_continue")}
+                        </button>
                     }
 
                     {step == 3 &&
-                    <button className="btn btn-primary continue-btn" onClick={this.payClick} 
-                      disabled={free === false && Object.entries(stripe).length === 0 && stripe.constructor === Object}>
-                        {free ? T.translate("general.confirm") : T.translate("general.pay_now")}
-                    </button>
+                        <button className="btn btn-primary continue-btn" onClick={this.payClick}
+                            disabled={free === false && Object.entries(stripe).length === 0 && stripe.constructor === Object}>
+                            {free ? T.translate("general.confirm") : T.translate("general.pay_now")}
+                        </button>
                     }
 
                 </div>
@@ -116,10 +116,10 @@ class SubmitButtons extends React.Component {
 const mapStateToProps = ({ loggedUserState, summitState, orderState }) => ({
     member: loggedUserState.member,
     summit: summitState.purchaseSummit,
-    order:  orderState.purchaseOrder
+    order: orderState.purchaseOrder
 })
 
-export default connect (
+export default connect(
     mapStateToProps,
     {
         createReservation,

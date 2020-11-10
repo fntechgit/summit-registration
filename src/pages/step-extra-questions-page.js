@@ -12,11 +12,11 @@
  **/
 
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import '../styles/step-extra-questions-page.less';
 import TicketAssignForm from "../components/ticket-assign-form";
-import {updateOrderTickets} from "../actions/order-actions";
-import {getNow} from '../actions/timer-actions';
+import { updateOrderTickets, payReservation } from "../actions/order-actions";
+import { getNow } from '../actions/timer-actions';
 import TicketModel from '../models/ticket';
 import T from "i18n-react";
 import validator from "validator";
@@ -29,7 +29,7 @@ class StepExtraQuestionsPage extends React.Component {
     constructor(props) {
         super(props);
 
-        let {order} = this.props;
+        let { order } = this.props;
         let tickets = order.tickets.map((ticket, index) => {
             let t = {
                 id: ticket.id,
@@ -69,16 +69,21 @@ class StepExtraQuestionsPage extends React.Component {
 
     }
 
-    onSkip(ev){
-        let { history, match } = this.props;
+    onSkip(ev) {
+        let { history, match, order } = this.props;
+        const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
         ev.preventDefault();
-        history.push('done');
+        if(!order.checkout.id) {
+            this.props.payReservation();
+        } else {
+            history.push(stepDef[4]);
+        }
         return null;
     }
 
     onTicketsSave(ev) {
-        let {tickets} = this.state;
-        let {summit, getNow, extraQuestions} = this.props;
+        let { tickets } = this.state;
+        let { summit, getNow, extraQuestions, order } = this.props;
 
         let canSave = true;
         tickets.forEach(function (ticket) {
@@ -96,14 +101,20 @@ class StepExtraQuestionsPage extends React.Component {
             }
         });
 
-        if (canSave) this.props.updateOrderTickets(tickets);
+        if (canSave) {
+            if(!order.checkout.id) {
+                this.props.updateOrderTickets(tickets);
+                this.props.payReservation();
+            }
+            this.props.updateOrderTickets(tickets);
+        }
     }
 
     handleChange(ev, ticket) {
 
-        let currentTicket = {...this.state.tickets.filter((t) => t.id === ticket.id)[0]};
+        let currentTicket = { ...this.state.tickets.filter((t) => t.id === ticket.id)[0] };
 
-        let {value, id} = ev.target;
+        let { value, id } = ev.target;
         id = id.toString();
 
         if (id.includes(`${ticket.id}_`)) {
@@ -134,16 +145,16 @@ class StepExtraQuestionsPage extends React.Component {
 
     render() {
         let now = this.props.getNow();
-        let {summit, extraQuestions, order} = this.props;
-        if((Object.entries(summit).length === 0 && summit.constructor === Object) ) return null;
+        let { summit, extraQuestions, order } = this.props;
+        if ((Object.entries(summit).length === 0 && summit.constructor === Object)) return null;
         order.status = 'Paid';
         return (
             <div className="step-extra-questions">
-                <OrderSummary order={order} summit={summit} type={'mobile'}/>
+                <OrderSummary order={order} summit={summit} type={'mobile'} />
                 <div className="row">
-                    <StepRow step={this.step} optional={true}/>
+                    <StepRow step={this.step} optional={true} />
                     <div className="col-md-8 order-result">
-                    
+
                         {T.translate("ticket_popup.do_it_later_exp")}
                         {this.state.tickets.map((ticket, index) => {
                             let model = new TicketModel(ticket, summit, now);
@@ -158,19 +169,19 @@ class StepExtraQuestionsPage extends React.Component {
                                     <div className="row">
                                         <div className="col-md-12">
                                             <TicketAssignForm key={ticket.id}
-                                                            shouldEditBasicInfo={true}
-                                                            showCancel={false}
-                                                            ticket={ticket}
-                                                            status={status.text}
-                                                            ownedTicket={true}
-                                                            orderOwned={true}
-                                                            extraQuestions={extraQuestions}
-                                                            readOnly={false}
-                                                            onChange={this.handleChange}
-                                                            cancelTicket={this.handleTicketCancel}
-                                                            summit={summit}
-                                                            now={now}
-                                                            errors={ticket.errors}/>
+                                                shouldEditBasicInfo={true}
+                                                showCancel={false}
+                                                ticket={ticket}
+                                                status={status.text}
+                                                ownedTicket={true}
+                                                orderOwned={true}
+                                                extraQuestions={extraQuestions}
+                                                readOnly={false}
+                                                onChange={this.handleChange}
+                                                cancelTicket={this.handleTicketCancel}
+                                                summit={summit}
+                                                now={now}
+                                                errors={ticket.errors} />
                                         </div>
                                     </div>
                                 </React.Fragment>
@@ -178,9 +189,9 @@ class StepExtraQuestionsPage extends React.Component {
                         })}
                     </div>
                     <div className="col-md-4">
-                        <OrderSummary order={order} summit={summit} type={'desktop'} /><br/>
-                        <br/>
-                        
+                        <OrderSummary order={order} summit={summit} type={'desktop'} /><br />
+                        <br />
+
                     </div>
                 </div>
                 <div className="row submit-buttons-wrapper">
@@ -195,7 +206,7 @@ class StepExtraQuestionsPage extends React.Component {
                             {T.translate("ticket_popup.do_it_later")}
                             <i className="fa fa-chevron-right" aria-hidden="true"></i>
                         </a>
-                        
+
                     </div>
                 </div>
             </div>
@@ -203,7 +214,7 @@ class StepExtraQuestionsPage extends React.Component {
     }
 }
 
-const mapStateToProps = ({loggedUserState, summitState, orderState}) => ({
+const mapStateToProps = ({ loggedUserState, summitState, orderState }) => ({
     member: loggedUserState.isLoggedUser,
     summit: summitState.purchaseSummit,
     order: orderState.purchaseOrder,
@@ -215,5 +226,6 @@ export default connect(
     {
         getNow,
         updateOrderTickets,
+        payReservation,
     }
 )(StepExtraQuestionsPage);

@@ -51,7 +51,7 @@ export const handleResetOrder = () => (dispatch, getState) => {
     dispatch(createAction(RESET_ORDER)({}));
 }
 
-const stepDefs = ['start', 'details', 'checkout', 'done', 'extra'];
+const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
 export const handleOrderChange = (order, errors = {}) => (dispatch, getState) => {
 
@@ -88,10 +88,9 @@ export const validateStripe = (value) => (dispatch, getState) => {
     dispatch(createAction(VALIDATE_STRIPE)({value}));
 }
 
-export const createReservation = (owner_email, owner_first_name, owner_last_name, owner_company, tickets, ticket_types) => (dispatch, getState) => {
+export const createReservation = (owner_email, owner_first_name, owner_last_name, owner_company, tickets) => (dispatch, getState) => {
     let { summitState } = getState();    
     let { purchaseSummit }  = summitState;
-    const isFree = ticket_types.length > 0 && ticket_types[0].cost === 0;
 
     dispatch(startLoading());
 
@@ -126,11 +125,22 @@ export const createReservation = (owner_email, owner_first_name, owner_last_name
         // entity
     )(params)(dispatch)
         .then((payload) => {
-            dispatch(stopLoading());
-            history.push(isFree ? stepDefs[4] : stepDefs[2]);   //free tickets -> skip billing step
+            dispatch(stopLoading());            
+            const isFree = payload.response.discount_amount === payload.response.raw_amount;
+            const hasTicketExtraQuestion = purchaseSummit.order_extra_questions.filter((q) => q.usage === 'Ticket' || q.usage === 'Both' ).length > 0;
+            const mandatoryDisclaimer = purchaseSummit.registration_disclaimer_mandatory;            
+            if(isFree) {
+              if(hasTicketExtraQuestion || mandatoryDisclaimer) {
+                history.push(stepDefs[3]);
+              } else {
+                dispatch(payReservation());
+              }
+            } else {
+              history.push(stepDefs[2]);
+            }            
             return (payload)
         })
-        .catch(e => {
+        .catch(e => {            
             dispatch(createAction(CREATE_RESERVATION_ERROR)(e));
             dispatch(stopLoading());
             return (e);
@@ -200,15 +210,21 @@ export const payReservation = (card=null, stripe=null) => (dispatch, getState) =
           // entity
       )(params)(dispatch).then((payload) => {                    
               dispatch(stopLoading());
-              // if we reach the required qty of tix to update and we have extra questions for tix ..
-              if(reservation.hasOwnProperty('tickets') && reservation.tickets.length <= window.MAX_TICKET_QTY_TO_EDIT && (hasTicketExtraQuestion || mandatoryDisclaimer)){
-                  history.push(stepDefs[4]);
+              // if the order is free, the evaluation to the extra questions page was performed on the previous step
+              const isFree = payload.response.discount_amount === payload.response.raw_amount;
+              if(isFree) {
+                dispatch(createAction(CLEAR_RESERVATION)({}));
+                history.push(stepDefs[4]);
+                return (payload);
+              } else if(reservation.hasOwnProperty('tickets') && reservation.tickets.length <= window.MAX_TICKET_QTY_TO_EDIT && (hasTicketExtraQuestion || mandatoryDisclaimer)){
+                // if we reach the required qty of tix to update and we have extra questions for tix ..
+                  history.push(stepDefs[3]);
                   return (payload);
-              }
+              } else {
               dispatch(createAction(CLEAR_RESERVATION)({}));
- 
-              history.push(stepDefs[3]);
+              history.push(stepDefs[4]);
               return (payload);
+              }              
           })
           .catch(e => {
               dispatch(stopLoading());
@@ -247,12 +263,12 @@ export const payReservation = (card=null, stripe=null) => (dispatch, getState) =
                   .then((payload) => {                    
                       dispatch(stopLoading());
                       if(reservation.hasOwnProperty('tickets') && reservation.tickets.length <= window.MAX_TICKET_QTY_TO_EDIT && hasTicketExtraQuestion){
-                        history.push(stepDefs[4]);
+                        history.push(stepDefs[3]);
                         return (payload);
                       }
                       dispatch(createAction(CLEAR_RESERVATION)({}));
 
-                      history.push(stepDefs[3]);
+                      history.push(stepDefs[4]);
                       return (payload);
                   })
                   .catch(e => {
@@ -377,7 +393,11 @@ export const updateOrderTickets = (tickets) => (dispatch, getState) => {
     )(params)(dispatch)
         .then(() => {
             dispatch(stopLoading());
-            history.push(stepDefs[3]);
+            // is is free, the payReservation method should perform the navigation
+            const isFree = reservation.discount_amount === reservation.raw_amount;
+            if(!isFree) {
+              history.push(stepDefs[4]);
+            }            
         }).catch(e => {
             dispatch(stopLoading());
             return (e);
