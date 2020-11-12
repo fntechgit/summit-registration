@@ -229,4 +229,3 @@ export default connect (
         handleOrderChange
     }
 )(StepFourPage);
-

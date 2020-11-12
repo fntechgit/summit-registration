@@ -73,34 +73,33 @@ class StepThreePage extends React.Component {
         let {order:{reservation}, summit} = this.props;
         const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
-        if(Object.entries(reservation).length === 0 && reservation.constructor === Object) {
-          history.push(stepDefs[0]);
+        if (Object.entries(reservation).length === 0 && reservation.constructor === Object) {
+            history.push(stepDefs[0]);
         } else {
-          window.scrollTo(0, 0);
+            window.scrollTo(0, 0);
 
-          let order = {...this.props.order};
+            let order = {...this.props.order};
         
-        order = {
-            ...order,
-            currentStep: this.step
-        };
+            order = {
+                ...order,
+                currentStep: this.step
+            };
 
-        let address = this.props.member ? this.props.member.address : {country: 'US'};
+            let address = this.props.member ? this.props.member.address : {country: 'US'};
 
-        if(Object.entries(address).length !== 0 && address.constructor === Object) {        
-          let {country, region, locality, postal_code, street_address} = address;
-          order = {
-            ...order, 
-            // billing_country: country ? country : '',
-            // billing_address: street_address ? street_address : '',
-            // billing_city: locality ? locality : '',
-            // billing_state: region ? region : '',
-            billing_zipcode: postal_code ? postal_code : '',
-          };
-        }       
-        
-        this.props.handleOrderChange(order)
-
+            if(Object.entries(address).length !== 0 && address.constructor === Object) {        
+                let {country, region, locality, postal_code, street_address} = address;
+                order = {
+                    ...order, 
+                    // billing_country: country ? country : '',
+                    // billing_address: street_address ? street_address : '',
+                    // billing_city: locality ? locality : '',
+                    // billing_state: region ? region : '',
+                    billing_zipcode: postal_code ? postal_code : '',
+                };
+            }       
+            
+            this.props.handleOrderChange(order)
         }        
     }
 
