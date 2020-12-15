@@ -216,8 +216,8 @@ class OrderDetailPage extends React.Component {
       if(startMonth === endMonth) endDate = endDate.substr(endDate.indexOf(" ") + 1);
       let startYear = startDate.substring(startDate.length, startDate.length-4);
       let endYear = endDate.substring(endDate.length, endDate.length-4);
-      if (startYear === endYear) startDate = startDate.substring(0, startDate.length-4);
-      endDate = endDate.substring(0, endDate.length-5) + ', ' + endDate.substring(endDate.length-4);
+      if (startYear === endYear) startDate = startDate.substring(0, startDate.length-6);
+      endDate = endDate.substring(0, endDate.length-6) + ', ' + endDate.substring(endDate.length-4);
       let summitDate = `${startDate} - ${endDate}`;
       return summitDate;
     } else {
