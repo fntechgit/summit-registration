@@ -23,6 +23,7 @@ import SubmitButtons from "../components/submit-buttons";
 import { handleOrderChange } from '../actions/order-actions'
 import {findElementPos} from "openstack-uicore-foundation/lib/methods";
 import {getNow} from '../actions/timer-actions';
+import history from '../history';
 
 import '../styles/step-two-page.less';
 
@@ -85,7 +86,14 @@ class StepTwoPage extends React.Component {
     }
 
     componentDidMount() {
-        window.scrollTo(0, 0);
+        let {order:{tickets}} = this.props;
+        const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
+
+        if (!tickets || tickets.length === 0) {
+            history.push(stepDefs[0]);
+        } else {
+            window.scrollTo(0, 0);
+        }
     }
 
     handleTicketInfoChange(ticketId, field, value) {

@@ -403,5 +403,3 @@ export const updateOrderTickets = (tickets) => (dispatch, getState) => {
             return (e);
         });
 };
-
-

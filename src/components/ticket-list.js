@@ -122,8 +122,7 @@ class TicketList extends React.Component {
       let {summits} = this.props;
       let summit = summits.find(s => s.id === ticket.owner.summit_id);
       let dateRange = daysBetweenDates(summit.start_date, summit.end_date, summit.time_zone_id);
-      
-      if(dateRange.length > 1) {     
+      if (dateRange.length > 1) {     
         let startDate = getFormatedDate(dateRange[0], summit.time_zone_id);
         let endDate = getFormatedDate(dateRange[dateRange.length-1], summit.time_zone_id);
         let startMonth = startDate.split(' ')[0];
@@ -131,7 +130,7 @@ class TicketList extends React.Component {
         if(startMonth === endMonth) endDate = endDate.substr(endDate.indexOf(" ") + 1);
         let startYear = startDate.substring(startDate.length, startDate.length-4);
         let endYear = endDate.substring(endDate.length, endDate.length-4);
-        if (startYear === endYear) startDate = startDate.substring(0, startDate.length-4);
+        if (startYear === endYear) startDate = startDate.substring(0, startDate.length-6);
         endDate = endDate.substring(0, endDate.length-6) + ', ' + endDate.substring(endDate.length-4);
         let summitDate = `${startDate} - ${endDate}`;
         return summitDate;

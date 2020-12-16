@@ -94,8 +94,7 @@ class StepOnePage extends React.Component {
         return (
             <div className="step-one">
                 {(now >= summit.registration_begin_date &&
-                    now <= summit.registration_end_date &&
-                    now < summit.end_date) && ticketsTypesToSell.length > 0 ?
+                    now <= summit.registration_end_date) && ticketsTypesToSell.length > 0 ?
                   <React.Fragment>
                     <StepRow step={this.step} />
                     <div className="row">
@@ -113,8 +112,7 @@ class StepOnePage extends React.Component {
                                         add={this.handleAddTicket}
                                         substract={this.handleSubstractTicket}
                                     />                                                                      
-                                  {now >= summit.end_date &&
-                                  now <= summit.registration_begin_date &&
+                                  {now <= summit.registration_begin_date &&
                                     history.push('/a/member/orders')
                                   }
                         {!member &&
