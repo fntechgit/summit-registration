@@ -23,6 +23,8 @@ import validator from "validator";
 import Swal from 'sweetalert2';
 import OrderSummary from "../components/order-summary";
 import StepRow from "../components/step-row";
+import history from '../history';
+import URI from "urijs";
 
 class StepExtraQuestionsPage extends React.Component {
 
@@ -63,6 +65,10 @@ class StepExtraQuestionsPage extends React.Component {
     }
 
     componentDidMount() {
+        let {order: {reservation}, member} = this.props;
+        if (member && Object.entries(reservation).length === 0 && reservation.constructor === Object) {
+            history.push('/a/member/orders');
+        }
     }
 
     handleTicketCancel() {
