@@ -45,7 +45,6 @@ class StepTwoPage extends React.Component {
         this.handleRemoveTicket = this.handleRemoveTicket.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleShowErrors = this.handleShowErrors.bind(this);
-
     }
 
     componentWillMount() {
@@ -71,7 +70,6 @@ class StepTwoPage extends React.Component {
           let {first_name, last_name, email} = member;
           order = {...order, first_name, last_name, email};
         }
-        
         this.props.handleOrderChange(order);
     }
 
@@ -88,12 +86,11 @@ class StepTwoPage extends React.Component {
     componentDidMount() {
         let {order:{tickets}} = this.props;
         const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
-
         if (!tickets || tickets.length === 0) {
             history.push(stepDefs[0]);
-        } else {
-            window.scrollTo(0, 0);
+            return;
         }
+        window.scrollTo(0, 0);
     }
 
     handleTicketInfoChange(ticketId, field, value) {

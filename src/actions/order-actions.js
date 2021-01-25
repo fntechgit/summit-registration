@@ -25,8 +25,6 @@ import {
     createAction,
     stopLoading,
     startLoading,
-    showMessage,
-    showSuccessMessage,    
 } from 'openstack-uicore-foundation/lib/methods';
 
 import { getUserSummits } from '../actions/summit-actions';
@@ -47,14 +45,13 @@ export const SELECT_ORDER                   = 'SELECT_ORDER';
 export const REFUND_ORDER                   = 'REFUND_ORDER';
 export const CLEAR_RESERVATION              = 'CLEAR_RESERVATION';
 
-export const handleResetOrder = () => (dispatch, getState) => {
-    dispatch(createAction(RESET_ORDER)({}));
+export const handleResetOrder = (step = null) => (dispatch, getState) => {
+    dispatch(createAction(RESET_ORDER)({step:step}));
 }
 
 const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
 export const handleOrderChange = (order, errors = {}) => (dispatch, getState) => {
-
     let {currentStep} = order;
 
     if(currentStep === 2) {

@@ -14,7 +14,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import T from "i18n-react/dist/i18n-react";
-
+import {handleResetOrder} from '../../actions/order-actions';
 import '../../styles/tickets-list-page.less';
 import TicketList from '../../components/ticket-list';
 
@@ -39,6 +39,8 @@ class TicketsListPage extends React.Component {
 
     componentWillMount() {    
         let {page, perPage} = this.props;
+        // clear order state
+        this.props.handleResetOrder();
         this.props.getUserTickets(null, page, perPage);
     }
 
@@ -145,6 +147,7 @@ export default connect (
       removeAttendee,
       resendNotification,
       getNow,
+      handleResetOrder,
     }
 )(TicketsListPage);
   
