@@ -28,7 +28,6 @@ import {getBackURL} from '../utils/helpers';
 class StepOnePage extends React.Component {
 
     constructor(props){
-        console.log('StepOnePage::constructor');
         super(props);
 
         this.state = {
@@ -72,7 +71,6 @@ class StepOnePage extends React.Component {
 
     render(){
         let {summit, order, member, now} = this.props;
-        console.log(`StepOnePage::render order.tickets ${order.tickets.length}`);
         if ((Object.entries(summit).length === 0 && summit.constructor === Object) ) return null;
 
         // let now = this.props.getNow();
