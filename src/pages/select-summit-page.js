@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import NotFoundSummit from '../components/not-found-summit';
 
 import {getSuggestedSummits, selectPurchaseSummit} from '../actions/summit-actions';
-
+import { handleResetOrder } from '../actions/order-actions'
 import {getNow} from '../actions/timer-actions';
 
 
@@ -42,6 +42,7 @@ class SelectSummitPage extends React.Component {
 
     componentDidMount() {
       let {getSuggestedSummits} = this.props;
+      this.props.handleResetOrder();
       getSuggestedSummits();
     }
 
@@ -71,7 +72,8 @@ export default connect(
   {
       getSuggestedSummits,
       selectPurchaseSummit,
-      getNow
+      getNow,
+      handleResetOrder,
   }
 )(SelectSummitPage);
 

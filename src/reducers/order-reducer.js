@@ -12,6 +12,7 @@
  **/
 
 import { START_LOADING, STOP_LOADING, LOGOUT_USER } from "openstack-uicore-foundation/lib/actions";
+
 import { 
     RESET_ORDER, 
     RECEIVE_ORDER, 
@@ -26,7 +27,6 @@ import {
     REFUND_ORDER,
     DELETE_RESERVATION,
     DELETE_RESERVATION_SUCCESS,
-    DELETE_RESERVATION_ERROR,
     CLEAR_RESERVATION
 } from "../actions/order-actions";
 
@@ -67,7 +67,8 @@ const orderReducer = (state = DEFAULT_STATE, action) => {
 
     switch(type){
         case LOGOUT_USER:
-            return { state: {...state.order}, ...DEFAULT_STATE };
+            return { ...DEFAULT_STATE, purchaseOrder: {...state.purchaseOrder} };
+            break;
         case START_LOADING:
             return {...state, loading: true};
             break;
@@ -75,6 +76,10 @@ const orderReducer = (state = DEFAULT_STATE, action) => {
             return {...state, loading: false};
             break;
         case RESET_ORDER:
+            let {step} = payload;
+            if(step){
+                return {...DEFAULT_STATE, purchaseOrder: {...DEFAULT_ENTITY, currentStep: step}};
+            }
             return DEFAULT_STATE;
             break;
         case RECEIVE_ORDER:
@@ -110,10 +115,10 @@ const orderReducer = (state = DEFAULT_STATE, action) => {
             return state
             break;
         case DELETE_RESERVATION_SUCCESS:
-            let noDiscountTix = [...state.purchaseOrder.tickets];            
+            let noDiscountTix = [...state.purchaseOrder.tickets];
             noDiscountTix.map(t => t.discount = 0);            
             return {...state, purchaseOrder: {...state.purchaseOrder, reservation: {}, tickets: noDiscountTix}}
-        case PAY_RESERVATION:                        
+        case PAY_RESERVATION:
             return { ...state, purchaseOrder : { ...state.purchaseOrder, checkout : payload.response}};
             break;
         case CLEAR_RESERVATION:{
@@ -127,7 +132,7 @@ const orderReducer = (state = DEFAULT_STATE, action) => {
         case SELECT_ORDER:
             return {...state, selectedOrder: payload};
             break;
-        case REFUND_ORDER:            
+        case REFUND_ORDER:
             return {...state}
         default:
             return state;

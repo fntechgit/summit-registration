@@ -28,6 +28,7 @@ import {getBackURL} from '../utils/helpers';
 class StepOnePage extends React.Component {
 
     constructor(props){
+        console.log('StepOnePage::constructor');
         super(props);
 
         this.state = {
@@ -45,45 +46,37 @@ class StepOnePage extends React.Component {
     }
 
     componentDidMount() {
-        this.props.handleResetOrder();
-        
-        let {order, member} = this.props;
-                
-        order = {
-            ...order,
-            tickets: [],
-            currentStep: this.step
-        };
-        
-        this.props.handleOrderChange(order)
+        // reset order state , specifying the current step number
+        this.props.handleResetOrder(this.step);
     }
 
     handleAddTicket(ticketTypeId) {
-        let order = {...this.props.order};        
-
+        let order = {...this.props.order};
         let randomNumber = moment().valueOf();
-        order.tickets.push({ type_id: ticketTypeId, tempId: randomNumber });
-        
+        // @see https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
+        order.tickets = [...order.tickets, { type_id: ticketTypeId, tempId: randomNumber }];
         this.props.handleOrderChange(order)
     }
 
     handleSubstractTicket(ticketTypeId) {
+
         let order = {...this.props.order};
         let idx = order.tickets.findIndex(t => t.type_id == ticketTypeId);
 
         if (idx !== -1) {
-            order.tickets.splice(idx,1);
+            // @see https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
+            order.tickets = [...order.tickets.slice(0, idx), ...order.tickets.slice(idx + 1)];
             this.props.handleOrderChange(order)
         }
     }
 
     render(){
         let {summit, order, member, now} = this.props;
-        
+        console.log(`StepOnePage::render order.tickets ${order.tickets.length}`);
         if ((Object.entries(summit).length === 0 && summit.constructor === Object) ) return null;
 
         // let now = this.props.getNow();
-        order.status = 'Reserved';
+        //order.status = 'Reserved';
         // filter tickets types
         let ticketsTypesToSell = (Object.entries(summit).length === 0 && summit.constructor === Object) ? [] : summit.ticket_types.filter( tt =>
             // if ticket does not has sales start/end date set could be sell all the registration period

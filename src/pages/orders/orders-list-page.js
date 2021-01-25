@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import '../../styles/orders-list-page.less';
 import OrderList from '../../components/order-list';
 
-import { getUserOrders, selectOrder } from '../../actions/order-actions';
+import {getUserOrders, handleResetOrder, selectOrder} from '../../actions/order-actions';
 import { selectSummit } from '../../actions/summit-actions';
 
 import {getNow} from '../../actions/timer-actions';
@@ -37,6 +37,8 @@ class OrdersListPage extends React.Component {
 
   componentWillMount() {    
     let {page, perPage} = this.props;
+    // clear order state
+    this.props.handleResetOrder();
     this.props.getUserOrders(null, page, perPage);
   }
 
@@ -85,6 +87,7 @@ export default connect (
     getUserOrders,
     selectOrder,
     selectSummit,
-    getNow
+    getNow,
+    handleResetOrder
   }
 )(OrdersListPage);

@@ -65,10 +65,15 @@ class StepExtraQuestionsPage extends React.Component {
     }
 
     componentDidMount() {
-        let {order: {reservation}, member} = this.props;
-        if (member && Object.entries(reservation).length === 0 && reservation.constructor === Object) {
-            history.push('/a/member/orders');
+        let {order: {reservation}, summit} = this.props;
+        const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
+
+        if (Object.entries(reservation).length === 0 && reservation.constructor === Object) {
+            history.push(stepDefs[0]);
+            return;
         }
+
+        window.scrollTo(0, 0);
     }
 
     handleTicketCancel() {
@@ -82,7 +87,7 @@ class StepExtraQuestionsPage extends React.Component {
         if(!order.checkout.id) {
             this.props.payReservation();
         } else {
-            history.push(stepDef[4]);
+            history.push(stepDefs[4]);
         }
         return null;
     }
@@ -224,6 +229,7 @@ const mapStateToProps = ({ loggedUserState, summitState, orderState }) => ({
     member: loggedUserState.isLoggedUser,
     summit: summitState.purchaseSummit,
     order: orderState.purchaseOrder,
+    selectedSummit : summitState.selectedSummit,
     extraQuestions: summitState.purchaseSummit.order_extra_questions,
 });
 
