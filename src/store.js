@@ -23,7 +23,7 @@ import wizzardReducer from './reducers/wizzard-reducer';
 
 import thunk from 'redux-thunk';
 import { persistStore, persistCombineReducers } from 'redux-persist'
-import storage from 'redux-persist/es/storage'
+import storage from 'redux-persist/lib/storage'
 // default: localStorage if web, AsyncStorage if react-native
 
 const config = {

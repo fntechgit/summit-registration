@@ -91,27 +91,42 @@ class TicketModel {
     }
 
     validateExtraQuestions(extraQuestions) {
+
         let answeredQuestions = true;
-        if(extraQuestions.length > 0 && this.dto.extra_questions.length > 0){
-            extraQuestions.map(eq => {
-                if(eq.mandatory === true && answeredQuestions === true) {
-                    let findEq = this.dto.extra_questions.find(q => q.question_id === eq.id);
-                    switch(eq.type) {
-                        case 'TextArea':
-                        case 'Text':
-                        case 'ComboBox':
-                        case 'RadioButtonList':
-                        case 'CheckBoxList':
-                            return answeredQuestions = findEq && findEq.answer !== "" ? true : false;
-                        case 'CheckBox':
-                            return answeredQuestions = findEq && findEq.answer === "true" ? true : false;
-                        //case 'RadioButton': (dont think this one will be ever used; will discuss to be removed from admin) is always answered
-                    }
+        // we dont have extra questions
+        if(extraQuestions.length == 0) return answeredQuestions;
+
+        // iterate trough questions
+
+        for (var eq of extraQuestions) {
+            if(eq.mandatory){ // only check for mandatory questions ( skip optionals)
+                // check if the user answered
+                let findEq = this.dto.extra_questions.find(q => q.question_id == eq.id);
+                if(!findEq){
+                    // answer not found
+                    answeredQuestions = false;
+                    break;
                 }
-            });
-        } else if (extraQuestions.length > 0 && this.dto.extra_questions.length === 0) {
-            answeredQuestions = false;
+                // answer found
+                switch(eq.type) {
+                    case 'TextArea':
+                    case 'Text':
+                    case 'ComboBox':
+                    case 'RadioButtonList':
+                    case 'CheckBoxList':
+                        answeredQuestions = findEq && findEq.answer != "" ? true : false;
+                    break;
+                    case 'CheckBox':
+                        answeredQuestions = findEq && findEq.answer == "true" ? true : false;
+                    break;
+                    //case 'RadioButton': (dont think this one will be ever used; will discuss to be removed from admin) is always answered
+                }
+                if(!answeredQuestions){
+                    break;
+                }
+            }
         }
+
         return answeredQuestions;
     }
 }
