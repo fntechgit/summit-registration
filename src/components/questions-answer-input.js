@@ -14,8 +14,6 @@
 import React from 'react';
 import 'awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css'
 import { Input, Dropdown, RadioList, CheckboxList } from 'openstack-uicore-foundation/lib/components'
-import T from "i18n-react/dist/i18n-react";
-
 import '../styles/ticket-assign-form.less';
 
 export default class QuestionAnswersInput extends React.Component {
@@ -77,21 +75,17 @@ export default class QuestionAnswersInput extends React.Component {
 
     getInput(question, answerValue) {        
         let questionValues = question.values;
-        let {readOnly, ticket} = this.props;
+        let {ticket} = this.props;
 
         switch(question.type) {
             case 'Text':
-                if(readOnly && !answerValue) {
-                  return null;
-                } else {
+
                   return (
                     <React.Fragment>
                       <div className="row field-wrapper">
-                          <div className="col-sm-4"> {question.label} {!readOnly && question.mandatory ? '*' : ''} </div>
+                          <div className="col-sm-4"> {question.label} {question.mandatory ? '*' : ''} </div>
                           <div className="col-sm-8">
-                            {readOnly ? 
-                              <span>{answerValue}</span>
-                              :
+
                               <Input
                                   id={question.id}
                                   value={answerValue}
@@ -99,15 +93,12 @@ export default class QuestionAnswersInput extends React.Component {
                                   placeholder={question.placeholder}
                                   className="form-control"
                               />
-                            }                            
+
                           </div>                        
                       </div>
                       <div className="field-wrapper-mobile">
-                      <div> {question.label} {!readOnly && question.mandatory ? '*' : ''}</div>
+                      <div> {question.label} {question.mandatory ? '*' : ''}</div>
                           <div>
-                            {readOnly ? 
-                              <span>{answerValue}</span>
-                              :
                               <Input
                                   id={question.id}
                                   value={answerValue}
@@ -115,24 +106,16 @@ export default class QuestionAnswersInput extends React.Component {
                                   placeholder={question.placeholder}
                                   className="form-control"
                               />
-                            }
                           </div>
                       </div>
                     </React.Fragment>
                   );
-                }                
             case 'TextArea':
-              if(readOnly && !answerValue) {
-                return null;
-              } else {
                 return (
                   <React.Fragment>
                     <div className='row field-wrapper--textarea'>
-                        <div className={`col-sm-4 ${readOnly?'read-only':''}`}> {question.label} {!readOnly && question.mandatory ? '*' : ''}</div>
+                        <div className={`col-sm-4`}> {question.label} {question.mandatory ? '*' : ''}</div>
                         <div className="col-sm-8">
-                          {readOnly ? 
-                            <span>{answerValue}</span>
-                            :
                             <textarea
                                 id={question.id}
                                 value={answerValue}
@@ -141,15 +124,11 @@ export default class QuestionAnswersInput extends React.Component {
                                 className="form-control"                                
                                 rows="4"
                             />
-                          }
-                        </div>                        
+                        </div>
                     </div>
                     <div className="field-wrapper-mobile">
-                        <div> {question.label} {!readOnly && question.mandatory ? '*' : ''}</div>
+                        <div> {question.label} {question.mandatory ? '*' : ''}</div>
                         <div>
-                          {readOnly ? 
-                            <span>{answerValue}</span>
-                            :
                             <textarea
                                 id={question.id}
                                 value={answerValue}
@@ -158,70 +137,28 @@ export default class QuestionAnswersInput extends React.Component {
                                 className="form-control"                                
                                 rows="4"
                             />
-                          }
                         </div>                        
                     </div>
                   </React.Fragment>
                 );
-              }
             case 'CheckBox':
-              if(readOnly && !answerValue) {
-                return null;
-              } else {
-                if(readOnly) {
-                  return (
-                    <React.Fragment>
-                      <div className="row field-wrapper">
-                          <div className="col-sm-4"> {question.label} </div>
-                          <div className="col-sm-8">
-                              <span>{answerValue === 'true' ? T.translate("general.yes") : T.translate("general.no")}</span>                                                     
-                          </div>                        
-                      </div>
-                      <div className="field-wrapper-mobile">
-                        <div> {question.label} </div>
-                        <div>
-                            <span>{answerValue === 'true' ? T.translate("general.yes") : T.translate("general.no")}</span>                                                     
-                        </div>                        
-                    </div>
-                    </React.Fragment>
-                  );
-                } else {
                   return (
                     <div className="form-check abc-checkbox">
                         <input type="checkbox" id={`${ticket.id}_${question.id}`} checked={(answerValue === "true")}
                                onChange={this.handleChange} className="form-check-input" />
 
                         <label className="form-check-label" htmlFor={`${ticket.id}_${question.id}`} >
-                            {question.label} {!readOnly && question.mandatory ? '*' : ''}
+                            {question.label} { question.mandatory ? '*' : ''}
                         </label>
                     </div>
                   );
-                }           
-              }
             case 'ComboBox':
-              if(readOnly && !answerValue) {
-                return null;
-              } else {
                 let value = answerValue ? questionValues.find(val => val.id == parseInt(answerValue)) : null;
                 questionValues = questionValues.map(val => ({...val, value: val.id}));
-                if(readOnly) {
                   return (
                     <React.Fragment>
                       <div className="row field-wrapper">
-                          <div className="col-sm-4"> {question.label} </div>
-                          <div className="col-sm-8"> {value? value.label: ''} </div>                        
-                      </div>
-                      <div className="field-wrapper-mobile">
-                          <div> {question.label} </div>
-                          <div> {value? value.label: ''} </div>                        
-                      </div>
-                    </React.Fragment>
-                  );
-                } else {
-                  return (
-                    <React.Fragment>
-                      <div className="row field-wrapper">
-                          <div className="col-sm-4"> {question.label} {!readOnly && question.mandatory ? '*' : ''}</div>
+                          <div className="col-sm-4"> {question.label} {question.mandatory ? '*' : ''}</div>
                           <div className="col-sm-8">                          
                             <Dropdown
                                 id={question.id}
@@ -232,7 +169,7 @@ export default class QuestionAnswersInput extends React.Component {
                           </div>                        
                       </div>
                       <div className="field-wrapper-mobile">
-                          <div> {question.label} {!readOnly && question.mandatory ? '*' : ''}</div>
+                          <div> {question.label} {question.mandatory ? '*' : ''}</div>
                           <div>                          
                             <Dropdown
                                 id={question.id}
@@ -244,44 +181,13 @@ export default class QuestionAnswersInput extends React.Component {
                       </div>
                     </React.Fragment>
                   );
-                }
-              }
             case 'CheckBoxList':
-              if(readOnly && !answerValue) {
-                return null;
-              } else {
                 questionValues = questionValues.map(val => ({...val, value: val.id}));
                 answerValue = answerValue ? answerValue.split(',').map(ansVal => parseInt(ansVal)) : [];                
-                if(readOnly) {
-                  let readOnlyAnswers = [];
-                  answerValue.map(a => {
-                    questionValues.map(q => { 
-                      if(q.value == a) {
-                        readOnlyAnswers.push(q.label);
-                      }
-                    });
-                  });                  
-                  return (
-                    <React.Fragment>
-                      <div className="row field-wrapper">
-                          <div className="col-sm-4"> {question.label} </div>
-                          <div className="col-sm-8">                          
-                              {readOnlyAnswers.join(', ')}
-                          </div>                        
-                      </div>
-                      <div className="field-wrapper-mobile">
-                        <div> {question.label} </div>
-                        <div>                          
-                            {readOnlyAnswers.join(', ')}
-                        </div>                        
-                    </div>
-                    </React.Fragment>
-                  );
-                } else {
                   return(
                     <React.Fragment>
                       <div className="row field-wrapper">
-                          <div className="col-sm-4"> {question.label} {!readOnly && question.mandatory ? '*' : ''}</div>
+                          <div className="col-sm-4"> {question.label} {question.mandatory ? '*' : ''}</div>
                           <div className="col-sm-8">                          
                               <CheckboxList
                                   id={`${ticket.id}_${question.id}`}
@@ -292,7 +198,7 @@ export default class QuestionAnswersInput extends React.Component {
                           </div>                        
                       </div>
                       <div className="field-wrapper-mobile">
-                        <div> {question.label} {!readOnly && question.mandatory ? '*' : ''}</div>
+                        <div> {question.label} {question.mandatory ? '*' : ''}</div>
                         <div>                          
                             <CheckboxList
                                 id={`${ticket.id}_${question.id}`}
@@ -304,43 +210,14 @@ export default class QuestionAnswersInput extends React.Component {
                     </div>
                     </React.Fragment>
                   );
-                }
-              }
             case 'RadioButtonList':
-              if(readOnly && !answerValue) {
-                return null;
-              } else {
                 questionValues = questionValues.map(val => ({...val, value: val.id}));
-                if(readOnly){
-                  return(
-                    <React.Fragment>
-                      <div className="row field-wrapper">
-                          <div className="col-sm-4"> {question.label} </div>
-                          <div className="col-sm-8">
-                            {questionValues.find(q => q.value == answerValue) ? 
-                              questionValues.find(q => q.value == answerValue).label 
-                              : 
-                              ''
-                            }</div>
-                      </div>
-                      <div className="field-wrapper-mobile">
-                          <div> {question.label} </div>
-                          <div>{questionValues.find(q => q.value == answerValue) ? 
-                              questionValues.find(q => q.value == answerValue).label 
-                              : 
-                              ''
-                            }</div>
-                      </div>
-                    </React.Fragment>
-                  );
-                } else {
+
                   return (
                       <div className="row field-wrapper--radio-list">
-                          <div className="col-sm-4"> {question.label} {!readOnly && question.mandatory ? '*' : ''}</div>
+                          <div className="col-sm-4"> {question.label} {question.mandatory ? '*' : ''}</div>
                           <div className="col-sm-8">
-                            {readOnly ? 
-                              <span>{answerValue}</span>
-                              :
+
                               <RadioList
                                   id={`${ticket.id}_${question.id}`}
                                   value={answerValue}
@@ -348,18 +225,15 @@ export default class QuestionAnswersInput extends React.Component {
                                   onChange={this.handleChange}
                                   inline
                               />
-                            }
-                          </div>                                             
+                          </div>
                       </div>
                   );
-                }
-              }
         }
     }
 
     render() {
         let { answers } = this.state;
-        let { questions, questions_type, readOnly, ticket } = this.props;
+        let { questions, questions_type} = this.props;
 
         let orderedQuestions = questions.sort((a, b) => (a.order > b.order) ? 1 : -1);
 
@@ -369,7 +243,7 @@ export default class QuestionAnswersInput extends React.Component {
                     let answer = answers.find(ans => ans.question_id === q.id);
                     let answerValue = answer ? answer.answer : null;
                     return (                      
-                        <div className={`row form-group ${readOnly? 'read-only':''}`} key={`question_answer_${q.id}`}>
+                        <div className={`row form-group`} key={`question_answer_${q.id}`}>
                             <div className="col-md-12">
                                 {this.getInput(q, answerValue)}
                             </div>
@@ -378,6 +252,5 @@ export default class QuestionAnswersInput extends React.Component {
                 })}
             </div>
         );
-
     }
 }

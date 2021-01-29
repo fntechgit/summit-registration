@@ -84,7 +84,6 @@ export const handleResetTicket = () => (dispatch, getState) => {
 }
 
 
-
 export const getUserTickets = (ticketRefresh, page = 1, per_page = 5) => (dispatch, getState) => {
 
   let { loggedUserState } = getState();
@@ -92,7 +91,7 @@ export const getUserTickets = (ticketRefresh, page = 1, per_page = 5) => (dispat
   
   let params = {
       access_token : accessToken,
-      expand       : 'order, owner, owner.extra_questions, order.summit, badge, badge.features',
+      expand       : 'order, owner, owner.extra_questions, order, badge, badge.features',
       order        : '-id',
       filter       : 'status==RefundRequested,status==Refunded,status==Confirmed,status==Paid,status==Error',
       page         : page,

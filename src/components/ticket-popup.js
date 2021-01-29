@@ -17,6 +17,7 @@ import cloneDeep from "lodash.clonedeep";
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import { Input } from 'openstack-uicore-foundation/lib/components'
 import validator from "validator"
+import TicketModel from '../models/ticket';
 
 import TicketAssignForm from '../components/ticket-assign-form';
 import ConfirmPopup from '../components/confirm-popup';
@@ -61,7 +62,6 @@ class TicketPopup extends React.Component {
         this.handleTicketRole = this.handleTicketRole.bind(this);
         this.handleTicketName = this.handleTicketName.bind(this);
         this.handlePopupSave = this.handlePopupSave.bind(this);
-        this.handleMandatoryExtraQuestions = this.handleMandatoryExtraQuestions.bind(this);
     }
 
     componentWillMount() {      
@@ -220,39 +220,14 @@ class TicketPopup extends React.Component {
       }, () => this.togglePopup(null, popup));
     }
 
-    handleMandatoryExtraQuestions() {
-      let {extraQuestions} = this.props;
-      let {tempTicket: {extra_questions}} = this.state;
-      let answeredQuestions = true;
-      if(extraQuestions.length > 0 && extra_questions.length > 0){
-        extraQuestions.map(eq => {
-          if(eq.mandatory === true && answeredQuestions === true) {
-            let findEq = extra_questions.find(q => q.question_id === eq.id);            
-            switch(eq.type) {
-              case 'TextArea': 
-              case 'Text':
-              case 'ComboBox':
-              case 'RadioButtonList':
-              case 'CheckBoxList':
-                  return answeredQuestions = findEq && findEq.answer !== "" ? true : false;
-              case 'CheckBox':
-                  return answeredQuestions = findEq && findEq.answer === "true" ? true : false;
-              //case 'RadioButton': (dont think this one will be ever used; will discuss to be removed from admin) is always answered                                
-            }
-          }
-        });
-      } else if (extraQuestions.length > 0 && extra_questions.length === 0) {        
-        answeredQuestions = false;
-      }
-      return answeredQuestions;
-    }
-
     handlePopupSave() {
 
       let {tempTicket: {disclaimer_accepted, attendee_first_name, attendee_last_name, attendee_company, attendee_email, errors}} = this.state;
       let {summit:{registration_disclaimer_mandatory}, member} = this.props;
 
-      let mandatoryExtraQuestions = this.handleMandatoryExtraQuestions();
+      let model = new TicketModel(this.state.tempTicket, this.props.summit, this.props.now);
+      let mandatoryExtraQuestions = model.validateExtraQuestions(this.props.extraQuestions);
+
       let saveEnabled = errors && errors.attendee_email === '' && attendee_first_name && attendee_last_name && attendee_company && errors.constructor === Object && mandatoryExtraQuestions;
       
       if (registration_disclaimer_mandatory && member.email === attendee_email) {
@@ -328,10 +303,15 @@ class TicketPopup extends React.Component {
 
     render() {
 
-      let {extraQuestions, status, ticket: {owner, badge, ticket_type_id}, fromTicketList, summit, orderOwned, member, loading, now, order} = this.props;
+      let {extraQuestions, status, ticket: {owner, badge, ticket_type_id}, fromTicketList, summit, orderOwned, member,
+          loading, now, order} = this.props;
+
       let {showPopup, tempTicket, tempTicket: {reassign_email, errors}, popupCase, cleanFields} = this.state;
       let reassign_date = summit.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date;
       let {ticket} = this.props;
+
+      console.log(`TicketPopup::render now ${now} reassign_date ${reassign_date} summit.end_date ${summit.end_date}`);
+
         return (!loading &&
         <div className='popup-bg'>
             <div className='popup-form'>
@@ -353,11 +333,7 @@ class TicketPopup extends React.Component {
                 <Tabs selectedTabClassName="popup-tabs--active" >
                     <TabList className="popup-tabs">
                         {status.text === 'UNASSIGNED' && <Tab>{T.translate("ticket_popup.tab_assign")}</Tab>}
-                        <Tab>
-                          {now > reassign_date ?
-                          `${T.translate("ticket_popup.tab_edit_read_only")}`
-                          : 
-                          `${T.translate("ticket_popup.tab_edit")}` }</Tab>
+                        <Tab>{T.translate("ticket_popup.tab_edit")}</Tab>
                         {status.text !== 'UNASSIGNED' && 
                           now < reassign_date &&
                           (!fromTicketList || (fromTicketList && orderOwned)) &&
@@ -415,7 +391,6 @@ class TicketPopup extends React.Component {
                             now={now}
                             errors={errors}/>
                         </div>
-                        {now < reassign_date &&
                         <div className="popup-footer-save">
                           <button 
                               className="btn btn-primary" 
@@ -424,7 +399,6 @@ class TicketPopup extends React.Component {
                                   {T.translate("ticket_popup.save_changes")}
                           </button>
                         </div>
-                        }
                     </TabPanel>
                     {status.text !== 'UNASSIGNED' && now < reassign_date && (!fromTicketList || (fromTicketList && orderOwned)) &&
                       <TabPanel ref={this.popUpPanelRef} className="popup-panel popup-panel--reassign">

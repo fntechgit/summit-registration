@@ -24,6 +24,7 @@ class TicketAssignForm extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             extra_questions: [],
             input_email: false,
@@ -192,10 +193,10 @@ class TicketAssignForm extends React.Component {
                 <div className="row field-wrapper">
                     <div className="col-sm-4">
                         {T.translate("ticket_popup.edit_first_name")}
-                        {!readOnly && T.translate("ticket_popup.edit_required_star")}
+                        {T.translate("ticket_popup.edit_required_star")}
                     </div>
                     <div className="col-sm-8">
-                        {readOnly || (owner && owner.first_name)?
+                        {(owner && owner.first_name)?
                             <span>{ticket.attendee_first_name}</span>
                             :
                             <Input
@@ -209,9 +210,9 @@ class TicketAssignForm extends React.Component {
                     </div>
                 </div>
                 <div className="field-wrapper-mobile">
-                    <div>{T.translate("ticket_popup.edit_first_name")}{!readOnly && T.translate("ticket_popup.edit_required_star")}</div>
+                    <div>{T.translate("ticket_popup.edit_first_name")}{T.translate("ticket_popup.edit_required_star")}</div>
                     <div>
-                        {readOnly || (owner && owner.first_name)?
+                        {(owner && owner.first_name)?
                             <span>{ticket.attendee_first_name}</span>
                             :
                             <Input
@@ -227,10 +228,10 @@ class TicketAssignForm extends React.Component {
                 <div className="row field-wrapper">
                     <div className="col-sm-4">
                         {T.translate("ticket_popup.edit_last_name")}
-                        {!readOnly && T.translate("ticket_popup.edit_required_star")}
+                        {T.translate("ticket_popup.edit_required_star")}
                     </div>
                     <div className="col-sm-8">
-                        {readOnly || (owner && owner.last_name)?
+                        {(owner && owner.last_name)?
                             <span>{ticket.attendee_last_name}</span>
                             :
                             <Input
@@ -244,9 +245,9 @@ class TicketAssignForm extends React.Component {
                     </div>
                 </div>
                 <div className="field-wrapper-mobile">
-                    <div>{T.translate("ticket_popup.edit_last_name")}{!readOnly && T.translate("ticket_popup.edit_required_star")}</div>
+                    <div>{T.translate("ticket_popup.edit_last_name")}{ T.translate("ticket_popup.edit_required_star")}</div>
                     <div>
-                        {readOnly || (owner && owner.last_name) ?
+                        {(owner && owner.last_name) ?
                             <span>{ticket.attendee_last_name}</span>
                             :
                             <Input
@@ -259,16 +260,12 @@ class TicketAssignForm extends React.Component {
                         }
                     </div>
                 </div>
-                {readOnly && !ticket.attendee_company ?
-                    null
-                    :
+
                     <div className="row field-wrapper">
                         <div
-                            className="col-sm-4">{T.translate("ticket_popup.edit_company")}{!readOnly && T.translate("ticket_popup.edit_required_star")}</div>
+                            className="col-sm-4">{T.translate("ticket_popup.edit_company")}{ T.translate("ticket_popup.edit_required_star")}</div>
                         <div className="col-sm-8">
-                            {readOnly ?
-                                <span>{ticket.attendee_company}</span>
-                                :
+
                                 <Input
                                     id="attendee_company"
                                     className="form-control"
@@ -276,16 +273,14 @@ class TicketAssignForm extends React.Component {
                                     onChange={this._innerOnChange}
                                     value={ticket.attendee_company}
                                 />
-                            }
+
                         </div>
                     </div>
-                }
+
                 <div className="field-wrapper-mobile">
-                    <div>{T.translate("ticket_popup.edit_company")}{!readOnly && T.translate("ticket_popup.edit_required_star")}</div>
+                    <div>{T.translate("ticket_popup.edit_company")}{T.translate("ticket_popup.edit_required_star")}</div>
                     <div>
-                        {readOnly ?
-                            <span>{ticket.attendee_company}</span>
-                            :
+
                             <Input
                                 id="attendee_company"
                                 className="form-control"
@@ -293,7 +288,7 @@ class TicketAssignForm extends React.Component {
                                 onChange={this._innerOnChange}
                                 value={ticket.attendee_company}
                             />
-                        }
+
                     </div>
                 </div>
                 {extraQuestions && extraQuestions.length > 0 &&
@@ -309,24 +304,27 @@ class TicketAssignForm extends React.Component {
                         ticket={ticket}
                         questions={extraQuestions}
                         questions_type={'Ticket'}
-                        readOnly={readOnly}
                         onChange={this._innerOnChange}
                     />
                 </React.Fragment>
                 }
-                {(summit.registration_disclaimer_mandatory && summit.registration_disclaimer_content) &&
+                {(summit.registration_disclaimer_content) &&
                 <React.Fragment>
                     <hr/>
                     <div className="row field-wrapper">
                         <div className="col-md-12">
                             <div className="form-check abc-checkbox">
                                 <input type="checkbox" id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
-                                       disabled={readOnly} onChange={this._innerOnChange} className="form-check-input"/>
+                                       onChange={this._innerOnChange} className="form-check-input"/>
+
+
                                 <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
                                     <div className="disclaimer">
+                                        { summit.registration_disclaimer_mandatory? '*' : ''}
                                         <RawHTML>
                                             {summit.registration_disclaimer_content}
                                         </RawHTML>
+
                                     </div>
                                 </label>
                             </div>
@@ -337,8 +335,9 @@ class TicketAssignForm extends React.Component {
                             <div className="form-check abc-checkbox">
                                 <input type="checkbox"
                                        id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
-                                       disabled={readOnly} onChange={this._innerOnChange} className="form-check-input"/>
+                                       onChange={this._innerOnChange} className="form-check-input"/>
                                 <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
+                                    { summit.registration_disclaimer_mandatory? '*' : ''}
                                     <div className="disclaimer">
                                         <RawHTML>
                                             {summit.registration_disclaimer_content}

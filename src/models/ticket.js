@@ -23,6 +23,7 @@ class TicketModel {
 
     handlePastSummit(){
         let reassign_date = this.summit.reassign_ticket_till_date && this.summit.reassign_ticket_till_date < this.summit.end_date ? this.summit.reassign_ticket_till_date : this.summit.end_date;
+        //console.log(`Ticket::handlePastSummit this.summit.reassign_ticket_till_date ${this.summit.reassign_ticket_till_date} this.summit.end_date ${this.summit.end_date}`);
         return this.now > reassign_date;
     }
 
@@ -70,6 +71,7 @@ class TicketModel {
                 class: ''
             },
         ];
+
         if(this.dto.status === "Cancelled") {
             return status[3];
         }
