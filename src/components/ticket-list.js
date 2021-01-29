@@ -61,7 +61,9 @@ class TicketList extends React.Component {
     }
 
     handleTicketStatus(ticket){
-        return new TicketModel(ticket, this.props.summit, this.props.now).getStatus();
+        let {summits} = this.props;
+        let summit = summits.find(s => s.id === ticket.owner.summit_id);
+        return new TicketModel(ticket, summit, this.props.now).getStatus();
     }
 
     handleTicketDownload() {    
@@ -277,7 +279,6 @@ class TicketList extends React.Component {
                   status={this.handleTicketStatus(selectedTicket)}
                   onChange={this.handleChange}
                   orderOwned={selectedTicket.order.owner_id === member.id}
-                  extraQuestions={extraQuestions}
                   loading={loadingSummits}
                   downloadTicket={this.handleTicketDownload}
                   closePopup={this.togglePopup.bind(this)}
@@ -287,6 +288,7 @@ class TicketList extends React.Component {
                   removeAttendee={this.props.removeAttendee}  
                   fromTicketList={true}
                   summit={summits.find(s => s.id === selectedTicket.owner.summit_id)}
+                  extraQuestions={extraQuestions}
                   errors={errors}
                   now={now}
                 />  

@@ -169,10 +169,7 @@ export const getSummitRefundPolicy = (id, select = false) => (dispatch, getState
 }
 
 export const selectSummit = (summit, updateSummit = true) => (dispatch, getState) => {  
-    
-  dispatch(startLoading());
-
-  dispatch(getSummitBySlug(summit.slug, updateSummit));
+  return dispatch(getSummitBySlug(summit.slug, updateSummit));
 }
 
 export const selectPurchaseSummit = (slug) => (dispatch, getState) => {

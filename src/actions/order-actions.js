@@ -328,8 +328,10 @@ export const selectOrder = (order, updateId = null) => (dispatch, getState) => {
     dispatch(stopLoading());
   } else {      
     dispatch(createAction(SELECT_ORDER)(order));
+      dispatch(stopLoading());
   }
 
+  return Promise.resolve();
 }
 
 export const cancelOrder = (order) => (dispatch, getState) => {
@@ -391,7 +393,7 @@ export const updateOrderTickets = (tickets) => (dispatch, getState) => {
         .then(() => {
             dispatch(stopLoading());
             // is is free, the payReservation method should perform the navigation
-            const isFree = reservation.discount_amount === reservation.raw_amount;
+            const isFree = reservation.discount_amount == reservation.raw_amount;
             if(!isFree) {
               history.push(stepDefs[4]);
             }            
