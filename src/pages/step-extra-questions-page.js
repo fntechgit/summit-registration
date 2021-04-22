@@ -114,8 +114,8 @@ class StepExtraQuestionsPage extends React.Component {
 
         if (canSave) {
             if(!order.checkout.id) {
-                this.props.updateOrderTickets(tickets);
-                this.props.payReservation();
+                this.props.updateOrderTickets(tickets).then( () => this.props.payReservation());
+                return;
             }
             this.props.updateOrderTickets(tickets);
         }
