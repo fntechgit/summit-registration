@@ -55,6 +55,7 @@ class OrderDetailPage extends React.Component {
     this.handleReassignDate = this.handleReassignDate.bind(this);
     this.handlePastSummit = this.handlePastSummit.bind(this);
     this.toggleSaveMessage = this.toggleSaveMessage.bind(this);
+    this.isInactive = this.isInactive.bind(this);
   }
 
   togglePopup(ticket) {
@@ -114,8 +115,8 @@ class OrderDetailPage extends React.Component {
         orderClass: 'past',
         class: ''
       },
-    ];    
-    if(ticket.status === "Cancelled") {
+    ];
+    if(ticket.is_active === false || ticket.status === "Cancelled") {
       return status[3];
     }else if(ticket.status === "RefundRequested") {
       return status[4];
@@ -254,6 +255,10 @@ class OrderDetailPage extends React.Component {
     }
   }
 
+  isInactive(t){
+    return t.is_active == false || t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded";
+  }
+
   render() {
       let {order, summit, ticket, errors, extraQuestions, member, orderLoading, summitLoading} = this.props;
       let { showPopup, showSave, cancelOrderPopup } = this.state;
@@ -298,7 +303,7 @@ class OrderDetailPage extends React.Component {
                                 s.id === t.ticket_type_id ?
                                 <React.Fragment key={t.id}>
                                 <div className="ticket-list-desktop">
-                                    <div className="row" key={t.id} onClick={() => {t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded" || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
+                                    <div className="row" key={t.id} onClick={() => { this.isInactive(t) || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
                                       <div className={`ticket ${this.handleTicketStatus(t).text === "UNASSIGNED" ? now > this.handleReassignDate(t) ? 'disabled' : this.handleTicketStatus(t).orderClass : this.handleTicketStatus(t).orderClass} p-2 col-sm-12 col-sm-offset-1`}>
                                           <div className="col-sm-1">
                                             <i className={`fa fa-2x ${this.handleTicketStatus(t).icon} ${this.handleTicketStatus(t).class}`}></i>                             
@@ -312,7 +317,7 @@ class OrderDetailPage extends React.Component {
                                           <div className="col-sm-5">
                                             <h5>{t.owner ? t.owner.email : ''}</h5>
                                           </div>
-                                          {(t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded") ?
+                                          {(this.isInactive(t)) ?
                                             <div className="col-sm-1"></div>
                                             :
                                             <div className="col-sm-1">
@@ -323,7 +328,7 @@ class OrderDetailPage extends React.Component {
                                     </div> 
                                 </div>
                                 <div className="ticket-list-mobile">
-                                    <div key={t.id} onClick={() => {t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded" || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
+                                    <div key={t.id} onClick={() => {this.isInactive(t) || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
                                       <div className={`ticket ${this.handleTicketStatus(t).text === "UNASSIGNED" ? now > this.handleReassignDate(t) ? 'disabled' : this.handleTicketStatus(t).orderClass : this.handleTicketStatus(t).orderClass} p-2`}>
                                           <div className="col-xs-1">
                                             <i className={`fa fa-2x ${this.handleTicketStatus(t).icon} ${this.handleTicketStatus(t).class}`}></i>                             
@@ -335,7 +340,7 @@ class OrderDetailPage extends React.Component {
                                               {t.owner ? t.owner.email : ''}
                                               <p className={`status ${this.handleTicketStatus(t).class}`}>{this.handleTicketStatus(t).text}</p>
                                           </div>
-                                          {(t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded") ?
+                                          { this.isInactive(t) ?
                                             <div className="col-sm-1"></div>
                                             :
                                             <div className="col-sm-1">
