@@ -1,5 +1,6 @@
 import moment from "moment-timezone";
 import URI from "urijs";
+import store from '../store';
 
 export const daysBetweenDates = (startDate, endDate, timezone) => {
 	let startDay = moment(startDate * 1000).tz(timezone)
@@ -55,3 +56,23 @@ export const getBackURL = () => {
 	}
 	return backUrl;
 }
+
+
+export const getMarketingValue = (key) => {
+	const {baseState} = store.getState();
+	const {marketingSettings} = baseState;
+
+	if (!marketingSettings) return null;
+	const setting = marketingSettings.find(s => s.key === key);
+
+	if (!setting) return null;
+
+	switch (setting.type) {
+		case 'FILE':
+			return setting.file;
+		case 'TEXT':
+			return setting.value;
+		case 'TEXTAREA':
+			return setting.value;
+	}
+};

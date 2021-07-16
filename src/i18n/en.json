@@ -61,6 +61,7 @@
     "assign"            : "Assign to:",
     "add_ticket"        : "Add additional ticket(s) to this order",
     "no_tickets"        : "No tickets selected.",
+    "disclaimer_in_person_title" : "Attention",
     "placeholders": {
       "coupon"          : "Coupon (Optional)",
       "email"           : "Attendee Email (Optional)"

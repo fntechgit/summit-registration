@@ -12,10 +12,12 @@
  **/
 
 import { START_LOADING, STOP_LOADING, LOGOUT_USER, RECEIVE_COUNTRIES } from "openstack-uicore-foundation/lib/actions";
+import { RECEIVE_MARKETING_SETTINGS } from '../actions/summit-actions';
 
 const DEFAULT_STATE = {
     loading: false,
-    countries: []
+    countries: [],
+    marketingSettings: null,
 }
 
 const baseReducer = (state = DEFAULT_STATE, action) => {
@@ -32,6 +34,19 @@ const baseReducer = (state = DEFAULT_STATE, action) => {
             break;
         case RECEIVE_COUNTRIES:
             return {...state, countries: payload};
+        case RECEIVE_MARKETING_SETTINGS: {
+            const {data} = payload.response;
+            // set color vars
+            if (typeof document !== 'undefined') {
+                data.forEach(setting => {
+                    if (getComputedStyle(document.documentElement).getPropertyValue(`--${setting.key}`)) {
+                        document.documentElement.style.setProperty(`--${setting.key}`, setting.value);
+                        document.documentElement.style.setProperty(`--${setting.key}50`, `${setting.value}50`);
+                    }
+                });
+            }
+            return {...state, marketingSettings: data};
+        }
         default:
             return state;
             break;

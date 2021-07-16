@@ -45,7 +45,7 @@ export const handleResetReducers = () => (dispatch, getState) => {
 export const getSummitBySlug = (slug, updateSummit) => (dispatch, getState) => {  
 
     let params = {
-      expand: 'order_extra_questions.values'
+      expand: 'order_extra_questions.values,ticket_types,ticket_types.badge_type,ticket_types.badge_type.access_levels'
     }
 
     dispatch(startLoading());
@@ -103,7 +103,7 @@ export const getSummitById = (id, select = false) => (dispatch, getState) => {
   dispatch(startLoading());
   
   let params = {
-    expand: 'order_extra_questions.values'
+    expand: 'order_extra_questions.values,ticket_types,ticket_types.badge_type,ticket_types.badge_type.access_levels'
   }
   
   return getRequest(
@@ -126,7 +126,7 @@ export const getSuggestedSummits = () => (dispatch, getState) => {
 
   let params = {
     filter: 'ticket_types_count>0',
-    expand: 'order_extra_questions.values'
+    expand: 'order_extra_questions.values,ticket_types,ticket_types.badge_type,ticket_types.badge_type.access_levels'
   };
 
   return getRequest(
@@ -206,6 +206,7 @@ export const selectSummitById = (id) => (dispatch, getState) => {
 };
 
 export const setMarketingSettings = (summitId) => (dispatch) => {
+
     let params = {
         per_page: 100,
         page: 1
@@ -216,17 +217,7 @@ export const setMarketingSettings = (summitId) => (dispatch) => {
         createAction(RECEIVE_MARKETING_SETTINGS),
         `${window.MARKETING_API_BASE_URL}/api/public/v1/config-values/all/shows/${summitId}`,
         authErrorHandler
-    )(params)(dispatch).then(({response}) => {
-        if (typeof document !== 'undefined' && response) {
-            response.data.forEach(setting => {
-                if (getComputedStyle(document.documentElement).getPropertyValue(`--${setting.key}`)) {
-                    document.documentElement.style.setProperty(`--${setting.key}`, setting.value);
-                    document.documentElement.style.setProperty(`--${setting.key}50`, `${setting.value}50`);
-                }
-            });
-        }
-
-    });
+    )(params)(dispatch);
 };
 
 

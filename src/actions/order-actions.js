@@ -49,7 +49,7 @@ export const handleResetOrder = (step = null) => (dispatch, getState) => {
     dispatch(createAction(RESET_ORDER)({step:step}));
 }
 
-const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
+export const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
 export const handleOrderChange = (order, errors = {}) => (dispatch, getState) => {
     let {currentStep} = order;

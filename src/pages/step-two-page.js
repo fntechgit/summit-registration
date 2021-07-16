@@ -20,24 +20,19 @@ import BasicInfoForm from '../components/basic-info-form';
 import TicketInfoForm from '../components/ticket-info-form';
 import StepRow from '../components/step-row';
 import SubmitButtons from "../components/submit-buttons";
-import { handleOrderChange } from '../actions/order-actions'
+import { handleOrderChange, stepDefs } from '../actions/order-actions'
 import {findElementPos} from "openstack-uicore-foundation/lib/methods";
 import {getNow} from '../actions/timer-actions';
 import history from '../history';
-
+import DisclaimerPopup from "../components/disclaimer-popup";
+import {getMarketingValue} from "../utils/helpers";
 import '../styles/step-two-page.less';
-
+import T from "i18n-react/dist/i18n-react";
 
 class StepTwoPage extends React.Component {
 
     constructor(props){
         super(props);
-
-        this.state = {
-            dirty: false
-        };
-
-        this.step = 2;
 
         this.handleChange = this.handleChange.bind(this);
         this.handleTicketInfoChange = this.handleTicketInfoChange.bind(this);
@@ -45,6 +40,41 @@ class StepTwoPage extends React.Component {
         this.handleRemoveTicket = this.handleRemoveTicket.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleShowErrors = this.handleShowErrors.bind(this);
+        this.onAcceptDisclaimer = this.onAcceptDisclaimer.bind(this);
+        this.onRejectDisclaimer = this.onRejectDisclaimer.bind(this);
+        this.hasInPersonTicketTypes = this.hasInPersonTicketTypes.bind(this);
+
+        this.state = {
+            dirty: false,
+            shouldShowInPersonDisclaimerPopup: this.hasInPersonTicketTypes(props.order),
+            acceptedInPersonDisclaimer: false
+        };
+
+        this.step = 2;
+    }
+
+    onAcceptDisclaimer(){
+        this.setState({...this.state,
+            shouldShowInPersonDisclaimerPopup : false,
+            acceptedInPersonDisclaimer : true,
+        })
+    }
+
+    onRejectDisclaimer(){
+        history.push(stepDefs[0]);
+    }
+
+    hasInPersonTicketTypes(order){
+        /** check is the current order has or not IN_PERSON tickets types **/
+        let { summit} = this.props;
+        return order.tickets.some(tix => {
+            let type = summit.ticket_types.filter((tt) => tt.id == tix.type_id);
+            if(type.length > 0 && type[0].hasOwnProperty("badge_type")){
+                let badgeType = type[0].badge_type;
+                return badgeType.access_levels.some((al) => { return al.name == 'IN_PERSON'});
+            }
+            return false;
+        });
     }
 
     componentWillMount() {
@@ -85,7 +115,6 @@ class StepTwoPage extends React.Component {
 
     componentDidMount() {
         let {order:{tickets}} = this.props;
-        const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
         if (!tickets || tickets.length === 0) {
             history.push(stepDefs[0]);
             return;
@@ -123,14 +152,15 @@ class StepTwoPage extends React.Component {
         let randomNumber = moment().valueOf();
 
         order.tickets.push({type_id: ticketTypeId, tempId: randomNumber});
+        this.setState({...this.state,  shouldShowInPersonDisclaimerPopup: this.hasInPersonTicketTypes(order)});
         this.props.handleOrderChange(order, errors);
     }
 
     handleRemoveTicket(ticketId) {
         let order = cloneDeep(this.props.order);
         let errors = cloneDeep(this.props.errors);
-
         order.tickets = order.tickets.filter(t => t.tempId != ticketId);
+        this.setState({...this.state,  shouldShowInPersonDisclaimerPopup: this.hasInPersonTicketTypes(order)});
         this.props.handleOrderChange(order, errors);
     }
 
@@ -145,6 +175,7 @@ class StepTwoPage extends React.Component {
     render(){
         let {summit, order, errors, member} = this.props;
         let {dirty} = this.state;
+        const disclaimer = getMarketingValue('registration_in_person_disclaimer');
         if((Object.entries(summit).length === 0 && summit.constructor === Object) ) return null;
         return (
             <div className="step-two">
@@ -171,7 +202,15 @@ class StepTwoPage extends React.Component {
                         <OrderSummary order={order} summit={summit} type={'desktop'} />
                     </div>
                 </div>
-                <SubmitButtons 
+                {disclaimer && this.state.shouldShowInPersonDisclaimerPopup && !this.state.acceptedInPersonDisclaimer &&
+                    <DisclaimerPopup
+                        title={T.translate("step_two.disclaimer_in_person_title")}
+                        body={disclaimer}
+                        onAccept={this.onAcceptDisclaimer}
+                        onReject={this.onRejectDisclaimer}
+                    />
+                }
+                <SubmitButtons
                     step={this.step} 
                     errors={errors} 
                     canContinue={order.tickets.length > 0}
@@ -181,11 +220,12 @@ class StepTwoPage extends React.Component {
     }
 }
 
-const mapStateToProps = ({ loggedUserState, summitState, orderState }) => ({
+const mapStateToProps = ({ loggedUserState, summitState, orderState, baseState }) => ({
     member: loggedUserState.member,
     summit: summitState.purchaseSummit,
     order:  orderState.purchaseOrder,
-    errors:  orderState.errors
+    errors:  orderState.errors,
+    marketingSettings: baseState.marketingSettings,
 })
 
 export default connect (
