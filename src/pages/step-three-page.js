@@ -18,13 +18,14 @@ import StepRow from '../components/step-row';
 import SubmitButtons from "../components/submit-buttons";
 import {handleOrderChange, validateStripe} from '../actions/order-actions'
 import {findElementPos} from "openstack-uicore-foundation/lib/methods";
-import {Elements, StripeProvider} from 'react-stripe-elements';
+import {loadStripe} from '@stripe/stripe-js';
+import {Elements} from '@stripe/react-stripe-js';
 import PaymentInfoForm from "../components/payment-info-form";
 import BillingInfoForm from "../components/billing-info-form";
 import '../styles/step-three-page.less';
 import history from '../history';
 import URI from "urijs";
-
+import Swal from 'sweetalert2';
 
 class StepThreePage extends React.Component {
 
@@ -43,6 +44,7 @@ class StepThreePage extends React.Component {
         this.handleStripe = this.handleStripe.bind(this);
         this.handleShowErrors = this.handleShowErrors.bind(this);
 
+        this.stripePromise = null;
     }
 
     componentWillReceiveProps(nextProps) {
@@ -56,7 +58,7 @@ class StepThreePage extends React.Component {
     }
 
     componentWillMount() {
-        let {summit: {slug}} = this.props;
+        let {summit: {slug, payment_profiles}} = this.props;
         const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
         let url = URI(window.location.href);
@@ -67,6 +69,18 @@ class StepThreePage extends React.Component {
         if (sameUrlAsSlug) {
             window.scrollTo(0, 0);
         }
+
+        let publicKey = null;
+        for (let profile of payment_profiles) {
+            if (profile.application_type === 'Registration') {
+                publicKey = profile.test_mode_enabled ? profile.test_publishable_key : profile.live_publishable_key;
+                break;
+            }
+        }
+
+        this.stripePromise = loadStripe(publicKey);
+        
+        console.log(`stripe publishable key ${publicKey}`);
     }
 
     componentDidMount() {
@@ -102,7 +116,6 @@ class StepThreePage extends React.Component {
         }
 
         this.props.handleOrderChange(order)
-
     }
 
     handleChange(ev) {
@@ -116,12 +129,12 @@ class StepThreePage extends React.Component {
         this.props.handleOrderChange(order, errors);
     }
 
-    async handleStripe(ev, stripe) {
+    async handleStripe(ev, stripe, cardElement) {
         let {order} = this.props;
         let stripeErrors = Object.values(ev).filter(x => x.required === true && x.message === '');
 
         if (stripeErrors.length === 3) {
-            let {card} = await stripe.createToken({
+            const { error, token } = await stripe.createToken(cardElement, {
                 name: `${order.first_name} ${order.last_name}`,
                 address_line1: order.billing_address,
                 address_line2: order.billing_address_two,
@@ -130,7 +143,12 @@ class StepThreePage extends React.Component {
                 address_zip: order.billing_zipcode,
                 address_country: order.billing_country,
             });
-            this.setState({card, stripe}, () => this.props.validateStripe(true));
+
+            if (token) {
+                this.setState({token, stripe}, () => this.props.validateStripe(true));
+            } else if (error) {
+                Swal.fire("Payment error", "There's an error generating your payment, please retry.", "warning");
+            }
         } else {
             this.setState({stripe: {}}, () => this.props.validateStripe(false));
         }
@@ -143,16 +161,7 @@ class StepThreePage extends React.Component {
     render() {
         let {summit, order, errors, stripeForm} = this.props;
         if ((Object.entries(summit).length === 0 && summit.constructor === Object)) return null;
-        let {card, stripe, dirty} = this.state;
-        let publicKey = null;
-        for (let profile of summit.payment_profiles) {
-            if (profile.application_type === 'Registration') {
-                publicKey = profile.test_mode_enabled ? profile.test_publishable_key : profile.live_publishable_key;
-                break;
-            }
-        }
-
-        console.log(`stripe publisable key ${publicKey}`);
+        let {token, stripe, dirty} = this.state;
 
         return (
             <div className="step-three">
@@ -161,14 +170,12 @@ class StepThreePage extends React.Component {
                 <div className="row">
                     <div className="col-md-8">
                         {order.reservation.discount_amount !== order.reservation.raw_amount &&
-                        <StripeProvider apiKey={publicKey}>
-                            <Elements>
+                            <Elements stripe={this.stripePromise}>
                                 <PaymentInfoForm
                                     onChange={this.handleStripe}
                                     order={order}
                                     dirty={dirty}/>
                             </Elements>
-                        </StripeProvider>
                         }
                         <BillingInfoForm
                             onChange={this.handleChange}
@@ -183,7 +190,7 @@ class StepThreePage extends React.Component {
                 <SubmitButtons
                     step={this.step}
                     stripe={stripe}
-                    card={card}
+                    token={token}
                     free={order.reservation.discount_amount === order.reservation.raw_amount}
                     errors={{errors, stripeForm}}
                     dirty={this.handleShowErrors}/>

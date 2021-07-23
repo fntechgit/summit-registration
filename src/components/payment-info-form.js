@@ -13,13 +13,15 @@
 
 import React from 'react'
 import T from 'i18n-react/dist/i18n-react'
-import { CardNumberElement,
-         CardExpiryElement,
-         CardCvcElement,
-         injectStripe } from 'react-stripe-elements';
+import { 
+    CardNumberElement,
+    CardExpiryElement,
+    CardCvcElement,
+    ElementsConsumer 
+} from '@stripe/react-stripe-js';
 
 
-class PaymentInfoForm extends React.Component {
+class CheckoutForm extends React.Component {
     constructor(props) {
         super(props);
 
@@ -74,23 +76,25 @@ class PaymentInfoForm extends React.Component {
 
     hasUncompletedFields(ev){    
         let {complete, elementType, empty} = ev;
-        let {onChange, stripe} = this.props;
+        let {onChange, stripe, elements} = this.props;
         let {message} = this.state.stripeErrors[elementType];
+
+        const cardElement = elements.getElement(CardNumberElement);
 
         if(complete) {
             this.setState({ 
                 stripeErrors: { ...this.state.stripeErrors, [elementType]: { message, required: true }}
-            }, () => onChange(this.state.stripeErrors, stripe));
+            }, () => onChange(this.state.stripeErrors, stripe, cardElement));
         } else {
             this.setState({ 
                 stripeErrors: { ...this.state.stripeErrors, [elementType]: { message, required: false }}
-            }, () => onChange(this.state.stripeErrors, stripe));
+            }, () => onChange(this.state.stripeErrors, stripe, cardElement));
         }
 
         if(empty) {
           this.setState({ 
             stripeErrors: { ...this.state.stripeErrors, [elementType]: { message: T.translate(`step_three.stripe_errors.${elementType}`), required: false }}
-          }, () => onChange(this.state.stripeErrors, stripe));
+          }, () => onChange(this.state.stripeErrors, stripe, cardElement));
         }
     }
 
@@ -157,4 +161,12 @@ class PaymentInfoForm extends React.Component {
     }
 }
 
-export default injectStripe(PaymentInfoForm);
+const PaymentInfoForm = (props) => (
+    <ElementsConsumer>
+        {({stripe, elements}) => (
+            <CheckoutForm stripe={stripe} elements={elements} {...props} />
+        )}
+    </ElementsConsumer>
+);
+
+export default PaymentInfoForm;
