@@ -122,7 +122,7 @@ export const createReservation = (owner_email, owner_first_name, owner_last_name
         // entity
     )(params)(dispatch)
         .then((payload) => {
-            dispatch(stopLoading());            
+            dispatch(stopLoading());     
             const isFree = payload.response.discount_amount === payload.response.raw_amount;
             const hasTicketExtraQuestion = purchaseSummit.order_extra_questions.filter((q) => q.usage === 'Ticket' || q.usage === 'Both' ).length > 0;
             const mandatoryDisclaimer = purchaseSummit.registration_disclaimer_mandatory;            
@@ -169,7 +169,7 @@ export const deleteReservation = () => (dispatch, getState) => {
     })
 }
 
-export const payReservation = (card=null, stripe=null) => (dispatch, getState) => {
+export const payReservation = (token=null, stripe=null) => (dispatch, getState) => {
 
     let {orderState: { purchaseOrder, purchaseOrder: {reservation}}, summitState: {purchaseSummit}} = getState();
 
@@ -188,7 +188,7 @@ export const payReservation = (card=null, stripe=null) => (dispatch, getState) =
 
     dispatch(startLoading());
 
-    if(!card && !stripe) {
+    if(!token && !stripe) {
       let normalizedEntity = {
         billing_address_1: purchaseOrder.billing_address,
         billing_address_2: purchaseOrder.billing_address_two,
@@ -228,12 +228,11 @@ export const payReservation = (card=null, stripe=null) => (dispatch, getState) =
               return (e);
           });
     } else {
-      stripe.handleCardPayment(
-        reservation.payment_gateway_client_token, card, {
-              payment_method_data: {
-                  billing_details: {name: `${purchaseOrder.first_name} ${purchaseOrder.last_name}`}
-              }
-          }
+      const { id } = token;
+      stripe.confirmCardPayment(
+        reservation.payment_gateway_client_token, {
+          payment_method: { card: { token: id } }
+        }
       ).then((result) => {
           if (result.error) {
               // Reserve error.message in your UI.        
@@ -248,7 +247,8 @@ export const payReservation = (card=null, stripe=null) => (dispatch, getState) =
                   billing_address_city: purchaseOrder.billing_city,
                   billing_address_state: purchaseOrder.billing_state,
                   billing_address_country: purchaseOrder.billing_country
-              };            
+              };  
+              
               return putRequest(
                   null,
                   createAction(PAY_RESERVATION),

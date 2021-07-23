@@ -62,13 +62,13 @@ class SubmitButtons extends React.Component {
     }
 
     payClick(ev) {
-        let { dirty, errors, stripe, card, free } = this.props;
+        let { dirty, errors, stripe, token, free } = this.props;
         ev.preventDefault();
 
         if (free && Object.keys(errors.errors).length === 0) {
             this.props.payReservation();
         } else if (Object.keys(errors.errors).length === 0 && errors.stripeForm) {
-            this.props.payReservation(card, stripe);
+            this.props.payReservation(token, stripe);
         } else {
             return dirty.call();
         }
