@@ -101,7 +101,7 @@
                <img className="summit-logo" src={summit.logo} alt={summit.name ? summit.name : ""} />
              </a>
            )}
-           <div className={`${summit.logo ? "summit-text" : "summit-text--no-logo"}`}>{this.getHeaderTitle()}</div>
+           <div onClick={() => window.location = "/"} className={`${summit.logo ? "summit-text" : "summit-text--no-logo"}`}>{this.getHeaderTitle()}</div>
          </div>
        </div>
      );
