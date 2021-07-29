@@ -173,7 +173,7 @@ class OrderDetailPage extends React.Component {
         });
       }
     } else {
-      this.props.assignAttendee(attendee_email, attendee_first_name, attendee_last_name, attendee_company, extra_questions).then(() => {
+      this.props.assignAttendee(attendee_email, attendee_first_name, attendee_last_name, attendee_company, disclaimer_accepted, extra_questions).then(() => {
         window.setTimeout(() => this.toggleSaveMessage(), 500);
         window.setTimeout(() => this.toggleSaveMessage(), 2000);
       });
