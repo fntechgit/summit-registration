@@ -321,12 +321,11 @@ class TicketAssignForm extends React.Component {
                                 <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
                                     <div className="disclaimer">
                                         { summit.registration_disclaimer_mandatory? '*' : ''}
-                                        <RawHTML>
-                                            {summit.registration_disclaimer_content}
-                                        </RawHTML>
-
                                     </div>
                                 </label>
+                                <RawHTML>
+                                    {summit.registration_disclaimer_content}
+                                </RawHTML>
                             </div>
                         </div>
                     </div>
