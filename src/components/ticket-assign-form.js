@@ -319,13 +319,13 @@ class TicketAssignForm extends React.Component {
 
 
                                 <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
-                                    <div className="disclaimer">
-                                        { summit.registration_disclaimer_mandatory? '*' : ''}
-                                    </div>
+                                    { summit.registration_disclaimer_mandatory? '*' : ''}
                                 </label>
-                                <RawHTML>
-                                    {summit.registration_disclaimer_content}
-                                </RawHTML>
+                                <div className="disclaimer">
+                                    <RawHTML>
+                                        {summit.registration_disclaimer_content}
+                                    </RawHTML>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -337,12 +337,12 @@ class TicketAssignForm extends React.Component {
                                        onChange={this._innerOnChange} className="form-check-input"/>
                                 <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
                                     { summit.registration_disclaimer_mandatory? '*' : ''}
-                                    <div className="disclaimer">
-                                        <RawHTML>
-                                            {summit.registration_disclaimer_content}
-                                        </RawHTML>
-                                    </div>
                                 </label>
+                                <div className="disclaimer">
+                                    <RawHTML>
+                                        {summit.registration_disclaimer_content}
+                                    </RawHTML>
+                                </div>
                             </div>
                         </div>
                     </div>
