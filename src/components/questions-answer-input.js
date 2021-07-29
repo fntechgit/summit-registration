@@ -77,15 +77,19 @@ export default class QuestionAnswersInput extends React.Component {
         let questionValues = question.values;
         let {ticket} = this.props;
 
+        let htmlLabel = question.label;
+        if (question.mandatory) {
+            //Assuming that labels generated as html are wrapped in <p> bc the react-rte component generates them that way (defaultBlockTag: 'p')
+            htmlLabel = htmlLabel?.endsWith('</p>') ? htmlLabel.replace(/<\/p>$/g, " *</p>") : `${htmlLabel} *`;
+        }
+
         switch(question.type) {
             case 'Text':
-
                   return (
                     <React.Fragment>
                       <div className="row field-wrapper">
                           <div className="col-sm-4">
-                              <RawHTML>{question.label}</RawHTML>
-                              {question.mandatory ? ' *' : ''}
+                              <RawHTML className="field-title">{htmlLabel}</RawHTML>
                           </div>
                           <div className="col-sm-8">
                               <Input
@@ -99,8 +103,7 @@ export default class QuestionAnswersInput extends React.Component {
                       </div>
                       <div className="field-wrapper-mobile">
                           <div>
-                              <RawHTML>{question.label}</RawHTML>
-                              {question.mandatory ? ' *' : ''}
+                              <RawHTML className=".field-title">{htmlLabel}</RawHTML>
                           </div>
                           <div>
                               <Input
@@ -119,8 +122,7 @@ export default class QuestionAnswersInput extends React.Component {
                   <React.Fragment>
                     <div className='row field-wrapper--textarea'>
                         <div className="col-sm-4">
-                            <RawHTML>{question.label}</RawHTML>
-                            {question.mandatory ? ' *' : ''}
+                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
                         </div>
                         <div className="col-sm-8">
                             <textarea
@@ -135,8 +137,7 @@ export default class QuestionAnswersInput extends React.Component {
                     </div>
                     <div className="field-wrapper-mobile">
                         <div>
-                            <RawHTML>{question.label}</RawHTML>
-                            {question.mandatory ? ' *' : ''}
+                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
                         </div>
                         <div>
                             <textarea
@@ -158,20 +159,19 @@ export default class QuestionAnswersInput extends React.Component {
                                onChange={this.handleChange} className="form-check-input" />
 
                         <label className="form-check-label" htmlFor={`${ticket.id}_${question.id}`} >
-                            <RawHTML>{question.label}</RawHTML>
-                            {question.mandatory ? ' *' : ''}
+                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
                         </label>
                     </div>
                   );
             case 'ComboBox':
                 let value = answerValue ? questionValues.find(val => val.id == parseInt(answerValue)) : null;
                 questionValues = questionValues.map(val => ({...val, value: val.id}));
+
                   return (
                     <React.Fragment>
                       <div className="row field-wrapper">
                           <div className="col-sm-4">
-                              <RawHTML>{question.label}</RawHTML>
-                              {question.mandatory ? ' *' : ''}
+                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
                           </div>
                           <div className="col-sm-8">                          
                             <Dropdown
@@ -184,8 +184,7 @@ export default class QuestionAnswersInput extends React.Component {
                       </div>
                       <div className="field-wrapper-mobile">
                           <div>
-                              <RawHTML>{question.label}</RawHTML>
-                              {question.mandatory ? ' *' : ''}
+                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
                           </div>
                           <div>                          
                             <Dropdown
@@ -200,13 +199,13 @@ export default class QuestionAnswersInput extends React.Component {
                   );
             case 'CheckBoxList':
                 questionValues = questionValues.map(val => ({...val, value: val.id}));
-                answerValue = answerValue ? answerValue.split(',').map(ansVal => parseInt(ansVal)) : [];                
+                answerValue = answerValue ? answerValue.split(',').map(ansVal => parseInt(ansVal)) : [];     
+           
                   return(
                     <React.Fragment>
                       <div className="row field-wrapper">
                           <div className="col-sm-4">
-                              <RawHTML>{question.label}</RawHTML>
-                              {question.mandatory ? ' *' : ''}
+                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
                           </div>
                           <div className="col-sm-8">                          
                               <CheckboxList
@@ -219,8 +218,7 @@ export default class QuestionAnswersInput extends React.Component {
                       </div>
                       <div className="field-wrapper-mobile">
                           <div>
-                              <RawHTML>{question.label}</RawHTML>
-                              {question.mandatory ? ' *' : ''}
+                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
                           </div>
                         <div>                          
                             <CheckboxList
@@ -239,8 +237,7 @@ export default class QuestionAnswersInput extends React.Component {
                   return (
                       <div className="row field-wrapper--radio-list">
                           <div className="col-sm-4">
-                              <RawHTML>{question.label}</RawHTML>
-                              {question.mandatory ? ' *' : ''}
+                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
                           </div>
                           <div className="col-sm-8">
                               <RadioList
