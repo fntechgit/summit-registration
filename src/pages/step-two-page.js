@@ -28,6 +28,7 @@ import DisclaimerPopup from "../components/disclaimer-popup";
 import {getMarketingValue} from "../utils/helpers";
 import '../styles/step-two-page.less';
 import T from "i18n-react/dist/i18n-react";
+import IdTokenVerifier from 'idtoken-verifier';
 
 class StepTwoPage extends React.Component {
 
@@ -79,14 +80,14 @@ class StepTwoPage extends React.Component {
 
     componentWillMount() {
         let order = {...this.props.order};
-        let {member} = this.props;
+        let {member, idToken} = this.props;
         
         order = {
             ...order,
             reservation: {},
             checkout: {},
             currentStep: this.step
-        };        
+        };
 
         order.tickets.map(t => {
           if(!t.tempId) {
@@ -97,8 +98,11 @@ class StepTwoPage extends React.Component {
         });
 
         if(member) {
+          const verifier = new IdTokenVerifier();
+          let jwt = verifier.decode(idToken);
           let {first_name, last_name, email} = member;
-          order = {...order, first_name, last_name, email};
+          let {company} = jwt.payload;
+          order = {...order, first_name, last_name, email, company};
         }
         this.props.handleOrderChange(order);
     }
@@ -222,6 +226,7 @@ class StepTwoPage extends React.Component {
 
 const mapStateToProps = ({ loggedUserState, summitState, orderState, baseState }) => ({
     member: loggedUserState.member,
+    idToken: loggedUserState.idToken,
     summit: summitState.purchaseSummit,
     order:  orderState.purchaseOrder,
     errors:  orderState.errors,
