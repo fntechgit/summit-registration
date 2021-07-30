@@ -89,7 +89,7 @@ export default class QuestionAnswersInput extends React.Component {
                     <React.Fragment>
                       <div className="row field-wrapper">
                           <div className="col-sm-4">
-                              <RawHTML className="field-title">{htmlLabel}</RawHTML>
+                              <RawHTML>{htmlLabel}</RawHTML>
                           </div>
                           <div className="col-sm-8">
                               <Input
@@ -103,7 +103,7 @@ export default class QuestionAnswersInput extends React.Component {
                       </div>
                       <div className="field-wrapper-mobile">
                           <div>
-                              <RawHTML className=".field-title">{htmlLabel}</RawHTML>
+                              <RawHTML>{htmlLabel}</RawHTML>
                           </div>
                           <div>
                               <Input
@@ -122,7 +122,7 @@ export default class QuestionAnswersInput extends React.Component {
                   <React.Fragment>
                     <div className='row field-wrapper--textarea'>
                         <div className="col-sm-4">
-                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
+                            <RawHTML>{htmlLabel}</RawHTML>
                         </div>
                         <div className="col-sm-8">
                             <textarea
@@ -137,7 +137,7 @@ export default class QuestionAnswersInput extends React.Component {
                     </div>
                     <div className="field-wrapper-mobile">
                         <div>
-                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
+                            <RawHTML>{htmlLabel}</RawHTML>
                         </div>
                         <div>
                             <textarea
@@ -159,7 +159,7 @@ export default class QuestionAnswersInput extends React.Component {
                                onChange={this.handleChange} className="form-check-input" />
 
                         <label className="form-check-label" htmlFor={`${ticket.id}_${question.id}`} >
-                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
+                            <RawHTML>{htmlLabel}</RawHTML>
                         </label>
                     </div>
                   );
@@ -171,7 +171,7 @@ export default class QuestionAnswersInput extends React.Component {
                     <React.Fragment>
                       <div className="row field-wrapper">
                           <div className="col-sm-4">
-                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
+                            <RawHTML>{htmlLabel}</RawHTML>
                           </div>
                           <div className="col-sm-8">                          
                             <Dropdown
@@ -184,7 +184,7 @@ export default class QuestionAnswersInput extends React.Component {
                       </div>
                       <div className="field-wrapper-mobile">
                           <div>
-                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
+                            <RawHTML>{htmlLabel}</RawHTML>
                           </div>
                           <div>                          
                             <Dropdown
@@ -205,7 +205,7 @@ export default class QuestionAnswersInput extends React.Component {
                     <React.Fragment>
                       <div className="row field-wrapper">
                           <div className="col-sm-4">
-                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
+                            <RawHTML>{htmlLabel}</RawHTML>
                           </div>
                           <div className="col-sm-8">                          
                               <CheckboxList
@@ -218,7 +218,7 @@ export default class QuestionAnswersInput extends React.Component {
                       </div>
                       <div className="field-wrapper-mobile">
                           <div>
-                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
+                            <RawHTML>{htmlLabel}</RawHTML>
                           </div>
                         <div>                          
                             <CheckboxList
@@ -237,7 +237,7 @@ export default class QuestionAnswersInput extends React.Component {
                   return (
                       <div className="row field-wrapper--radio-list">
                           <div className="col-sm-4">
-                            <RawHTML className="field-title">{htmlLabel}</RawHTML>
+                            <RawHTML>{htmlLabel}</RawHTML>
                           </div>
                           <div className="col-sm-8">
                               <RadioList
