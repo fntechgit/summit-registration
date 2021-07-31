@@ -86,9 +86,9 @@ export const validateStripe = (value) => (dispatch, getState) => {
 }
 
 export const createReservation = (owner_email, owner_first_name, owner_last_name, owner_company, tickets) => (dispatch, getState) => {
-    let { summitState } = getState();    
+    let { summitState, loggedUserState } = getState();
     let { purchaseSummit }  = summitState;
-
+    let accessToken     = loggedUserState?.isLoggedUser ? loggedUserState.accessToken : null;
     dispatch(startLoading());
 
     tickets = tickets.map(t => {
@@ -107,16 +107,24 @@ export const createReservation = (owner_email, owner_first_name, owner_last_name
       return t;
     });
 
+    let endpoint = accessToken ?
+        `${window.API_BASE_URL}/api/v1/summits/${purchaseSummit.id}/orders/reserve`:
+        `${window.API_BASE_URL}/api/public/v1/summits/${purchaseSummit.id}/orders/reserve`;
+
     let params = {
       expand : 'tickets,tickets.owner',
     };
+
+    if(accessToken){
+        params['access_token'] = accessToken;
+    }
 
     let normalizedEntity = {owner_email, owner_first_name, owner_last_name, owner_company, tickets };
 
     return postRequest(
         createAction(CREATE_RESERVATION),
-        createAction(CREATE_RESERVATION_SUCCESS),        
-        `${window.API_BASE_URL}/api/public/v1/summits/${purchaseSummit.id}/orders/reserve`,
+        createAction(CREATE_RESERVATION_SUCCESS),
+        endpoint,
         normalizedEntity,
         authErrorHandler,
         // entity

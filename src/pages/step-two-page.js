@@ -102,7 +102,7 @@ class StepTwoPage extends React.Component {
           let jwt = verifier.decode(idToken);
           let {first_name, last_name, email} = member;
           let {company} = jwt.payload;
-          order = {...order, first_name, last_name, email, company};
+          order = {...order, email, first_name : first_name ?? '', last_name: last_name ?? '', company: company ?? ''};
         }
         this.props.handleOrderChange(order);
     }
@@ -140,6 +140,7 @@ class StepTwoPage extends React.Component {
     }
 
     handleChange(ev) {
+
         let order = cloneDeep(this.props.order);
         let errors = cloneDeep(this.props.errors);
         let {value, id} = ev.target;
