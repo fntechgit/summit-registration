@@ -97,7 +97,7 @@
        <div className={`${summit.logo ? "header-title" : "header-title header-title--no-logo"}`}>
          <div className="summit-info">
            {location.match(purchaseLocation) && summit && summit.logo && (
-             <a href="/a">
+             <a href={`/a/${summit.slug}${purchaseLocation}`}>
                <img className="summit-logo" src={summit.logo} alt={summit.name ? summit.name : ""} />
              </a>
            )}
