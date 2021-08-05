@@ -11,13 +11,13 @@
  * limitations under the License.
  **/
 
-import { authErrorHandler } from "openstack-uicore-foundation/lib/methods";
 import T from "i18n-react/dist/i18n-react";
 import history from '../history'
 import validator from "validator"
 import Swal from 'sweetalert2';
-
 import {
+    authErrorHandler,
+    getAccessToken,
     getRequest,
     putRequest,
     postRequest,
@@ -27,7 +27,8 @@ import {
     startLoading,
 } from 'openstack-uicore-foundation/lib/methods';
 
-import { getUserSummits } from '../actions/summit-actions';
+import { getUserSummits } from './summit-actions';
+import { openWillLogoutModal } from "./auth-actions";
 
 export const RESET_ORDER                    = 'RESET_ORDER';
 export const RECEIVE_ORDER                  = 'RECEIVE_ORDER';
@@ -78,17 +79,19 @@ export const handleOrderChange = (order, errors = {}) => (dispatch, getState) =>
     } else {
         dispatch(createAction(CHANGE_ORDER)({order, errors}));
     }
-
 }
 
 export const validateStripe = (value) => (dispatch, getState) => {
     dispatch(createAction(VALIDATE_STRIPE)({value}));
 }
 
-export const createReservation = (owner_email, owner_first_name, owner_last_name, owner_company, tickets) => (dispatch, getState) => {
-    let { summitState, loggedUserState } = getState();
+export const createReservation = (owner_email, owner_first_name, owner_last_name, owner_company, tickets) => async (dispatch, getState) => {
+    const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+    if (!accessToken) return;
+
+    let { summitState } = getState();
     let { purchaseSummit }  = summitState;
-    let accessToken     = loggedUserState?.isLoggedUser ? loggedUserState.accessToken : null;
+
     dispatch(startLoading());
 
     tickets = tickets.map(t => {
@@ -291,11 +294,10 @@ export const payReservation = (token=null, stripe=null) => (dispatch, getState) 
     }        
 }
 
-export const getUserOrders = (updateId, page = 1, per_page = 5) => (dispatch, getState) => {
-  
-  let { loggedUserState } = getState();
-  let { accessToken }     = loggedUserState;
-  
+export const getUserOrders = (updateId, page = 1, per_page = 5) => async (dispatch, getState) => {
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
+
   dispatch(startLoading());
 
   let params = {

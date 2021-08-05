@@ -19,7 +19,7 @@ import {
   SUMMIT_NOT_FOUND, 
   SELECT_PURCHASE_SUMMIT,
   GET_SUMMIT_REFUND_POLICY, 
-  GET_SUGGESTED_SUMMITS 
+  GET_SUGGESTED_SUMMITS
 } from "../actions/summit-actions";
 
 

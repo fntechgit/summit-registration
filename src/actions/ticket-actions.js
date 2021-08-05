@@ -11,28 +11,21 @@
  * limitations under the License.
  **/
 
-import { authErrorHandler } from "openstack-uicore-foundation/lib/methods";
 import T from "i18n-react/dist/i18n-react";
-import history from '../history'
-import validator from "validator"
-
-
 import {
+    authErrorHandler,
+    getAccessToken,
     getRequest,
     putRequest,
     deleteRequest,
-    postRequest,
     createAction,
     stopLoading,
     startLoading,
-    showMessage,
-    showSuccessMessage,    
     objectToQueryString,
-    fetchErrorHandler,
 } from 'openstack-uicore-foundation/lib/methods';
-import { selectSummitById } from "./summit-actions";
-import { getUserSummits } from '../actions/summit-actions';
-import {CLEAR_RESERVATION, getUserOrders} from "./order-actions";
+import { getUserSummits, selectSummitById } from "./summit-actions";
+import { getUserOrders } from "./order-actions";
+import { openWillLogoutModal } from "./auth-actions";
 
 import Swal from 'sweetalert2';
 
@@ -84,10 +77,10 @@ export const handleResetTicket = () => (dispatch, getState) => {
 }
 
 
-export const getUserTickets = (ticketRefresh, page = 1, per_page = 5) => (dispatch, getState) => {
+export const getUserTickets = (ticketRefresh, page = 1, per_page = 5) => async (dispatch, getState) => {
 
-  let { loggedUserState } = getState();
-  let { accessToken } = loggedUserState;
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
   
   let params = {
       access_token : accessToken,
@@ -157,10 +150,12 @@ export const handleTicketChange = (ticket, errors = {}) => (dispatch, getState) 
 
 }
 
-export const assignAttendee = (attendee_email, attendee_first_name, attendee_last_name, attendee_company, disclaimer_accepted, extra_questions, reassignOrderId = null, refreshTickets = false) => (dispatch, getState) => {
+export const assignAttendee = (attendee_email, attendee_first_name, attendee_last_name, attendee_company, disclaimer_accepted, extra_questions, reassignOrderId = null, refreshTickets = false) => async (dispatch, getState) => {
       
-  let { loggedUserState, orderState: { selectedOrder }, ticketState: { selectedTicket } } = getState();
-  let { accessToken }     = loggedUserState;
+  let { orderState: { selectedOrder }, ticketState: { selectedTicket } } = getState();
+  
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
 
   let orderPage = getState().orderState.current_page;   
   let ticketPage = getState().ticketState.current_page;   
@@ -203,15 +198,17 @@ export const assignAttendee = (attendee_email, attendee_first_name, attendee_las
 }
 
 
-export const editOwnedTicket = (attendee_email, attendee_first_name, attendee_last_name, attendee_company, disclaimer_accepted, extra_questions, updateOrder = false) => (dispatch, getState) => {  
+export const editOwnedTicket = (attendee_email, attendee_first_name, attendee_last_name, attendee_company, disclaimer_accepted, extra_questions, updateOrder = false) => async (dispatch, getState) => {  
 
-  let { loggedUserState, orderState: { selectedOrder }, ticketState: { selectedTicket } } = getState();
-  let { accessToken }     = loggedUserState;
+  let { orderState: { selectedOrder }, ticketState: { selectedTicket } } = getState();
 
   let orderPage = getState().orderState.current_page;   
   let ticketPage = getState().ticketState.current_page;   
 
   dispatch(startLoading());
+
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
 
   let params = {
     access_token : accessToken,
@@ -235,10 +232,12 @@ export const editOwnedTicket = (attendee_email, attendee_first_name, attendee_la
   });
 };
 
-export const resendNotification = () => (dispatch, getState) => {
+export const resendNotification = () => async (dispatch, getState) => {
   
   let { loggedUserState, ticketState: { selectedTicket } } = getState();
-  let { accessToken }     = loggedUserState;
+  
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
 
   dispatch(startLoading());
 
@@ -262,10 +261,12 @@ export const resendNotification = () => (dispatch, getState) => {
   
 }
 
-export const removeAttendee = (tempTicket, fromTicket = false) => (dispatch, getState) => {
+export const removeAttendee = (tempTicket, fromTicket = false) => async (dispatch, getState) => {
 
-  let { loggedUserState, ticketState: { selectedTicket } } = getState();
-  let { accessToken }     = loggedUserState;
+  let { ticketState: { selectedTicket } } = getState();
+  
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
 
   dispatch(startLoading());
 
@@ -296,10 +297,12 @@ export const removeAttendee = (tempTicket, fromTicket = false) => (dispatch, get
 
 }
 
-export const getTicketPDF = () => (dispatch, getState) => {
+export const getTicketPDF = () => async (dispatch, getState) => {
 
-  let { loggedUserState, ticketState: { selectedTicket } } = getState();
-  let { accessToken }     = loggedUserState;
+  let { ticketState: { selectedTicket } } = getState();
+  
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
 
   dispatch(startLoading());
 
@@ -332,12 +335,14 @@ export const getTicketPDF = () => (dispatch, getState) => {
         .catch(customFetchErrorHandler);
 };
 
-export const refundTicket = (ticket) => (dispatch, getState) => {
+export const refundTicket = (ticket) => async (dispatch, getState) => {
   
-  let { loggedUserState, orderState: { selectedOrder }, ticketState: {selectedTicket }} = getState();
+  let { orderState: { selectedOrder }, ticketState: {selectedTicket }} = getState();
   let orderPage = getState().orderState.current_page;   
   let ticketPage = getState().ticketState.current_page;   
-  let { accessToken }     = loggedUserState;
+
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
 
   let orderId = ticket.order ? ticket.order.id : ticket.order_id;  
 

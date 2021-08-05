@@ -32,7 +32,10 @@ module.exports = {
                             ],
                             '@babel/preset-react'
                         ],
-                        plugins: ['@babel/plugin-proposal-object-rest-spread']
+                        plugins: [
+                            '@babel/plugin-proposal-object-rest-spread', 
+                            '@babel/plugin-proposal-nullish-coalescing-operator'
+                        ]
                     }
                 }
             },
@@ -63,12 +66,12 @@ module.exports = {
             },
             {
                 test: /\.svg/,
-                use: "file-loader?name=svg/[name].[ext]!svgo-loader"
+                use: "file-loader?name=svg/[name].[ext]"
             },
             {
                 test: /\.yaml$/,
                 use: 'js-yaml-loader',
             }
         ]
-    },
+    }
 };

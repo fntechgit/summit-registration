@@ -16,16 +16,17 @@ import T from "i18n-react/dist/i18n-react";
 
 
 import {
+    getAccessToken,
     getRequest,
     createAction,
     stopLoading,
     startLoading,
     showMessage,
-
 } from 'openstack-uicore-foundation/lib/methods';
 
 import Swal from 'sweetalert2';
-import {selectSummitById} from "./summit-actions";
+import { selectSummitById } from "./summit-actions";
+import { openWillLogoutModal } from "./auth-actions";
 export const GET_INVITATION_BY_HASH       = 'GET_INVITATION_BY_HASH';
 export const GET_INVITATION_BY_HASH_ERROR = 'GET_INVITATION_BY_HASH_ERROR';
 
@@ -73,11 +74,11 @@ const customErrorHandler = (err, res) => (dispatch) => {
     }
 }
 
-
-
-export const getInvitationByHash = (hash) => (dispatch, getState) => {
-    let { loggedUserState } = getState();
-    let { accessToken }     = loggedUserState;
+export const getInvitationByHash = (hash) => async (dispatch, getState) => {
+    
+    const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+    if (!accessToken) return;
+    
     dispatch(startLoading());
 
     let params = {
@@ -96,5 +97,4 @@ export const getInvitationByHash = (hash) => (dispatch, getState) => {
         //dispatch(handleResetTicket());
         dispatch(stopLoading());
     });
-
 };

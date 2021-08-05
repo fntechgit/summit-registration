@@ -14,6 +14,8 @@ import React from 'react'
 import T from 'i18n-react/dist/i18n-react'
 import history from '../history'
 import URI from 'urijs';
+import LoginComponent from "./login";
+import LogoutWarningPopUp from "./logout-warning-popup"
 
 export default class 
 AuthButton extends React.Component {
@@ -61,7 +63,7 @@ AuthButton extends React.Component {
     }
 
     render() {
-        let {isLoggedUser, doLogin, member, picture } = this.props;
+        let {isLoggedUser, doLogin, member, picture, initLogOut } = this.props;
 
 
         if (isLoggedUser) {
@@ -85,7 +87,8 @@ AuthButton extends React.Component {
                         <span className="dropdown-item" onClick={() => { this.onLogOutClick(); }}>
                             {T.translate("landing.sign_out")}
                         </span>                                         
-                    </div>                    
+                    </div>
+                    <LogoutWarningPopUp initLogOut={initLogOut} />
                 </div>
             );
         } else {
@@ -94,6 +97,7 @@ AuthButton extends React.Component {
                     <button className="btn btn-primary btn-xs login" onClick={() => { doLogin(); }}>
                         {T.translate("landing.sign_in")}
                     </button>
+                    <LoginComponent />
                 </div>
             );
         }

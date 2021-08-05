@@ -41,16 +41,13 @@ const memberReducer = (state = DEFAULT_STATE, action) => {
             return DEFAULT_STATE;
         case START_LOADING:            
             return {...state, loading: true};
-            break;
         case STOP_LOADING:
             return {...state, loading: false};
-            break;
         case RESET_TICKET:
             return {...state, selectedTicket: payload}
         case CHANGE_TICKET:
             let {ticket, errors} = payload;
             return {...state, selectedTicket: ticket, errors: errors};
-            break;
         case GET_TICKETS:
             let {data, current_page, total, last_page} = payload.response;
             return {...state, memberTickets: data, current_page, total, last_page};
@@ -74,7 +71,6 @@ const memberReducer = (state = DEFAULT_STATE, action) => {
             return {...state, selectedTicket: payload.response};
         default:
             return state;
-            break;
     }
 }
 

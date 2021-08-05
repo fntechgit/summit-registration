@@ -12,8 +12,7 @@
  **/
 
 import React from 'react'
-import { Route, Redirect } from 'react-router-dom'
-import { OPSessionChecker } from "openstack-uicore-foundation/lib/components";
+import { Route } from 'react-router-dom'
 
 class AuthorizedRoute extends React.Component {
 

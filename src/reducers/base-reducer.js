@@ -49,7 +49,6 @@ const baseReducer = (state = DEFAULT_STATE, action) => {
         }
         default:
             return state;
-            break;
     }
 }
 

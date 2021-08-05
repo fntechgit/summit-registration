@@ -15,6 +15,7 @@ import { authErrorHandler } from "openstack-uicore-foundation/lib/methods";
 import T from "i18n-react/dist/i18n-react";
 import history from '../history'
 import {
+    getAccessToken,
     getRequest,
     createAction,
     stopLoading,
@@ -26,6 +27,7 @@ import Swal from 'sweetalert2';
 
 import { LOGOUT_USER } from "openstack-uicore-foundation/lib/actions";
 import { setTotalSteps } from "./wizzard-actions";
+import { openWillLogoutModal } from "./auth-actions";
 
 
 export const GET_SUMMIT_BY_SLUG        = 'GET_SUMMIT_BY_SLUG';
@@ -144,10 +146,10 @@ export const getSuggestedSummits = () => (dispatch, getState) => {
 
 }
 
-export const getSummitRefundPolicy = (id, select = false) => (dispatch, getState) => {
-
-  let { loggedUserState } = getState();
-  let { accessToken }     = loggedUserState;
+export const getSummitRefundPolicy = (id, select = false) => async (dispatch, getState) => {
+ 
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
 
   let params = {
     access_token : accessToken

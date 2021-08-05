@@ -25,7 +25,8 @@ import HeaderTitle from './components/header-title'
 import NavBar from './components/nav-bar'
 import { connect } from 'react-redux'
 import { AjaxLoader } from "openstack-uicore-foundation/lib/components";
-import { onUserAuth, doLogin, doLogout, initLogOut, getUserInfo } from "openstack-uicore-foundation/lib/methods";
+import { onUserAuth, doLogin, doLogout, initLogOut, getUserInfo, getIdToken } from "openstack-uicore-foundation/lib/methods";
+import { openSignInModal } from "./actions/auth-actions";
 import { handleResetReducers } from './actions/summit-actions'
 import T from 'i18n-react';
 import history from './history'
@@ -33,7 +34,6 @@ import URI from "urijs";
 import SelectSummitPage from './pages/select-summit-page'
 import Timer from './components/timer';
 import IdTokenVerifier from 'idtoken-verifier';
-import {getBackURL} from './utils/helpers';
 
 // here is set by default user lang as en
 let language = (navigator.languages && navigator.languages[0]) || navigator.language || navigator.userLanguage;
@@ -63,6 +63,7 @@ window.SCOPES                   = process.env['SCOPES'];
 window.ALLOWED_USER_GROUPS      = process.env['ALLOWED_USER_GROUPS'];
 window.SUPPORT_EMAIL            = process.env['SUPPORT_EMAIL'];
 window.MAX_TICKET_QTY_TO_EDIT   = process.env['MAX_TICKET_QTY_TO_EDIT'];
+window.OAUTH2_FLOW              = process.env['OAUTH2_FLOW'] || "token id_token";
 
 class App extends React.PureComponent {
 
@@ -72,26 +73,27 @@ class App extends React.PureComponent {
     }
 
     onClickLogin() {
-        doLogin(getBackURL());
+        this.props.openSignInModal();
     }    
 
     render() {
-      let {isLoggedUser, onUserAuth, doLogout, getUserInfo, member, backUrl, summit, idToken} = this.props;
+      let {isLoggedUser, onUserAuth, doLogout, getUserInfo, member, backUrl, summit} = this.props;
 
       let url = URI(window.location.href);
       let location = url.pathname();
       let memberLocation = '/a/member/';
+      let idToken = getIdToken();
 
-        // get user pic from idtoken claims (IDP)
-        let profile_pic = member ? member.pic : '';
-        if(idToken){
-            let verifier = new IdTokenVerifier({
-                issuer:   window.IDP_BASE_URL,
-                audience: window.OAUTH2_CLIENT_ID
-            });
-            let jwt = verifier.decode(idToken);
-            profile_pic = jwt.payload.picture;
-        }
+      // get user pic from idtoken claims (IDP)
+      let profile_pic = member ? member.pic : '';
+      if (idToken){
+        let verifier = new IdTokenVerifier({
+            issuer:   window.IDP_BASE_URL,
+            audience: window.OAUTH2_CLIENT_ID
+        });
+        let jwt = verifier.decode(idToken);
+        profile_pic = jwt.payload.picture;
+      }
 
       return (
           <Router history={history}>
@@ -135,13 +137,13 @@ const mapStateToProps = ({ loggedUserState, baseState, summitState }) => ({
   backUrl: loggedUserState.backUrl,
   member: loggedUserState.member,
   summit: summitState.purchaseSummit,
-  loading : baseState.loading,
-  idToken:  loggedUserState.idToken,
+  loading : baseState.loading
 })
 
 export default connect(mapStateToProps, {
   onUserAuth,
   doLogout,
   getUserInfo,
-  handleResetReducers
+  handleResetReducers,
+  openSignInModal
 })(App)

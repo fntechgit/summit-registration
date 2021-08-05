@@ -222,5 +222,25 @@
   "invitees": {
     "validation_error": "Invitation error",
     "entity_not_found": "Invitation not found"
+  },
+  "signin": {
+    "add_code_title_p1": "Add the",
+    "add_code_title_p2": "digit code below",
+    "email_reception_error_p1": "Didn't receive it? Check your spam folder or",
+    "email_reception_error_p2": "resend email",
+    "email_sent": "We've sent a code to the email",
+    "go_back_title_p1": "or go back and",
+    "go_back_title_p2": "try another way",
+    "invalid_email_addr": "Please enter a valid email adress",
+    "login_with_title": "Log in with one of the following",
+    "retry": "Please try again.",
+    "send_code_option": "or get a login code emailed to you",
+    "verify_btn": "Verify",
+    "wrong_code": "The code you entered is incorrect."
+  },
+  "logout_popup": {
+    "title": "Re-login required",
+    "message": "You are not logged in anymore. Please log in to continue.",
+    "close_btn": "Re-login"
   }
 }

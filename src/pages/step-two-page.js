@@ -21,7 +21,7 @@ import TicketInfoForm from '../components/ticket-info-form';
 import StepRow from '../components/step-row';
 import SubmitButtons from "../components/submit-buttons";
 import { handleOrderChange, stepDefs } from '../actions/order-actions'
-import {findElementPos} from "openstack-uicore-foundation/lib/methods";
+import { findElementPos, getIdToken } from "openstack-uicore-foundation/lib/methods";
 import {getNow} from '../actions/timer-actions';
 import history from '../history';
 import DisclaimerPopup from "../components/disclaimer-popup";
@@ -67,10 +67,10 @@ class StepTwoPage extends React.Component {
 
     hasInPersonTicketTypes(order){
         /** check is the current order has or not IN_PERSON tickets types **/
-        let { summit} = this.props;
+        let { summit } = this.props;
         return order.tickets.some(tix => {
-            let type = summit.ticket_types.filter((tt) => tt.id == tix.type_id);
-            if(type.length > 0 && type[0].hasOwnProperty("badge_type")){
+            let type = summit.ticket_types?.filter((tt) => tt.id == tix.type_id);
+            if(type?.length > 0 && type[0].hasOwnProperty("badge_type")){
                 let badgeType = type[0].badge_type;
                 return badgeType.access_levels.some((al) => { return al.name == 'IN_PERSON'});
             }
@@ -80,7 +80,7 @@ class StepTwoPage extends React.Component {
 
     componentWillMount() {
         let order = {...this.props.order};
-        let {member, idToken} = this.props;
+        let {member} = this.props;
         
         order = {
             ...order,
@@ -98,11 +98,12 @@ class StepTwoPage extends React.Component {
         });
 
         if(member) {
-          const verifier = new IdTokenVerifier();
-          let jwt = verifier.decode(idToken);
-          let {first_name, last_name, email} = member;
-          let {company} = jwt.payload;
-          order = {...order, email, first_name : first_name ?? '', last_name: last_name ?? '', company: company ?? ''};
+            const idToken = getIdToken();
+            const verifier = new IdTokenVerifier();
+            let jwt = verifier.decode(idToken);
+            let {first_name, last_name, email} = member;
+            let {company} = jwt.payload;
+            order = {...order, email, first_name : first_name ?? '', last_name: last_name ?? '', company: company ?? ''}; 
         }
         this.props.handleOrderChange(order);
     }
@@ -227,10 +228,9 @@ class StepTwoPage extends React.Component {
 
 const mapStateToProps = ({ loggedUserState, summitState, orderState, baseState }) => ({
     member: loggedUserState.member,
-    idToken: loggedUserState.idToken,
     summit: summitState.purchaseSummit,
-    order:  orderState.purchaseOrder,
-    errors:  orderState.errors,
+    order: orderState.purchaseOrder,
+    errors: orderState.errors,
     marketingSettings: baseState.marketingSettings,
 })
 

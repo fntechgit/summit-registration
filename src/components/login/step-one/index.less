@@ -1,0 +1,92 @@
+@import "../../../styles/constants.less";
+
+.loginWrapper {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px 0 30px;
+}
+
+.innerWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 300px;
+  color: @header_lblue_color;
+  span {
+    margin: 10px 0;
+  }
+  .left-icon-holder {
+    position: relative;
+  }
+  .left-icon-holder .fa {
+    position: absolute;
+    line-height: 24px;
+    top: 50%;
+    margin-top: -12px; /* Half of line height to keep left middle position of container */
+    left: 10px;
+  }
+  .left-icon-holder .icon {
+    position: absolute;
+    height: 40px;
+    top: 50%;
+    margin-top: -20px; /* Half of height to keep left middle position of container */
+    left: 1px;
+  }
+}
+
+.button {
+  padding: 10px 30px;
+  background-color: red;
+  color: white;
+  font-weight: normal;
+  display: inline-flex;
+  justify-content: center;
+  margin: 5px 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.loginCode {
+  margin-top: 20px;
+  span {
+    display: inline-block;
+    font-weight: normal;
+    font-size: 14px;
+    color: #e5424d;
+  }
+}
+
+.input {
+  display: flex;
+  height: 40px;
+  margin-top: 5px;
+  input {
+    background-color: #e6f3ff;
+    border: 1px solid #3fa2f7;
+    border-radius: 5px;
+    padding: 5px;
+    width: 100%;
+    &::placeholder {
+      color: @font_blue_2;
+    }
+  }
+  button {
+    margin-left: 5px;
+    background-color: @lblue_color_2;
+    padding: 0px 15px;
+    color: @lblue_color_1;
+    border-color: @header_lblue_color;
+    border: 1px solid transparent;
+    box-shadow: none;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
