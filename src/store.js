@@ -13,6 +13,7 @@
 
 import { createStore, applyMiddleware, compose} from 'redux';
 import { loggedUserReducer } from "openstack-uicore-foundation/lib/reducers"
+import authReducer from './reducers/auth-reducer'
 import baseReducer from './reducers/base-reducer'
 import summitReducer from './reducers/summit-reducer'
 import orderReducer from './reducers/order-reducer'
@@ -33,13 +34,14 @@ const config = {
 
 const reducers = persistCombineReducers(config, {
   loggedUserState: loggedUserReducer,
+  authState: authReducer,
   baseState: baseReducer,
   summitState: summitReducer,
   orderState: orderReducer,
   ticketState: ticketReducer,
   timerState: timerReducer,
   invitationState: InvitationReducer,
-  wizzardState: wizzardReducer
+  wizzardState: wizzardReducer,
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

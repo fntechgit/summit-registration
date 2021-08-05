@@ -13,9 +13,10 @@
 
 import React from 'react'
 import { connect } from 'react-redux';
-import T from 'i18n-react/dist/i18n-react'
-import history from '../history'
-import { createReservation, payReservation, deleteReservation } from '../actions/order-actions'
+import T from 'i18n-react/dist/i18n-react';
+import history from '../history';
+import { openSignInModal } from "../actions/auth-actions";
+import { createReservation, payReservation, deleteReservation } from '../actions/order-actions';
 
 const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
@@ -35,9 +36,13 @@ class SubmitButtons extends React.Component {
     }
 
     continueClick(ev) {
-        let { step } = this.props;
-        ev.preventDefault();
-        history.push(stepDefs[step]);
+        if (this.props.member) {
+            let { step } = this.props;
+            ev.preventDefault();
+            history.push(stepDefs[step]);
+        } else {
+            this.props.openSignInModal();
+        }
     }
 
     reservationClick(ev) {
@@ -124,7 +129,8 @@ export default connect(
     {
         createReservation,
         payReservation,
-        deleteReservation
+        deleteReservation,
+        openSignInModal
     }
 )(SubmitButtons);
 
