@@ -18,6 +18,7 @@ const DEFAULT_STATE = {
     loading: false,
     countries: [],
     marketingSettings: null,
+    favicon: null,
 }
 
 const baseReducer = (state = DEFAULT_STATE, action) => {
@@ -36,6 +37,7 @@ const baseReducer = (state = DEFAULT_STATE, action) => {
             return {...state, countries: payload};
         case RECEIVE_MARKETING_SETTINGS: {
             const {data} = payload.response;
+            let favicon = null;
             // set color vars
             if (typeof document !== 'undefined') {
                 data.forEach(setting => {
@@ -43,9 +45,12 @@ const baseReducer = (state = DEFAULT_STATE, action) => {
                         document.documentElement.style.setProperty(`--${setting.key}`, setting.value);
                         document.documentElement.style.setProperty(`--${setting.key}50`, `${setting.value}50`);
                     }
+                    if(setting.key === 'favicon') {
+                        favicon = setting.file;
+                    }
                 });
             }
-            return {...state, marketingSettings: data};
+            return {...state, marketingSettings: data, favicon};
         }
         default:
             return state;

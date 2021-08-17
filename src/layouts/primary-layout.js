@@ -36,11 +36,17 @@ class PrimaryLayout extends React.Component {
     componentWillReceiveProps(newProps) {
         let oldId = this.props.match.params.summit_slug;
         let newId = newProps.match.params.summit_slug;
+        let oldFavicon = this.props.favicon;
+        let newFavicon = newProps.favicon;
 
         if (newId != oldId) {
             if (newId) {
                 this.props.getSummitBySlug(newId);
             }
+        }
+        if(newFavicon && oldFavicon != newFavicon) {
+            const icon = document.getElementById('favicon');
+            icon.href = newFavicon;
         }
     }
 
@@ -73,9 +79,10 @@ class PrimaryLayout extends React.Component {
 
 }
 
-const mapStateToProps = ({ summitState  }) => ({
+const mapStateToProps = ({ summitState, baseState  }) => ({
     summit: summitState.purchaseSummit,
-    summitLoader: summitState.loading
+    summitLoader: summitState.loading,
+    favicon: baseState.favicon
 })
 
 export default connect(
