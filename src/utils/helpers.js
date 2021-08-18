@@ -76,3 +76,9 @@ export const getMarketingValue = (key) => {
 			return setting.value;
 	}
 };
+
+export const setFavIcon = (favIconUrl) => {
+	const icon = document.getElementById('favicon');
+	if(icon && favIconUrl)
+		icon.href = favIconUrl;
+}

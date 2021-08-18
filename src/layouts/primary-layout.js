@@ -20,9 +20,10 @@ import StepTwoPage from '../pages/step-two-page'
 import StepThreePage from '../pages/step-three-page'
 import StepFourPage from '../pages/step-four-page'
 import StepExtraQuestionsPage from '../pages/step-extra-questions-page';
+import {setFavIcon} from '../utils/helpers';
 
 class PrimaryLayout extends React.Component {
-  
+
     componentDidMount() {
       let { getSummitBySlug } = this.props;
 
@@ -31,22 +32,18 @@ class PrimaryLayout extends React.Component {
       if (summitSlug) {
           getSummitBySlug(summitSlug);
       }
+
+        setFavIcon(this.props.favicon);
     }
 
     componentWillReceiveProps(newProps) {
         let oldId = this.props.match.params.summit_slug;
         let newId = newProps.match.params.summit_slug;
-        let oldFavicon = this.props.favicon;
-        let newFavicon = newProps.favicon;
 
         if (newId != oldId) {
             if (newId) {
                 this.props.getSummitBySlug(newId);
             }
-        }
-        if(newFavicon && oldFavicon != newFavicon) {
-            const icon = document.getElementById('favicon');
-            icon.href = newFavicon;
         }
     }
 
