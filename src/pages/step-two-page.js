@@ -99,10 +99,20 @@ class StepTwoPage extends React.Component {
 
         if(member) {
             const idToken = getIdToken();
-            const verifier = new IdTokenVerifier();
-            let jwt = verifier.decode(idToken);
-            let {first_name, last_name, email} = member;
-            let {company} = jwt.payload;
+            let first_name = '' , last_name = '', email = '', company = '';
+            if(idToken) {
+                try {
+                    const verifier = new IdTokenVerifier();
+                    let jwt = verifier.decode(idToken);
+                    first_name = member.first_name;
+                    last_name = member.last_name;
+                    email = member.email;
+                    company = jwt.payload.company;
+                }
+                catch (e){
+                    log.error(e);
+                }
+            }
             order = {...order, email, first_name : first_name ?? '', last_name: last_name ?? '', company: company ?? ''}; 
         }
         this.props.handleOrderChange(order);
