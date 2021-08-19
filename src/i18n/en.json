@@ -236,7 +236,11 @@
     "retry": "Please try again.",
     "send_code_option": "or get a login code emailed to you",
     "verify_btn": "Verify",
-    "wrong_code": "The code you entered is incorrect."
+    "wrong_code": "The code you entered is incorrect.",
+    "fn_login_btn": "Continue with FNid",
+    "fb_login_btn": "Continue with Facebook",
+    "ln_login_btn": "Sign in with LinkedIn",
+    "ap_login_btn": "Continue with Apple"
   },
   "logout_popup": {
     "title": "Re-login required",

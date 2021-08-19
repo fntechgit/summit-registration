@@ -10,12 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+export const SET_CURRENT_STEP = "SET_CURRENT_STEP";
+export const SET_TOTAL_STEPS = "SET_TOTAL_STEPS";
 
-export const SET_TOTAL_STEPS = 'SET_TOTAL_STEPS';
+const setCurrentStep = (currentStep) => {
+  return {
+    type: SET_CURRENT_STEP,
+    currentStep,
+  };
+};
 
-export const setTotalSteps = totalSteps => {
-    return {
-        type: SET_TOTAL_STEPS,
-        totalSteps
-    }
+export const boundSetCurrentStep = (currentStep) => (dispatch) => {
+  dispatch(setCurrentStep(currentStep));
+}
+
+export const setTotalSteps = (totalSteps) => {
+  return {
+    type: SET_TOTAL_STEPS,
+    totalSteps,
+  };
 };

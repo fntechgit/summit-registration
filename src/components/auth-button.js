@@ -56,14 +56,16 @@ AuthButton extends React.Component {
     }
 
     onLogOutClick(){
-        let { initLogOut } = this.props;
-        // save current location, for further redirect logic
+        let { initLogOut, summitSlug } = this.props;
+
+        // save current location and summit slug, for further redirect logic
         window.localStorage.setItem('post_logout_back_uri', new URI(window.location.href).pathname());
+        window.localStorage.setItem('post_logout_summit_slug', summitSlug);
         initLogOut();
     }
 
     render() {
-        let {isLoggedUser, doLogin, member, picture, initLogOut } = this.props;
+        let { isLoggedUser, doLogin, member, picture, initLogOut } = this.props;
 
 
         if (isLoggedUser) {

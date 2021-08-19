@@ -18,11 +18,10 @@ import { Link } from 'react-router-dom';
 import OrderSummary from "../components/order-summary";
 import StepRow from '../components/step-row';
 import { handleOrderChange } from '../actions/order-actions'
-
+import history from '../history';
+import { stepDefs } from '../global/constants';
 
 import '../styles/step-four-page.less';
-import history from '../history';
-
 
 class StepFourPage extends React.Component {
 
@@ -40,7 +39,6 @@ class StepFourPage extends React.Component {
     componentDidMount() {
       let { order: { checkout }, summit: { ticket_types }} = this.props;
       const isFree = ticket_types.length > 0 && ticket_types[0].cost === 0;
-      const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
       if (!isFree && Object.entries(checkout).length === 0 && checkout.constructor === Object) {
         history.push(stepDefs[0]);
         return

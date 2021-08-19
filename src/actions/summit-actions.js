@@ -184,7 +184,7 @@ export const selectPurchaseSummit = (slug) => (dispatch, getState) => {
 
   dispatch(createAction(SELECT_PURCHASE_SUMMIT)(summit));
 
-  const { ticket_types } = summit;
+  //const { ticket_types } = summit;
 
   //const totalSteps = ticket_types.length > 0 && ticket_types[0].cost === 0 ? 3 : 4; 
 

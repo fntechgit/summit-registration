@@ -24,7 +24,7 @@ import Swal from 'sweetalert2';
 import OrderSummary from "../components/order-summary";
 import StepRow from "../components/step-row";
 import history from '../history';
-import URI from "urijs";
+import { stepDefs } from '../global/constants';
 
 class StepExtraQuestionsPage extends React.Component {
 
@@ -66,7 +66,6 @@ class StepExtraQuestionsPage extends React.Component {
 
     componentDidMount() {
         let {order: {reservation}, summit} = this.props;
-        const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
         if (Object.entries(reservation).length === 0 && reservation.constructor === Object) {
             history.push(stepDefs[0]);

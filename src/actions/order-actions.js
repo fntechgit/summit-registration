@@ -29,6 +29,7 @@ import {
 
 import { getUserSummits } from './summit-actions';
 import { openWillLogoutModal } from "./auth-actions";
+import { stepDefs } from '../global/constants';
 
 export const RESET_ORDER                    = 'RESET_ORDER';
 export const RECEIVE_ORDER                  = 'RECEIVE_ORDER';
@@ -49,8 +50,6 @@ export const CLEAR_RESERVATION              = 'CLEAR_RESERVATION';
 export const handleResetOrder = (step = null) => (dispatch, getState) => {
     dispatch(createAction(RESET_ORDER)({step:step}));
 }
-
-export const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
 export const handleOrderChange = (order, errors = {}) => (dispatch, getState) => {
     let {currentStep} = order;

@@ -37,17 +37,16 @@ class PrimaryLayout extends React.Component {
         let oldId = this.props.match.params.summit_slug;
         let newId = newProps.match.params.summit_slug;
 
-        if (newId != oldId) {
-            if (newId) {
-                this.props.getSummitBySlug(newId);
-            }
+        if (newId && newId != oldId) {
+            this.props.getSummitBySlug(newId);
         }
     }
 
     render(){
-        let { match, summit, summitLoader } = this.props;        
+        let { match, selectedSummit, summitLoader } = this.props;        
 
-        if (!summitLoader && (Object.entries(summit).length === 0 && summit.constructor === Object)) {                    
+        if (!summitLoader && (Object.entries(selectedSummit).length === 0 && 
+            selectedSummit.constructor === Object)) {                    
           return <div>
             <Switch>
                 <Route render={props => (<Redirect to={`/a/`} />)}/>
@@ -73,9 +72,9 @@ class PrimaryLayout extends React.Component {
 
 }
 
-const mapStateToProps = ({ summitState, baseState  }) => ({
-    summit: summitState.purchaseSummit,
-    summitLoader: summitState.loading,
+const mapStateToProps = ({ summitState  }) => ({
+    selectedSummit: summitState.selectedSummit,
+    summitLoader: summitState.loading
 })
 
 export default connect(

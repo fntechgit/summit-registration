@@ -20,7 +20,7 @@ import BasicInfoForm from '../components/basic-info-form';
 import TicketInfoForm from '../components/ticket-info-form';
 import StepRow from '../components/step-row';
 import SubmitButtons from "../components/submit-buttons";
-import { handleOrderChange, stepDefs } from '../actions/order-actions'
+import { handleOrderChange } from '../actions/order-actions'
 import { findElementPos, getIdToken } from "openstack-uicore-foundation/lib/methods";
 import {getNow} from '../actions/timer-actions';
 import history from '../history';
@@ -29,6 +29,7 @@ import {getMarketingValue} from "../utils/helpers";
 import '../styles/step-two-page.less';
 import T from "i18n-react/dist/i18n-react";
 import IdTokenVerifier from 'idtoken-verifier';
+import { stepDefs } from "../global/constants";
 
 class StepTwoPage extends React.Component {
 
