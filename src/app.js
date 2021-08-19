@@ -81,6 +81,7 @@ class App extends React.PureComponent {
     render() {
       let {isLoggedUser, onUserAuth, doLogout, getUserInfo, member, backUrl, summit} = this.props;
 
+      const rootLocation = '/a/';
       let url = URI(window.location.href);
       let location = url.pathname();
       let memberLocation = '/a/member/';
@@ -107,12 +108,17 @@ class App extends React.PureComponent {
                   <div className="header row">
                       <div className="header-top">                          
                           <HeaderTitle summit={summit}/>
-                          <div className="header-user">
-                              <AuthButton isLoggedUser={isLoggedUser} member={member}
-                                          picture={profile_pic}
-                                          doLogin={this.onClickLogin.bind(this)} initLogOut={initLogOut}
-                                          location={location} clearState={this.props.handleResetReducers}/>
-                          </div>
+                          {location !== rootLocation && 
+                            <div className="header-user">
+                                <AuthButton isLoggedUser={isLoggedUser} 
+                                            member={member}
+                                            summitSlug={summit.slug}
+                                            picture={profile_pic}
+                                            doLogin={this.onClickLogin.bind(this)} initLogOut={initLogOut}
+                                            location={location} clearState={this.props.handleResetReducers}/>
+                            
+                            </div>
+                          }
                       </div>
                       <div className="header-bottom">
                           <div className="header-menu">                        

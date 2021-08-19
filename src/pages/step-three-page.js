@@ -22,10 +22,12 @@ import {loadStripe} from '@stripe/stripe-js';
 import {Elements} from '@stripe/react-stripe-js';
 import PaymentInfoForm from "../components/payment-info-form";
 import BillingInfoForm from "../components/billing-info-form";
-import '../styles/step-three-page.less';
+import { stepDefs } from '../global/constants';
 import history from '../history';
 import URI from "urijs";
 import Swal from 'sweetalert2';
+
+import '../styles/step-three-page.less';
 
 class StepThreePage extends React.Component {
 
@@ -59,7 +61,6 @@ class StepThreePage extends React.Component {
 
     componentWillMount() {
         let {summit: {slug, payment_profiles}} = this.props;
-        const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
         let url = URI(window.location.href);
         let location = url.pathname();
@@ -71,21 +72,21 @@ class StepThreePage extends React.Component {
         }
 
         let publicKey = null;
-        for (let profile of payment_profiles) {
-            if (profile.application_type === 'Registration') {
-                publicKey = profile.test_mode_enabled ? profile.test_publishable_key : profile.live_publishable_key;
-                break;
-            }
-        }
 
-        this.stripePromise = loadStripe(publicKey);
-        
-        console.log(`stripe publishable key ${publicKey}`);
+        if (payment_profiles) {
+            for (let profile of payment_profiles) {
+                if (profile.application_type === 'Registration') {
+                    publicKey = profile.test_mode_enabled ? profile.test_publishable_key : profile.live_publishable_key;
+                    break;
+                }
+            }
+            this.stripePromise = loadStripe(publicKey);
+            //console.log(`stripe publishable key ${publicKey}`);
+        }
     }
 
     componentDidMount() {
         let {order: {reservation}, summit} = this.props;
-        const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
 
         if (Object.entries(reservation).length === 0 && reservation.constructor === Object) {
             history.push(stepDefs[0]);

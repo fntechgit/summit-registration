@@ -11,20 +11,28 @@
  * limitations under the License.
  **/
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import isEmail from 'validator/lib/isEmail';
 import T from "i18n-react/dist/i18n-react";
 
-import fntechIcon from "../../../assets/svg/fntech_icon.svg"
+import fntechIcon from "../../../assets/svg/logo_fn.svg"
+import appleIcon from "../../../assets/svg/logo_apple.svg"
+import facebookIcon from "../../../assets/svg/logo_facebook.svg"
+import linkedinIcon from "../../../assets/svg/logo_linkedin.svg"
 import "./index.less";
 
 const LoginStepOneComponent = ({
-  options,
+  thirdPartyProviders,
   login,
   getLoginCode
 }) => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState();
+  const [options, setOptions] = useState(null);
+
+  useEffect(() => {
+    setOptions(formatAuthProviderButtons(thirdPartyProviders));
+  }, []);
 
   const loginCode = () => {
     let isValidEmail = isEmail(email);
@@ -34,24 +42,33 @@ const LoginStepOneComponent = ({
     }
   };
 
+  const formatAuthProviderButtons = (thirdPartyProviders) => {
+      const fnidBtn = [
+          { button_color: '#082238', provider_label: T.translate("signin.fn_login_btn"), provider_icon: `${fntechIcon}` },
+      ];
+
+      const thirdPartyProvBtns = [
+          { button_color: '#1877F2', provider_label: T.translate("signin.fb_login_btn"), provider_param: 'facebook', provider_icon: `${facebookIcon}` },
+          { button_color: '#0A66C2', provider_label: T.translate("signin.ln_login_btn"), provider_param: 'linkedin', provider_icon: `${linkedinIcon}` },
+          { button_color: '#000000', provider_label: T.translate("signin.ap_login_btn"), provider_param: 'apple', provider_icon: `${appleIcon}` }
+      ];
+
+      return [...fnidBtn, ...thirdPartyProvBtns.filter(p => thirdPartyProviders?.includes(p.provider_param))];
+  };
+
   return (
     <div className="loginWrapper step-wrapper">
       <div className="innerWrapper">
         <span>{T.translate("signin.login_with_title")}</span>
-        {options.map((o) => {
+        {options && options.map((o) => {
           return (
             <div
               className="button left-icon-holder"
               key={`provider-${o.provider_param ? o.provider_param : "fnid"}`}
-              data-testid="login-button"
               style={{ backgroundColor: o.button_color }}
               onClick={() => login(o.provider_param)}
             >
-              {o.provider_param ? (
-                <i className={`fa fa-${o.provider_icon} fa-lg`}></i>
-              ) : (
-                <img src={fntechIcon} className='icon' />
-              )}
+              <img src={o.provider_icon} className='icon' />
               {o.provider_label}
             </div>
           );

@@ -11,18 +11,21 @@
  * limitations under the License.
  **/
 
-import { SET_TOTAL_STEPS } from "../actions/wizzard-actions";
+import { SET_CURRENT_STEP, SET_TOTAL_STEPS } from "../actions/wizzard-actions";
 
 const DEFAULT_STATE = {
     totalSteps: 4,
+    currentStep: 0,
 };
 
 const wizzardReducer = (state = DEFAULT_STATE, action) => {
-    const { type, totalSteps } = action;
+    const { type, payload } = action;
 
     switch(type){
+        case SET_CURRENT_STEP:
+            return {...state, payload};
         case SET_TOTAL_STEPS:
-            return {...state, totalSteps};
+            return {...state, payload};
         default:
             return state;
     }

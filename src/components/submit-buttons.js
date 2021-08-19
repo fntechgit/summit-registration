@@ -11,126 +11,141 @@
  * limitations under the License.
  **/
 
-import React from 'react'
-import { connect } from 'react-redux';
-import T from 'i18n-react/dist/i18n-react';
-import history from '../history';
+import React from "react";
+import { connect } from "react-redux";
+import T from "i18n-react/dist/i18n-react";
+import history from "../history";
 import { openSignInModal } from "../actions/auth-actions";
-import { createReservation, payReservation, deleteReservation } from '../actions/order-actions';
-
-const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];
+import {
+  createReservation,
+  payReservation,
+  deleteReservation,
+} from "../actions/order-actions";
+import { boundSetCurrentStep } from "../actions/wizzard-actions";
+import { stepDefs } from "../global/constants";
 
 class SubmitButtons extends React.Component {
+  constructor(props) {
+    super(props);
 
-    constructor(props) {
-        super(props);
+    this.state = {};
 
-        this.state = {
-        };
+    this.continueClick = this.continueClick.bind(this);
+    this.backClick = this.backClick.bind(this);
+    this.payClick = this.payClick.bind(this);
+    this.reservationClick = this.reservationClick.bind(this);
+  }
 
-        this.continueClick = this.continueClick.bind(this);
-        this.backClick = this.backClick.bind(this);
-        this.payClick = this.payClick.bind(this);
-        this.reservationClick = this.reservationClick.bind(this);
-
+  continueClick(ev) {
+    if (this.props.member) {
+      let { step } = this.props;
+      ev.preventDefault();
+      boundSetCurrentStep(step);
+      history.push(stepDefs[step]);
+    } else {
+      this.props.openSignInModal();
     }
+  }
 
-    continueClick(ev) {
-        if (this.props.member) {
-            let { step } = this.props;
-            ev.preventDefault();
-            history.push(stepDefs[step]);
-        } else {
-            this.props.openSignInModal();
-        }
+  reservationClick(ev) {
+    let { errors, dirty, createReservation, order } = this.props;
+    ev.preventDefault();
+    if (Object.keys(errors).length === 0) {
+      let { email, first_name, last_name, company, tickets } = order;
+      createReservation(email, first_name, last_name, company, tickets);
+    } else {
+      return dirty.call();
     }
+  }
 
-    reservationClick(ev) {
-        let { errors, dirty, createReservation, order } = this.props;
-        ev.preventDefault();
-        if ((Object.keys(errors).length === 0)) {
-            let { email, first_name, last_name, company, tickets } = order;
-            createReservation(email, first_name, last_name, company, tickets);
-        } else {
-            return dirty.call();
-        }
+  backClick(ev) {
+    let { step } = this.props;
+    if (step === 3) {
+      this.props.deleteReservation();
     }
+    let backStep = step - 2; // step is one plus the stepDef index
+    ev.preventDefault();
+    boundSetCurrentStep(backStep);
+    history.push(stepDefs[backStep]);
+  }
 
-    backClick(ev) {
-        let { step } = this.props;
-        if (step === 3) {
-            this.props.deleteReservation();
-        }
-        let backStep = step - 2; // step is one plus the stepDef index
-        ev.preventDefault();
-        history.push(stepDefs[backStep]);
+  payClick(ev) {
+    let { dirty, errors, stripe, token, free } = this.props;
+    ev.preventDefault();
+
+    if (free && Object.keys(errors.errors).length === 0) {
+      this.props.payReservation();
+    } else if (Object.keys(errors.errors).length === 0 && errors.stripeForm) {
+      this.props.payReservation(token, stripe);
+    } else {
+      return dirty.call();
     }
+  }
 
-    payClick(ev) {
-        let { dirty, errors, stripe, token, free } = this.props;
-        ev.preventDefault();
+  render() {
+    let { step, canContinue, stripe = null, free = false } = this.props;
 
-        if (free && Object.keys(errors.errors).length === 0) {
-            this.props.payReservation();
-        } else if (Object.keys(errors.errors).length === 0 && errors.stripeForm) {
-            this.props.payReservation(token, stripe);
-        } else {
-            return dirty.call();
-        }
-    }
+    return (
+      <div className="row submit-buttons-wrapper">
+        <div className="col-md-12">
+          {step > 1 && (
+            <a href="" className="back-btn" onClick={this.backClick}>
+              <i className="fa fa-chevron-left" aria-hidden="true"></i>
+              {T.translate("general.back")}
+            </a>
+          )}
 
-    render() {
-        let { step, canContinue, stripe = null, free = false } = this.props;
+          {step == 1 && (
+            <button
+              className="btn btn-primary continue-btn"
+              onClick={this.continueClick}
+              disabled={!canContinue}
+            >
+              {T.translate("general.continue")}
+            </button>
+          )}
 
-        return (
-            <div className="row submit-buttons-wrapper">
-                <div className="col-md-12">
-                    {step > 1 &&
-                        <a href="" className="back-btn" onClick={this.backClick}>
-                            <i className="fa fa-chevron-left" aria-hidden="true"></i>
-                            {T.translate("general.back")}
-                        </a>
-                    }
+          {step == 2 && (
+            <button
+              className="btn btn-primary continue-btn"
+              onClick={this.reservationClick}
+              disabled={!canContinue}
+            >
+              {T.translate("general.save_and_continue")}
+            </button>
+          )}
 
-                    {step == 1 &&
-                        <button className="btn btn-primary continue-btn" onClick={this.continueClick} disabled={!canContinue}>
-                            {T.translate("general.continue")}
-                        </button>
-                    }
-
-                    {step == 2 &&
-                        <button className="btn btn-primary continue-btn" onClick={this.reservationClick} disabled={!canContinue}>
-                            {T.translate("general.save_and_continue")}
-                        </button>
-                    }
-
-                    {step == 3 &&
-                        <button className="btn btn-primary continue-btn" onClick={this.payClick}
-                            disabled={free === false && Object.entries(stripe).length === 0 && stripe.constructor === Object}>
-                            {free ? T.translate("general.confirm") : T.translate("general.pay_now")}
-                        </button>
-                    }
-
-                </div>
-            </div>
-        );
-
-    }
+          {step == 3 && (
+            <button
+              className="btn btn-primary continue-btn"
+              onClick={this.payClick}
+              disabled={
+                free === false &&
+                Object.entries(stripe).length === 0 &&
+                stripe.constructor === Object
+              }
+            >
+              {free
+                ? T.translate("general.confirm")
+                : T.translate("general.pay_now")}
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 }
 
 const mapStateToProps = ({ loggedUserState, summitState, orderState }) => ({
-    member: loggedUserState.member,
-    summit: summitState.purchaseSummit,
-    order: orderState.purchaseOrder
-})
+  member: loggedUserState.member,
+  summit: summitState.purchaseSummit,
+  order: orderState.purchaseOrder,
+});
 
-export default connect(
-    mapStateToProps,
-    {
-        createReservation,
-        payReservation,
-        deleteReservation,
-        openSignInModal
-    }
-)(SubmitButtons);
-
+export default connect(mapStateToProps, {
+  createReservation,
+  payReservation,
+  deleteReservation,
+  openSignInModal,
+  boundSetCurrentStep,
+})(SubmitButtons);

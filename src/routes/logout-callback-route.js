@@ -24,7 +24,6 @@ class LogOutCallbackRoute extends React.Component {
         };
     }
 
-
     componentDidMount() {
         let storedState = window.localStorage.getItem('post_logout_state');
         window.localStorage.removeItem('post_logout_state');
@@ -43,23 +42,30 @@ class LogOutCallbackRoute extends React.Component {
         }
 
         doLogout();
-        // try to retrieve the post logout back url
+        // try to retrieve the post logout back url and summit slug
         let backUrl = window.localStorage.getItem('post_logout_back_uri');
         window.localStorage.removeItem('post_logout_back_uri');
 
-        if(backUrl){
-            console.log(`LogOutCallbackRoute::render backUrl ${backUrl}`);
-            history.push(LogOutCallbackRoute.postProcessBackUrl(backUrl));
+        let summitSlug = window.localStorage.getItem('post_logout_summit_slug');
+        window.localStorage.removeItem('post_logout_summit_slug');
+
+        if (backUrl) {
+            //console.log(`LogOutCallbackRoute::render backUrl ${backUrl}`);
+            history.push(this.postProcessBackUrl(backUrl, summitSlug));
             return;
         }
         history.push("/");
     }
 
-    static postProcessBackUrl(backUrl){
+    postProcessBackUrl(backUrl, summitSlug) {
+        const startUrl = `/a/${summitSlug}/register/start`;
+        const detailUrl = '/a/member/orders/detail';
+        const memberUrl = '/a/member/orders';
+
         // special case, force relogin
-        let detailUrl     = '/a/member/orders/detail';
-        if(backUrl === detailUrl) backUrl = '/a/member/orders';
-        return backUrl;
+        if (backUrl === detailUrl) return memberUrl;
+
+        return startUrl
     }
 
     render() {

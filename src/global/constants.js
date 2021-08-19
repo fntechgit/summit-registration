@@ -1,0 +1,1 @@
+export const stepDefs = ['start', 'details', 'checkout', 'extra', 'done'];

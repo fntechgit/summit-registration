@@ -43,20 +43,24 @@ export const getFormatedTime = (datetime, time_zone = false) => {
 	return moment.unix(datetime).format('HH:mm')
 }
 
-export const getBackURL = () => {
+export const getBackURL = (slugReplacement) => {
 	let defaultLocation = '/a/member/orders';
 	let url      = URI(window.location.href);
 	let location = url.pathname();
-	if (location === '/') location = defaultLocation;
+	if (location === '/') {
+		location = defaultLocation;
+	}
+	if (slugReplacement) {
+		location = location.replace(/\/[^\/]*$/, `/${slugReplacement}`);
+	}
 	let query    = url.search(true);
 	let fragment = url.fragment();
 	let backUrl  = query.hasOwnProperty('BackUrl') ? query['BackUrl'] : location;
-	if(fragment != null && fragment !== ''){
+	if (fragment != null && fragment !== '') {
 		backUrl += `#${fragment}`;
 	}
 	return backUrl;
 }
-
 
 export const getMarketingValue = (key) => {
 	const {baseState} = store.getState();
