@@ -20,7 +20,6 @@ import StepTwoPage from '../pages/step-two-page'
 import StepThreePage from '../pages/step-three-page'
 import StepFourPage from '../pages/step-four-page'
 import StepExtraQuestionsPage from '../pages/step-extra-questions-page';
-import {setFavIcon} from '../utils/helpers';
 
 class PrimaryLayout extends React.Component {
 
@@ -32,8 +31,6 @@ class PrimaryLayout extends React.Component {
       if (summitSlug) {
           getSummitBySlug(summitSlug);
       }
-
-        setFavIcon(this.props.favicon);
     }
 
     componentWillReceiveProps(newProps) {
@@ -79,7 +76,6 @@ class PrimaryLayout extends React.Component {
 const mapStateToProps = ({ summitState, baseState  }) => ({
     summit: summitState.purchaseSummit,
     summitLoader: summitState.loading,
-    favicon: baseState.favicon
 })
 
 export default connect(
