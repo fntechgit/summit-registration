@@ -21,9 +21,6 @@ import { handleResetOrder } from '../actions/order-actions'
 import {getNow} from '../actions/timer-actions';
 
 
-//import '../styles/not-found-page.less';
-
-
 class SelectSummitPage extends React.Component {
 
     constructor(props){

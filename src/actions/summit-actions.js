@@ -20,9 +20,9 @@ import {
     createAction,
     stopLoading,
     startLoading,
-    showMessage,
-    showSuccessMessage,
+    showMessage
 } from 'openstack-uicore-foundation/lib/methods';
+
 import Swal from 'sweetalert2';
 
 import { LOGOUT_USER } from "openstack-uicore-foundation/lib/actions";
@@ -30,15 +30,15 @@ import { setTotalSteps } from "./wizzard-actions";
 import { openWillLogoutModal } from "./auth-actions";
 
 
-export const GET_SUMMIT_BY_SLUG        = 'GET_SUMMIT_BY_SLUG';
-export const GET_SUMMIT_BY_ID          = 'GET_SUMMIT_BY_ID';
-export const GET_USER_SUMMITS          = 'GET_USER_SUMMITS';
-export const SELECT_SUMMIT             = 'SELECT_SUMMIT';
-export const SUMMIT_NOT_FOUND          = 'SUMMIT_NOT_FOUND';
-export const SELECT_PURCHASE_SUMMIT    = 'SELECT_PURCHASE_SUMMIT';
-export const GET_SUGGESTED_SUMMITS     = 'GET_SUGGESTED_SUMMITS';
-export const GET_SUMMIT_REFUND_POLICY  = 'GET_SUMMIT_REFUND_POLICY';
-export const RECEIVE_MARKETING_SETTINGS  = 'RECEIVE_MARKETING_SETTINGS';
+export const GET_SUMMIT_BY_SLUG         = 'GET_SUMMIT_BY_SLUG';
+export const GET_SUMMIT_BY_ID           = 'GET_SUMMIT_BY_ID';
+export const SELECT_SUMMIT              = 'SELECT_SUMMIT';
+export const SUMMIT_NOT_FOUND           = 'SUMMIT_NOT_FOUND';
+export const SELECT_PURCHASE_SUMMIT     = 'SELECT_PURCHASE_SUMMIT';
+export const GET_SUGGESTED_SUMMITS      = 'GET_SUGGESTED_SUMMITS';
+export const GET_SUMMIT_REFUND_POLICY   = 'GET_SUMMIT_REFUND_POLICY';
+export const RECEIVE_MARKETING_SETTINGS = 'RECEIVE_MARKETING_SETTINGS';
+export const CLEAR_MARKETING_SETTINGS   = 'CLEAR_MARKETING_SETTINGS';
 
 export const handleResetReducers = () => (dispatch, getState) => {
   dispatch(createAction(LOGOUT_USER)({}));
@@ -125,7 +125,7 @@ export const getSummitById = (id, select = false) => (dispatch, getState) => {
 export const getSuggestedSummits = () => (dispatch, getState) => {
 
   dispatch(startLoading());
-
+  dispatch(createAction(CLEAR_MARKETING_SETTINGS)());
   let params = {
     filter: 'ticket_types_count>0',
     expand: 'order_extra_questions.values,ticket_types,ticket_types.badge_type,ticket_types.badge_type.access_levels'

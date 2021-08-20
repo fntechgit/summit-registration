@@ -12,12 +12,13 @@
  **/
 
 import { START_LOADING, STOP_LOADING, LOGOUT_USER, RECEIVE_COUNTRIES } from "openstack-uicore-foundation/lib/actions";
-import { RECEIVE_MARKETING_SETTINGS } from '../actions/summit-actions';
+import { RECEIVE_MARKETING_SETTINGS, CLEAR_MARKETING_SETTINGS } from '../actions/summit-actions';
 
 const DEFAULT_STATE = {
     loading: false,
     countries: [],
     marketingSettings: null,
+    favicon: null,
 }
 
 const baseReducer = (state = DEFAULT_STATE, action) => {
@@ -32,10 +33,16 @@ const baseReducer = (state = DEFAULT_STATE, action) => {
         case STOP_LOADING:
             return {...state, loading: false};
             break;
+        case CLEAR_MARKETING_SETTINGS:{
+            // reset state we are getting new summits
+            return {...state, marketingSettings: [], favicon : window.DEFAULT_FAV_ICON};
+        }
         case RECEIVE_COUNTRIES:
             return {...state, countries: payload};
         case RECEIVE_MARKETING_SETTINGS: {
             const {data} = payload.response;
+            // default one
+            let favicon = window.DEFAULT_FAV_ICON;
             // set color vars
             if (typeof document !== 'undefined') {
                 data.forEach(setting => {
@@ -43,9 +50,13 @@ const baseReducer = (state = DEFAULT_STATE, action) => {
                         document.documentElement.style.setProperty(`--${setting.key}`, setting.value);
                         document.documentElement.style.setProperty(`--${setting.key}50`, `${setting.value}50`);
                     }
+                    if(setting.key === 'favicon') {
+                        console.log(`favicon ${setting.file}`);
+                        favicon = setting.file;
+                    }
                 });
             }
-            return {...state, marketingSettings: data};
+            return {...state, marketingSettings: data, favicon};
         }
         default:
             return state;

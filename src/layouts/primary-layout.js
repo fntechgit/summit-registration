@@ -22,7 +22,7 @@ import StepFourPage from '../pages/step-four-page'
 import StepExtraQuestionsPage from '../pages/step-extra-questions-page';
 
 class PrimaryLayout extends React.Component {
-  
+
     componentDidMount() {
       let { getSummitBySlug } = this.props;
 
@@ -73,9 +73,9 @@ class PrimaryLayout extends React.Component {
 
 }
 
-const mapStateToProps = ({ summitState  }) => ({
+const mapStateToProps = ({ summitState, baseState  }) => ({
     summit: summitState.purchaseSummit,
-    summitLoader: summitState.loading
+    summitLoader: summitState.loading,
 })
 
 export default connect(
