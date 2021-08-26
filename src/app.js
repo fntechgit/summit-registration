@@ -55,7 +55,7 @@ if (language === 'en' || language === 'es') {
 } else {
   T.setTexts(require(`./i18n/en.json`));
 }
-const DefaultFavIconFallback    = "https://object-storage-ca-ymq-1.vexxhost.net/swift/v1/6e4619c416ff4bd19e1c087f27a43eea/images-fn/favicon.png";
+const DefaultFavIconFallback    = "https://object-storage-ca-ymq-1.vexxhost.net/swift/v1/6e4619c416ff4bd19e1c087f27a43eea/images-fn/favicon.svg";
 window.IDP_BASE_URL             = process.env['IDP_BASE_URL'];
 window.API_BASE_URL             = process.env['API_BASE_URL'];
 window.MARKETING_API_BASE_URL   = process.env['MARKETING_API_BASE_URL'];
