@@ -70,8 +70,19 @@ AuthButton extends React.Component {
 
         if (isLoggedUser) {
             return (
-                <div className="user-menu" onMouseEnter={this.toggleLogOut} onMouseLeave={this.toggleLogOut}>
-                    <span className="user-greeting">{member && member.first_name ? `Hi ${member.first_name}` : ''}&nbsp;</span>
+                <div className="user-menu" onMouseEnter={this.toggleLogOut} onMouseLeave={this.toggleLogOut}>                    
+                    <button className="btn btn-primary btn-xs btn-header" onClick={() => { this.onTicketClick(); }}>
+                        <i className="fa fa-shopping-cart" />
+                        {T.translate("nav_bar.my-orders")}
+                    </button>
+                    <button className="btn btn-primary btn-xs btn-header" onClick={() => { this.onOrderClick(); }}>
+                        <i className="fa fa-ticket" />
+                        {T.translate("nav_bar.my-tickets")}
+                    </button>
+                    <button className="btn btn-primary btn-xs btn-header" onClick={() => { this.onLogOutClick(); }}>
+                        <i className="fa fa-sign-out" />
+                        {T.translate("landing.sign_out")}
+                    </button>
                     <div className="profile-pic">
                         <img src={picture} />
                     </div>
