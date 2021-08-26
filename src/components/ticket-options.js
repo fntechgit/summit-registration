@@ -84,9 +84,9 @@ class TicketOptions extends React.Component {
       let {guest, summit, ticket, now} = this.props;
 
         return (
+          <>
             <div className="order-info-wrapper">
-                {guest && 
-                <React.Fragment>
+                {guest &&
                   <div className="row">
                     <div className="col-md-12 info">
                       <h4>{summit.name}</h4>
@@ -95,11 +95,10 @@ class TicketOptions extends React.Component {
                       <p className="role-badge">{this.handleTicketRole(ticket.badge)}</p>
                     </div>
                   </div>
-                </React.Fragment>
                 }
                 {!guest && summit.start_date > now &&
                 <div className="row">
-                    <div className="col-md-12">                        
+                    <div className="col-md-12 text-center">
                         <a onClick={this.props.cancelOrder} className="cancel">{T.translate("order_info.cancel_order")}</a>
                     </div>
                 </div>
@@ -112,6 +111,14 @@ class TicketOptions extends React.Component {
                 </div>
                 } */}
             </div>
+            <div className="order-info-wrapper">
+              <div className="row">
+                    <div className="col-md-12 text-center">
+                        <a className="cancel" target="_blank" href={`mailto:${window.SUPPORT_EMAIL}`}>{T.translate("order_info.email_support")}</a>
+                    </div>
+                </div>
+            </div>
+          </>
         );
     }
 }
