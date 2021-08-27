@@ -1,6 +1,7 @@
 import moment from "moment-timezone";
 import URI from "urijs";
 import store from '../store';
+import { stepDefs } from "../global/constants";
 
 export const daysBetweenDates = (startDate, endDate, timezone) => {
 	let startDay = moment(startDate * 1000).tz(timezone)
@@ -50,12 +51,11 @@ export const getBackURL = (slugReplacement) => {
 	if (location === '/') {
 		location = defaultLocation;
 	}
-	// if we are at invitation url , dont replace slug
-	const isInvitationUrl = location.includes("/a/invitations");
-	// todo: this regex is very vague we need to be more specific on what to replace
-	// otherwise could lead to bugs
-	if (slugReplacement && !isInvitationUrl) {
-		location = location.replace(/\/[^\/]*$/, `/${slugReplacement}`);
+	const replacementTarget = location.split('/').pop();
+	const replacementAllowed = stepDefs.includes(replacementTarget);
+
+	if (replacementAllowed && slugReplacement) {
+		location = location.replace(replacementTarget, slugReplacement);
 	}
 
 	let query    = url.search(true);
