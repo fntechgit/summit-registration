@@ -114,7 +114,7 @@ class TicketOptions extends React.Component {
             <div className="order-info-wrapper">
               <div className="row">
                     <div className="col-md-12 text-center">
-                        <a className="cancel" target="_blank" href={`mailto:${window.SUPPORT_EMAIL}`}>{T.translate("order_info.email_support")}</a>
+                        <a className="cancel" target="_blank" href={`mailto:${window.REGISTRATION_EMAIL}`}>{T.translate("order_info.email_support")}</a>
                     </div>
                 </div>
             </div>
