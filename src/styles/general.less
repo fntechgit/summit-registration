@@ -180,7 +180,7 @@ input::placeholder {
   .summit-info{
     display: flex;
     height: 100%;
-    align-items: center;
+    align-items: flex-start;    
     img {
       height: 100%;
       width: auto;
@@ -794,6 +794,27 @@ input::placeholder {
       width: 45%;
     }
   } 
+
+  .summit-info {
+    a {
+      display: flex;
+      align-self: center;
+      .summit-logo {
+        width: 200px;
+      }
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .summit-info {
+    a {
+      display: inline;      
+      .summit-logo {
+        width: auto;
+      }
+    }
+  }
 }
 
 @media(min-width: 1200px) {
