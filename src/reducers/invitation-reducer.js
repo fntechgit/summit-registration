@@ -12,7 +12,7 @@
  **/
 
 import {LOGOUT_USER, START_LOADING, STOP_LOADING} from "openstack-uicore-foundation/lib/actions";
-import {GET_INVITATION_BY_HASH, GET_INVITATION_BY_HASH_ERROR} from "../actions/invitation-actions";
+import {GET_INVITATION_BY_HASH, GET_INVITATION_BY_HASH_ERROR, RESET_INVITATION} from "../actions/invitation-actions";
 
 
 const DEFAULT_STATE = {
@@ -26,6 +26,9 @@ const InvitationReducer = (state = DEFAULT_STATE, action) => {
     switch(type) {
         case LOGOUT_USER:
             return DEFAULT_STATE;
+        case RESET_INVITATION:{
+            return {...state, selectedInvitation: null};
+        }
         case START_LOADING:
             return {...state, loading: true};
             break;

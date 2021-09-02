@@ -50,9 +50,14 @@ export const getBackURL = (slugReplacement) => {
 	if (location === '/') {
 		location = defaultLocation;
 	}
-	if (slugReplacement) {
+	// if we are at invitation url , dont replace slug
+	const isInvitationUrl = location.includes("/a/invitations");
+	// todo: this regex is very vague we need to be more specific on what to replace
+	// otherwise could lead to bugs
+	if (slugReplacement && !isInvitationUrl) {
 		location = location.replace(/\/[^\/]*$/, `/${slugReplacement}`);
 	}
+
 	let query    = url.search(true);
 	let fragment = url.fragment();
 	let backUrl  = query.hasOwnProperty('BackUrl') ? query['BackUrl'] : location;

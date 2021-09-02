@@ -50,8 +50,7 @@ const LoginComponent = ({
   };
 
   const authUser = (provider) => {
-    const nextStep =
-      currentStep < stepDefs.length ? currentStep + 1 : currentStep;
+    const nextStep = currentStep < stepDefs.length ? currentStep + 1 : currentStep;
     doLogin(getBackURL(stepDefs[nextStep]), provider);
   };
 
