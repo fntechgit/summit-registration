@@ -40,8 +40,7 @@ class OrderSummary extends React.Component {
         let {order, order: {refunded_amount, discount_amount, raw_amount, amount}, summit: {ticket_types}, type} = this.props;
 
         let ticketSummary = [];
-
-        let purchaseTicketTotal = 0;
+        let purchaseTicketTotal = 0;                        
 
         order.tickets.forEach(tix => {
               let idx = ticketSummary.findIndex(o => o.ticket_type_id == (tix.type_id ? tix.type_id : tix.ticket_type_id));
@@ -53,10 +52,11 @@ class OrderSummary extends React.Component {
                   let name = ticket_types.find(q => q.id === (tix.type_id ? tix.type_id : tix.ticket_type_id)).name;                
                   ticketSummary.push({ticket_type_id: (tix.type_id ? tix.type_id : tix.ticket_type_id), tix_type: tixType, name, qty: 1})
               }
-
+  
               purchaseTicketTotal = purchaseTicketTotal + tixType.cost;
-        });
 
+        });
+                
         let purchaseDiscountTotal = 0;
 
         order.tickets.filter(tix => tix.discount && tix.status !== "Refunded").map(tix => {
@@ -113,7 +113,7 @@ class OrderSummary extends React.Component {
                             </div>
                         </div>
                         }
-                        {refunded_amount > 0 && 
+                        {refundTotal > 0 && 
                         <div className="row order-refunds order-row">
                             <div className="col-xs-7 text-left">
                                 {T.translate("order_summary.refunds")}                          
@@ -187,7 +187,7 @@ class OrderSummary extends React.Component {
                       </div>
                   </div>
                   }
-                  {refunded_amount > 0 && 
+                  {refundTotal > 0 && 
                   <div className="row order-refunds order-row">
                       <div className="col-xs-7 text-left">
                           {T.translate("order_summary.refunds")}                          
