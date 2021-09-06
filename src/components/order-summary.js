@@ -39,7 +39,9 @@ class OrderSummary extends React.Component {
 
         let {order, order: {refunded_amount, discount_amount, raw_amount, amount}, summit: {ticket_types}, type} = this.props;
 
-        let ticketSummary = [];        
+        let ticketSummary = [];
+
+        let purchaseTicketTotal = 0;
 
         order.tickets.forEach(tix => {
               let idx = ticketSummary.findIndex(o => o.ticket_type_id == (tix.type_id ? tix.type_id : tix.ticket_type_id));
@@ -52,7 +54,22 @@ class OrderSummary extends React.Component {
                   ticketSummary.push({ticket_type_id: (tix.type_id ? tix.type_id : tix.ticket_type_id), tix_type: tixType, name, qty: 1})
               }
 
+              purchaseTicketTotal = purchaseTicketTotal + tixType.cost;
         });
+
+        let purchaseDiscountTotal = 0;
+
+        order.tickets.filter(tix => tix.discount && tix.status !== "Refunded").map(tix => {
+            let tixType = ticket_types.find(tt => tt.id == tix.type_id || tix.ticket_type_id);
+
+            let discountPercentageTmp = (tix.discount * 100) / tixType.cost;
+            let discountTmp = (discountPercentageTmp / 100) * tixType.cost;
+            purchaseDiscountTotal = purchaseDiscountTotal + discountTmp;
+
+            return {tix_type: tixType, percentage: discountPercentageTmp, code: tix.promo_code_id};
+        });
+
+        let purchaseTotal = purchaseTicketTotal - purchaseDiscountTotal;
 
         if(type === "mobile") {
           return(
@@ -61,7 +78,7 @@ class OrderSummary extends React.Component {
                   <div className="order-summary-mobile--title" onClick={this.handleSummaryDisplay}>
                     <span>Order Summary</span>                  
                     <span>
-                      ${amount.toFixed(2)} &nbsp; <i className={`fa ${this.state.summaryToggle ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden="true"></i>                            
+                      ${amount? amount.toFixed(2) : purchaseTotal.toFixed(2)} &nbsp; <i className={`fa ${this.state.summaryToggle ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden="true"></i>
                     </span>
                   </div>
                   <div className={this.state.summaryToggle ? 'open':'closed' }>
@@ -80,19 +97,19 @@ class OrderSummary extends React.Component {
                                         <span>x{tix.qty}</span>
                                     </div>                                    
                                     <div className="col-xs-5 text-right subtotal">
-                                        ${total.toFixed(2)}
+                                        ${total?.toFixed(2)}
                                     </div>
                                 </div>
                             );
                         })}
 
-                        {discount_amount > 0 &&
+                        {discount_amount > 0 || purchaseDiscountTotal > 0 &&
                         <div className="row order-discounts order-row">
                             <div className="col-xs-7 text-left">
                                 {T.translate("order_summary.discounts")}
                             </div>
                             <div className="col-xs-5 text-right subtotal">
-                                -${discount_amount.toFixed(2)}
+                                -${discount_amount? discount_amount.toFixed(2) : purchaseDiscountTotal.toFixed(2)}
                             </div>
                         </div>
                         }
@@ -102,7 +119,7 @@ class OrderSummary extends React.Component {
                                 {T.translate("order_summary.refunds")}                          
                             </div>
                             <div className="col-xs-5 text-right subtotal">
-                                -${refunded_amount.toFixed(2)}
+                                -${refunded_amount?.toFixed(2)}
                             </div>
                         </div>
                         }
@@ -113,7 +130,7 @@ class OrderSummary extends React.Component {
                                     {T.translate("order_summary.amount_paid")}
                                 </div>
                                 <div className="col-xs-5 text-right subtotal">
-                                    -${ (raw_amount - discount_amount).toFixed(2)}
+                                    -${ (raw_amount - discount_amount)?.toFixed(2)}
                                 </div>
                             </div>
                         }
@@ -122,7 +139,7 @@ class OrderSummary extends React.Component {
                                 {T.translate("order_summary.total")}
                             </div>
                             <div className="col-xs-6 text-right total">
-                                ${ order.status === 'Paid' ? '0.00' : amount.toFixed(2)}
+                                ${ order.status === 'Paid' ? '0.00' : amount ? amount.toFixed(2) : purchaseTotal.toFixed(2) }
                             </div>
                         </div>
                       </div>
@@ -155,18 +172,18 @@ class OrderSummary extends React.Component {
                                   <span>x{tix.qty}</span>
                               </div>
                               <div className="col-xs-5 text-right subtotal">
-                                  ${total.toFixed(2)}
+                                  ${total?.toFixed(2)}
                               </div>
                           </div>
                       );
                   })}
-                  {discount_amount > 0 &&
+                  {discount_amount > 0 || purchaseDiscountTotal > 0 &&
                   <div className="row order-discounts order-row">
                       <div className="col-xs-7 text-left">
                           {T.translate("order_summary.discounts")}
                       </div>
                       <div className="col-xs-5 text-right subtotal">
-                          -${discount_amount.toFixed(2)}
+                          -${discount_amount? discount_amount.toFixed(2) : purchaseDiscountTotal.toFixed(2)}
                       </div>
                   </div>
                   }
@@ -176,7 +193,7 @@ class OrderSummary extends React.Component {
                           {T.translate("order_summary.refunds")}                          
                       </div>
                       <div className="col-xs-5 text-right subtotal">
-                          -${refunded_amount.toFixed(2)}
+                          -${refunded_amount?.toFixed(2)}
                       </div>
                   </div>
                   }
@@ -187,7 +204,7 @@ class OrderSummary extends React.Component {
                               {T.translate("order_summary.amount_paid")}
                           </div>
                           <div className="col-xs-5 text-right subtotal">
-                              -${ (raw_amount - discount_amount).toFixed(2)}
+                              -${ (raw_amount - discount_amount)?.toFixed(2)}
                           </div>
                       </div>
                   }
@@ -196,7 +213,7 @@ class OrderSummary extends React.Component {
                           {T.translate("order_summary.total")}
                       </div>
                       <div className="col-xs-6 text-right total">
-                          ${ order.status === 'Paid' ? '0.00' : amount.toFixed(2)}
+                          ${ order.status === 'Paid' ? '0.00' : amount ? amount.toFixed(2) : purchaseTotal.toFixed(2)}
                       </div>
                   </div>
               </div>
