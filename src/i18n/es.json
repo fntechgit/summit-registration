@@ -148,7 +148,7 @@
     "print"               : "Print",
     "resend"              : "Resend Receipt",
     "download"            : "Download Ticket PDF",
-    "cancel_order"        : "Cancel Order (refund request)",
+    "cancel_order"        : "Cancel Order (Refund Request)",
     "cancel_ticket"       : "Cancel Ticket",
     "email_support"       : "Email Support",
     "directions"          : "Get Directions",
