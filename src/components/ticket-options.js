@@ -84,7 +84,8 @@ class TicketOptions extends React.Component {
         let {guest, summit, ticket, now} = this.props;
         // summit not set
         if (!summit || (Object.entries(summit).length <= 1 && summit.constructor === Object)) return null;
-        if(!ticket) return null;
+        // if we are in guess layout we need the ticket set
+        if(!ticket && guest) return null;
 
         return (
           <>
