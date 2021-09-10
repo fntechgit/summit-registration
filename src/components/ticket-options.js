@@ -17,6 +17,7 @@ import T from 'i18n-react/dist/i18n-react'
 import { daysBetweenDates, getFormatedDate } from '../utils/helpers';
 
 class TicketOptions extends React.Component {
+
     constructor(props) {
         super(props);
 
@@ -38,6 +39,7 @@ class TicketOptions extends React.Component {
 
     handleTicketDate(ticket) {
       let {summits} = this.props;
+      if(!summits.length) return '';
       let summit = summits.find(s => s.id === ticket.owner.summit_id);
       let dateRange = daysBetweenDates(summit.start_date, summit.end_date, summit.time_zone_id);
       
@@ -78,10 +80,12 @@ class TicketOptions extends React.Component {
       }
     }
 
-
     render() {
-
-      let {guest, summit, ticket, now} = this.props;
+        let {guest, summit, ticket, now} = this.props;
+        // summit not set
+        if (!summit || (Object.entries(summit).length <= 1 && summit.constructor === Object)) return null;
+        // if we are in guess layout we need the ticket set
+        if(!ticket && guest) return null;
 
         return (
           <>
