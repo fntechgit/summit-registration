@@ -37,7 +37,7 @@ class OrderSummary extends React.Component {
 
     render() {
 
-        let {order, order: {refunded_amount, discount_amount, raw_amount, amount}, summit: {ticket_types}, type} = this.props;
+        let {order, order: {refunded_amount, discount_amount, raw_amount, taxes_amount, amount, reservation}, summit: {ticket_types}, type} = this.props;
 
         let ticketSummary = [];
         let purchaseTicketTotal = 0;                        
@@ -54,7 +54,6 @@ class OrderSummary extends React.Component {
               }
   
               purchaseTicketTotal = purchaseTicketTotal + tixType.cost;
-
         });
                 
         let purchaseDiscountTotal = 0;
@@ -78,7 +77,7 @@ class OrderSummary extends React.Component {
                   <div className="order-summary-mobile--title" onClick={this.handleSummaryDisplay}>
                     <span>Order Summary</span>                  
                     <span>
-                      ${amount? amount.toFixed(2) : purchaseTotal.toFixed(2)} &nbsp; <i className={`fa ${this.state.summaryToggle ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden="true"></i>
+                      ${reservation.amount? reservation.amount.toFixed(2) : amount? amount.toFixed(2) : purchaseTotal.toFixed(2)} &nbsp; <i className={`fa ${this.state.summaryToggle ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden="true"></i>
                     </span>
                   </div>
                   <div className={this.state.summaryToggle ? 'open':'closed' }>
@@ -103,23 +102,33 @@ class OrderSummary extends React.Component {
                             );
                         })}
 
-                        {discount_amount > 0 || purchaseDiscountTotal > 0 &&
+                        {reservation.discount_amount > 0 || discount_amount > 0 || purchaseDiscountTotal > 0 &&
                         <div className="row order-discounts order-row">
                             <div className="col-xs-7 text-left">
                                 {T.translate("order_summary.discounts")}
                             </div>
                             <div className="col-xs-5 text-right subtotal">
-                                -${discount_amount? discount_amount.toFixed(2) : purchaseDiscountTotal.toFixed(2)}
+                                -${reservation.discount_amount ? reservation.discount_amount.toFixed(2) : discount_amount? discount_amount.toFixed(2) : purchaseDiscountTotal.toFixed(2)}
                             </div>
                         </div>
                         }
-                        {refundTotal > 0 && 
+                        {reservation.refunded_amount > 0 || refunded_amount > 0 && 
                         <div className="row order-refunds order-row">
                             <div className="col-xs-7 text-left">
                                 {T.translate("order_summary.refunds")}                          
                             </div>
                             <div className="col-xs-5 text-right subtotal">
-                                -${refunded_amount?.toFixed(2)}
+                                -${reservation.refunded_amount ? reservation.refunded_amount.toFixed(2) : refunded_amount?.toFixed(2)}
+                            </div>
+                        </div>
+                        }
+                        {reservation.taxes_amount > 0 || taxes_amount > 0 && 
+                        <div className="row order-refunds order-row">
+                            <div className="col-xs-7 text-left">
+                                {T.translate("order_summary.taxes")}
+                            </div>
+                            <div className="col-xs-5 text-right subtotal">
+                                -${reservation.taxes_amount? reservation.taxes_amount.toFixed(2) : taxes_amount?.toFixed(2)}
                             </div>
                         </div>
                         }
@@ -139,12 +148,11 @@ class OrderSummary extends React.Component {
                                 {T.translate("order_summary.total")}
                             </div>
                             <div className="col-xs-6 text-right total">
-                                ${ order.status === 'Paid' ? '0.00' : amount ? amount.toFixed(2) : purchaseTotal.toFixed(2) }
+                                ${ order.status === 'Paid' ? '0.00' : reservation.amount? reservation.amount.toFixed(2) : amount ? amount.toFixed(2) : purchaseTotal.toFixed(2) }
                             </div>
                         </div>
                       </div>
                       <div className="order-summary-mobile--coupon">
-
                       </div>
                       <div className="order-summary-mobile--close-text" onClick={this.handleSummaryDisplay}>
                           Close
@@ -177,25 +185,35 @@ class OrderSummary extends React.Component {
                           </div>
                       );
                   })}
-                  {discount_amount > 0 || purchaseDiscountTotal > 0 &&
+                  {reservation.discount_amount > 0 || discount_amount > 0 || purchaseDiscountTotal > 0 &&
                   <div className="row order-discounts order-row">
                       <div className="col-xs-7 text-left">
                           {T.translate("order_summary.discounts")}
                       </div>
                       <div className="col-xs-5 text-right subtotal">
-                          -${discount_amount? discount_amount.toFixed(2) : purchaseDiscountTotal.toFixed(2)}
+                          -${reservation.discount_amount ? reservation.discount_amount.toFixed(2) : discount_amount? discount_amount.toFixed(2) : purchaseDiscountTotal.toFixed(2)}
                       </div>
                   </div>
                   }
-                  {refundTotal > 0 && 
+                  {reservation.refunded_amount > 0 || refunded_amount > 0 && 
                   <div className="row order-refunds order-row">
                       <div className="col-xs-7 text-left">
                           {T.translate("order_summary.refunds")}                          
                       </div>
                       <div className="col-xs-5 text-right subtotal">
-                          -${refunded_amount?.toFixed(2)}
+                          -${reservation.refunded_amount ? reservation.refunded_amount.toFixed(2) : refunded_amount?.toFixed(2)}
                       </div>
                   </div>
+                  }
+                  {reservation.taxes_amount > 0 || taxes_amount > 0 && 
+                        <div className="row order-refunds order-row">
+                            <div className="col-xs-7 text-left">
+                                {T.translate("order_summary.taxes")}
+                            </div>
+                            <div className="col-xs-5 text-right subtotal">
+                                -${reservation.taxes_amount? reservation.taxes_amount.toFixed(2) : taxes_amount?.toFixed(2)}
+                            </div>
+                        </div>
                   }
                   {
                       order.status === 'Paid' &&
@@ -213,7 +231,7 @@ class OrderSummary extends React.Component {
                           {T.translate("order_summary.total")}
                       </div>
                       <div className="col-xs-6 text-right total">
-                          ${ order.status === 'Paid' ? '0.00' : amount ? amount.toFixed(2) : purchaseTotal.toFixed(2)}
+                          ${ order.status === 'Paid' ? '0.00' : reservation.amount? reservation.amount.toFixed(2) : amount ? amount.toFixed(2) : purchaseTotal.toFixed(2)}
                       </div>
                   </div>
               </div>
