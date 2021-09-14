@@ -53,18 +53,6 @@ class TicketModel {
                 class: 'ticket-cancel'
             },
             {
-                text: 'REFUND REQUESTED',
-                icon: 'fa-fw',
-                orderClass: 'cancel',
-                class: 'ticket-cancel'
-            },
-            {
-                text: 'REFUNDED',
-                icon: 'fa-fw',
-                orderClass: 'cancel',
-                class: 'ticket-cancel'
-            },
-            {
                 text: '',
                 icon: 'fa-fw',
                 orderClass: 'past',
@@ -72,17 +60,13 @@ class TicketModel {
             },
         ];
 
-        if(this.dto.status === "Cancelled") {
+        if(this.dto.status === "Cancelled" || !this.dto.is_active ) {
             return status[3];
         }
-        else if(this.dto.status === "RefundRequested") {
-            return status[4];
-        } else if (this.dto.status === "Refunded") {
-            return status[5];
-        } else if(this.dto.owner_id === 0) {
+        else if(this.dto.owner_id === 0) {
             return status[0];
         } else if(this.handlePastSummit()) {
-            return status[6];
+            return status[4];
         } else if (!this.dto.owner.first_name || !this.dto.owner.last_name) {
             return status[1];
         } else if (this.dto.owner && this.dto.owner.status === "Complete") {

@@ -101,18 +101,6 @@ class OrderList extends React.Component {
                 class: 'order-cancel'
             },
             {
-                text: 'REFUND REQUESTED',
-                icon: 'fa-fw',
-                orderClass: 'cancel',
-                class: 'order-cancel'
-            },
-            {
-                text: 'REFUNDED',
-                icon: 'fa-fw',
-                orderClass: 'cancel',
-                class: 'order-cancel'
-            },
-            {
                 text: 'PAYMENT ERROR',
                 icon: 'fa-fw',
                 orderClass: 'cancel',
@@ -134,7 +122,7 @@ class OrderList extends React.Component {
         switch (order.status) {
             case "Paid":
                 if (this.handlePastSummit(order)) {
-                    return status[8]
+                    return status[6]
                 } else {
                     let incomplete = false;
                     order.tickets.map(t => {
@@ -148,33 +136,19 @@ class OrderList extends React.Component {
                         return status[0];
                     } else {
                         return status[1];
-                    }
-                    ;
+                    };
                 }
             case "Reserved":
                 return status[2];
             case "Cancelled":
                 return status[3];
-            case "RefundRequested":
-                return status[4];
-            case "Refunded":
-                return status[5];
             case "Error":
-                return status[6];
+                return status[4];
             case "Confirmed":
-                return status[7];
+                return status[5];
             default:
                 return null;
         }
-
-        // TODO: Check posible cases
-        const ReservedStatus = 'Reserved';
-        const CancelledStatus = 'Cancelled';
-        const RefundRequestedStatus = 'RefundRequested';
-        const RefundedStatus = 'Refunded';
-        const ConfirmedStatus = 'Confirmed';
-        const PaidStatus = 'Paid';
-        const ErrorStatus = 'Error';
     }
 
     handlePastSummit(order) {

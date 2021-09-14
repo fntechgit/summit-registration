@@ -97,17 +97,6 @@ class OrderDetailPage extends React.Component {
         text: 'CANCELLED',        
         orderClass: 'cancel',
         class: 'ticket-cancel'
-      },{ 
-        text: 'REFUND REQUESTED',
-        icon: 'fa-fw',
-        orderClass: 'cancel',
-        class: 'ticket-cancel'
-      },
-      { 
-        text: 'REFUNDED',
-        icon: 'fa-fw',
-        orderClass: 'cancel',
-        class: 'ticket-cancel'
       },
       { 
         text: '',
@@ -116,16 +105,12 @@ class OrderDetailPage extends React.Component {
         class: ''
       },
     ];
-    if(ticket.is_active === false || ticket.status === "Cancelled") {
+    if(!ticket.is_active || ticket.status === "Cancelled") {
       return status[3];
-    }else if(ticket.status === "RefundRequested") {
-      return status[4];
-    } else if (ticket.status === "Refunded") {
-      return status[5];
     } else if(ticket.owner_id === 0) {
       return status[0];
     } else if(this.handlePastSummit()) {
-      return status[6];
+      return status[4];
     } else if (!ticket.owner.first_name || !ticket.owner.last_name) {
       return status[1];
     } else if (ticket.owner && ticket.owner.status === "Complete") {
@@ -256,7 +241,7 @@ class OrderDetailPage extends React.Component {
   }
 
   isInactive(t){
-    return t.is_active == false || t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded";
+    return t.is_active == false || t.status === "Cancelled";
   }
 
   render() {
@@ -362,7 +347,10 @@ class OrderDetailPage extends React.Component {
                   </div>
                   <div className="col-md-4">
                       <OrderSummary order={order} summit={summit} type={'desktop'} now={this.props.getNow()} />
-                      <TicketOptions now={this.props.getNow()} summit={summit} cancelOrder={this.handleOrderCancel} />
+                      <TicketOptions now={this.props.getNow()}
+                                     summit={summit}
+                                     order={order}
+                                     cancelOrder={this.handleOrderCancel} />
                   </div>
               </div>
               {showPopup ?  

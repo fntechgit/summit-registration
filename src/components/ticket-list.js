@@ -208,7 +208,7 @@ class TicketList extends React.Component {
               {tickets.map((t) => {
                 return (
                   <div className={`ticket ${this.handleTicketStatus(t).text === "UNASSIGNED" ? now > this.handleReassignDate(t) ? 'disabled' : this.handleTicketStatus(t).orderClass : this.handleTicketStatus(t).orderClass} p-2 col-sm-8 col-sm-offset-2`} key={t.id}
-                    onClick={() => {t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded" || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
+                    onClick={() => {t.status === "Cancelled" || !t.is_active  || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
                       <div className="col-sm-1">
                           <i className={`fa fa-2x ${this.handleTicketStatus(t).icon} ${this.handleTicketStatus(t).class}`}></i>                             
                       </div>
@@ -220,7 +220,7 @@ class TicketList extends React.Component {
                          <h4>{this.handleTicketName(t)}</h4> <h5>{ t.number }</h5>
                          <p>Purchased By {t.order.owner_first_name} {t.order.owner_last_name} ({t.order.owner_email})</p>
                       </div>
-                      {(t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded") ?
+                      {(t.status === "Cancelled" || !t.is_active ) ?
                         <div className="arrow col-sm-2"></div>
                         :
                         <div className="arrow col-sm-2">
@@ -235,7 +235,7 @@ class TicketList extends React.Component {
               {tickets.map((t) => {
                 return (
                   <div className={`ticket ${this.handleTicketStatus(t).text === "UNASSIGNED" ? now > this.handleReassignDate(t) ? 'disabled' : this.handleTicketStatus(t).orderClass : this.handleTicketStatus(t).orderClass} p-2 col-sm-8 col-sm-offset-2`} key={t.id}
-                  onClick={() => {t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded" || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
+                  onClick={() => {t.status === "Cancelled" || !t.is_active || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
                       <div className="col-sm-1">
                           <i className={`fa fa-2x ${this.handleTicketStatus(t).icon} ${this.handleTicketStatus(t).class}`}></i>                             
                       </div>
@@ -245,7 +245,7 @@ class TicketList extends React.Component {
                           <p className={`status ${this.handleTicketStatus(t).class}`}>{this.handleTicketStatus(t).text}</p>
                           <p>{ t.number }</p>
                       </div>                                            
-                      {(t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded") ?
+                      {(t.status === "Cancelled" || !t.is_active) ?
                         <div className="arrow col-sm-2"></div>
                         :
                         <div className="arrow col-sm-2">
