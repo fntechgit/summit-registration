@@ -20,11 +20,6 @@ class TicketOptions extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-
-        };
-
         this.handleTicketName = this.handleTicketName.bind(this);
         this.handleSummitLocation = this.handleSummitLocation.bind(this);
         this.handleTicketDate = this.handleTicketDate.bind(this);
@@ -81,7 +76,7 @@ class TicketOptions extends React.Component {
     }
 
     render() {
-        let {guest, summit, ticket, now} = this.props;
+        let {guest, summit, ticket, now, order } = this.props;
         // summit not set
         if (!summit || (Object.entries(summit).length <= 1 && summit.constructor === Object)) return null;
         // if we are in guess layout we need the ticket set
@@ -100,20 +95,13 @@ class TicketOptions extends React.Component {
                     </div>
                   </div>
                 }
-                {!guest && summit.start_date > now &&
+                {!guest && summit.start_date > now && order && order?.status === 'Paid' &&
                 <div className="row">
                     <div className="col-md-12 text-center">
                         <a onClick={this.props.cancelOrder} className="cancel">{T.translate("order_info.cancel_order")}</a>
                     </div>
                 </div>
                 }
-                {/* {guest && 
-                <div className="row">
-                    <div className="col-md-12">
-                        <a onClick={this.props.downloadTicket}>{T.translate("order_info.download")}<br/></a>                        
-                    </div>
-                </div>
-                } */}
             </div>
             <div className="order-info-wrapper">
               <div className="row">
