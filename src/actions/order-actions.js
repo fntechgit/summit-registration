@@ -25,7 +25,10 @@ import {
     createAction,
     stopLoading,
     startLoading,
+    getIdToken
 } from 'openstack-uicore-foundation/lib/methods';
+
+import IdTokenVerifier from 'idtoken-verifier';
 
 import { getUserSummits } from './summit-actions';
 import { openWillLogoutModal } from "./auth-actions";
@@ -46,9 +49,69 @@ export const GET_USER_ORDERS                = 'GET_ORDERS';
 export const SELECT_ORDER                   = 'SELECT_ORDER';
 export const REFUND_ORDER                   = 'REFUND_ORDER';
 export const CLEAR_RESERVATION              = 'CLEAR_RESERVATION';
+export const START_LOADING_IDP_PROFILE      = 'START_LOADING_IDP_PROFILE';
+export const STOP_LOADING_IDP_PROFILE       = 'STOP_LOADING_IDP_PROFILE';
+export const UPDATE_IDP_PROFILE             = 'UPDATE_IDP_PROFILE';
 
 export const handleResetOrder = (step = null) => (dispatch, getState) => {
     dispatch(createAction(RESET_ORDER)({step:step}));
+}
+
+export const updateProfile = (profile) => async (dispatch, getState) => {
+
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
+
+  dispatch(startLoading());
+
+  let params = {
+    access_token: accessToken,
+  };
+
+  dispatch(createAction(START_LOADING_IDP_PROFILE)());
+
+  putRequest(
+    null,
+    createAction(UPDATE_IDP_PROFILE),
+    `${window.IDP_BASE_URL}/api/v1/users/me`,
+    profile,
+    authErrorHandler
+  )(params)(dispatch)
+    .then(() => dispatch(stopLoading()))
+    .catch(() => {
+      dispatch(createAction(STOP_LOADING_IDP_PROFILE)())
+      dispatch(stopLoading());
+    });
+}
+
+export const checkOrderData = () => (dispatch, getState) => {
+
+  const { loggedUserState: {member: {first_name, last_name}}} = getState();
+  const { orderState: { purchaseOrder: {reservation: { owner_company, owner_first_name, owner_last_name }}}} = getState();  
+
+  const idToken = getIdToken();
+  let company = '';  
+  if(idToken) {
+    try {
+      const verifier = new IdTokenVerifier();
+      let jwt = verifier.decode(idToken);      
+      company = jwt.payload.company;      
+    }
+    catch (e){
+      console.log('error', e);      
+    }
+  }  
+
+  if (owner_company !== company || owner_first_name !== first_name || owner_last_name !== last_name) {
+      const newProfile = {
+          first_name: owner_first_name,
+          last_name: owner_last_name,
+          company: owner_company
+      };
+      dispatch(updateProfile(newProfile));
+  }
+
+  dispatch(createAction(CLEAR_RESERVATION)({}));
 }
 
 export const handleOrderChange = (order, errors = {}) => (dispatch, getState) => {
@@ -220,7 +283,7 @@ export const payReservation = (token=null, stripe=null) => (dispatch, getState) 
               // if the order is free, the evaluation to the extra questions page was performed on the previous step
               const isFree = payload.response.discount_amount === payload.response.raw_amount;
               if(isFree) {
-                dispatch(createAction(CLEAR_RESERVATION)({}));
+                dispatch(checkOrderData());
                 history.push(stepDefs[4]);
                 return (payload);
               } else if(reservation.hasOwnProperty('tickets') && reservation.tickets.length <= window.MAX_TICKET_QTY_TO_EDIT && (hasTicketExtraQuestion || mandatoryDisclaimer)){
@@ -228,7 +291,7 @@ export const payReservation = (token=null, stripe=null) => (dispatch, getState) 
                   history.push(stepDefs[3]);
                   return (payload);
               } else {
-              dispatch(createAction(CLEAR_RESERVATION)({}));
+              dispatch(checkOrderData());
               history.push(stepDefs[4]);
               return (payload);
               }              
@@ -273,8 +336,7 @@ export const payReservation = (token=null, stripe=null) => (dispatch, getState) 
                         history.push(stepDefs[3]);
                         return (payload);
                       }
-                      dispatch(createAction(CLEAR_RESERVATION)({}));
-
+                      dispatch(checkOrderData());
                       history.push(stepDefs[4]);
                       return (payload);
                   })
