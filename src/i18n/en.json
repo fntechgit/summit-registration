@@ -196,7 +196,7 @@
     "notify_text_1"         : "All required details must be completed before",
     "notify_text_2"         : "Email will be sent to",
     "notify_button"         : "Re-Send Notification",
-    "cancel_ticket"         : "Request to Refund this Ticket",
+    "cancel_ticket"         : "Request a refund for this ticket",
     "save_changes"          : "Save Changes",
     "do_it_later"           : "Do this later",
     "do_it_later_exp"       : "You may fill in the required information now or complete this step on the 'My Orders' page later."
