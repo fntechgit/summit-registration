@@ -81,7 +81,7 @@ class TicketOptions extends React.Component {
         if (!summit || (Object.entries(summit).length <= 1 && summit.constructor === Object)) return null;
         // if we are in guess layout we need the ticket set
         if(!ticket && guest) return null;
-
+        console.log(`order?.amount ${order?.amount}  order?.refunded_amount ${ order?.refunded_amount}`);
         return (
           <>
             <div className="order-info-wrapper">
@@ -95,7 +95,7 @@ class TicketOptions extends React.Component {
                     </div>
                   </div>
                 }
-                {!guest && summit.start_date > now && order && order?.status === 'Paid' &&
+                {!guest && summit.start_date > now && order && order?.status === 'Paid' && order?.amount > 0 && order?.amount > order?.refunded_amount &&
                 <div className="row">
                     <div className="col-md-12 text-center">
                         <a onClick={this.props.cancelOrder} className="cancel">{T.translate("order_info.cancel_order")}</a>

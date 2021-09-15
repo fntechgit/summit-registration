@@ -28,6 +28,7 @@ class TicketList extends React.Component {
         this.state = {
           showPopup: false,
           showSave:false,
+          showRefundSuccess:false,
         };  
 
         this.togglePopup = this.togglePopup.bind(this);
@@ -44,6 +45,7 @@ class TicketList extends React.Component {
         this.handlePastSummit = this.handlePastSummit.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.toggleSaveMessage = this.toggleSaveMessage.bind(this);
+        this.toggleRefundSuccessMessage = this.toggleRefundSuccessMessage.bind(this);
     }
 
     togglePopup(ticket) {
@@ -58,6 +60,10 @@ class TicketList extends React.Component {
 
     toggleSaveMessage(){
         this.setState({...this.state, showSave: !this.state.showSave });
+    }
+
+    toggleRefundSuccessMessage(){
+        this.setState({...this.state, showRefundSuccess: !this.state.showRefundSuccess });
     }
 
     handleTicketStatus(ticket){
@@ -82,7 +88,7 @@ class TicketList extends React.Component {
       if(owner.email !== attendee_email) {
           this.props.removeAttendee(ticket).then(() => {
               window.setTimeout(() => this.toggleSaveMessage(), 500);
-              window.setTimeout(() => this.toggleSaveMessage(), 2000);
+              window.setTimeout(() => this.toggleSaveMessage(), 5000);
           });
           return;
       }
@@ -164,7 +170,10 @@ class TicketList extends React.Component {
 
     handleTicketCancel() {
       let {selectedTicket, refundTicket} = this.props;      
-      refundTicket(selectedTicket);
+      refundTicket(selectedTicket).then( _ =>{
+          window.setTimeout(() => this.toggleRefundSuccessMessage(), 500);
+          window.setTimeout(() => this.toggleRefundSuccessMessage(), 5000);
+      }).catch(_=> {});
     }
   
     handleChange(ev) {
@@ -196,14 +205,25 @@ class TicketList extends React.Component {
                 unmountOnExit
                 in={this.state.showSave}
                 timeout={2000}
-                classNames="fade-in-out"
-            >
+                classNames="fade-in-out">
                 <React.Fragment>                    
                     <Alert bsStyle="success col-sm-8 col-sm-offset-2">
                         {T.translate("tickets.save_message")}
                     </Alert>
                 </React.Fragment>
             </CSSTransition>
+              <CSSTransition
+                  unmountOnExit
+                  in={this.state.showRefundSuccess}
+                  timeout={2000}
+                  classNames="fade-in-out">
+                  <React.Fragment>
+                      <br />
+                      <Alert bsStyle="success">
+                          {T.translate("tickets.refund_request_success_message")}
+                      </Alert>
+                  </React.Fragment>
+              </CSSTransition>
             <div className="list-desktop">
               {tickets.map((t) => {
                 return (

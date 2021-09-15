@@ -157,7 +157,8 @@
   },
   "tickets": {
     "empty"               : "There are no tickets so far",
-    "save_message"        : "Thank you! Your information has been saved and ticket updated."
+    "save_message"        : "Thank you! Your information has been saved and ticket updated.",
+    "refund_request_success_message": "Your refund request has been received. Please allow 24 - 48 hours for a response."
   },
   "nav_bar": {
     "my-orders"           : "My Orders",

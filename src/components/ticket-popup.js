@@ -343,8 +343,8 @@ class TicketPopup extends React.Component {
                           (!fromTicketList && member.email !== owner.email && now < reassign_date) &&
                           <Tab>{T.translate("ticket_popup.tab_notify")}</Tab>
                         }
-                        { orderOwned && summit.start_date > now &&
-                            <Tab>{T.translate("ticket_popup.tab_refund")}</Tab>
+                        { orderOwned && summit.start_date > now && ticket.final_amount > 0 && ticket.final_amount > ticket.refunded_amount &&
+                        <Tab>{T.translate("ticket_popup.tab_refund")}</Tab>
                         }
                     </TabList>
                     {status.text === 'UNASSIGNED' && 
@@ -446,7 +446,7 @@ class TicketPopup extends React.Component {
                         </div>
                       </TabPanel>
                     }
-                    {orderOwned && summit.start_date > now &&
+                    {orderOwned && summit.start_date > now && ticket.final_amount > 0 && ticket.final_amount > ticket.refunded_amount &&
                         <TabPanel ref={this.popUpPanelRef} className="popup-panel">
                             <div className="popup-scroll">
                                 <div className="ticket-info-wrapper">

@@ -365,7 +365,7 @@ export const refundTicket = (ticket) => async (dispatch, getState) => {
     }
   ).catch(e => {
     dispatch(stopLoading());
-    return (e);
+    throw(e);
   });
 
 }

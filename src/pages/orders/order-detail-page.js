@@ -21,7 +21,14 @@ import TicketPopup from "../../components/ticket-popup";
 import TicketOptions from "../../components/ticket-options";
 import ConfirmPopup from '../../components/confirm-popup';
 import { CSSTransition } from "react-transition-group";
-import { selectTicket, getTicketPDF, assignAttendee, editOwnedTicket, handleTicketChange, refundTicket, removeAttendee, resendNotification } from '../../actions/ticket-actions';
+import { selectTicket,
+  getTicketPDF,
+  assignAttendee,
+  editOwnedTicket,
+  handleTicketChange,
+  refundTicket,
+  removeAttendee,
+  resendNotification } from '../../actions/ticket-actions';
 import { cancelOrder } from '../../actions/order-actions';
 
 import { daysBetweenDates, getFormatedDate } from '../../utils/helpers';
@@ -38,6 +45,7 @@ class OrderDetailPage extends React.Component {
     this.state = {
       showPopup: false,
       showSave:false,
+      showRefundSuccess:false,
       cancelOrderPopup: false,
     };  
 
@@ -56,6 +64,7 @@ class OrderDetailPage extends React.Component {
     this.handlePastSummit = this.handlePastSummit.bind(this);
     this.toggleSaveMessage = this.toggleSaveMessage.bind(this);
     this.isInactive = this.isInactive.bind(this);
+    this.toggleRefundSuccessMessage = this.toggleRefundSuccessMessage.bind(this);
   }
 
   togglePopup(ticket) {
@@ -70,6 +79,10 @@ class OrderDetailPage extends React.Component {
 
   toggleSaveMessage(){
     this.setState({...this.state, showSave: !this.state.showSave });
+  }
+
+  toggleRefundSuccessMessage(){
+    this.setState({...this.state, showRefundSuccess: !this.state.showRefundSuccess });
   }
 
   handleTicketStatus(ticket){
@@ -137,7 +150,10 @@ class OrderDetailPage extends React.Component {
   }
 
   handleTicketCancel(ticket) {
-    this.props.refundTicket(ticket);
+    this.props.refundTicket(ticket).then( _ =>{
+      window.setTimeout(() => this.toggleRefundSuccessMessage(), 500);
+      window.setTimeout(() => this.toggleRefundSuccessMessage(), 5000);
+    }).catch(_=> {});
   }
 
   handleTicketUpdate(tempTicket) {    
@@ -148,19 +164,19 @@ class OrderDetailPage extends React.Component {
       if(owner.email !== attendee_email) {
         this.props.removeAttendee(tempTicket).then(() => {
           window.setTimeout(() => this.toggleSaveMessage(), 500);
-          window.setTimeout(() => this.toggleSaveMessage(), 2000);
+          window.setTimeout(() => this.toggleSaveMessage(), 5000);
         });
       } else {
         let updateOrder = true;
         this.props.editOwnedTicket(attendee_email, attendee_first_name, attendee_last_name, attendee_company, disclaimer_accepted, extra_questions, updateOrder).then(() => {
           window.setTimeout(() => this.toggleSaveMessage(), 500);
-          window.setTimeout(() => this.toggleSaveMessage(), 2000);
+          window.setTimeout(() => this.toggleSaveMessage(), 5000);
         });
       }
     } else {
       this.props.assignAttendee(attendee_email, attendee_first_name, attendee_last_name, attendee_company, disclaimer_accepted, extra_questions).then(() => {
         window.setTimeout(() => this.toggleSaveMessage(), 500);
-        window.setTimeout(() => this.toggleSaveMessage(), 2000);
+        window.setTimeout(() => this.toggleSaveMessage(), 5000);
       });
     }
   }   
@@ -265,14 +281,25 @@ class OrderDetailPage extends React.Component {
                         unmountOnExit
                         in={this.state.showSave}
                         timeout={2000}
-                        classNames="fade-in-out"
-                    >
+                        classNames="fade-in-out">
                         <React.Fragment>
                             <br />
                             <Alert bsStyle="success">
                               {T.translate("tickets.save_message")}
                             </Alert>
                         </React.Fragment>
+                    </CSSTransition>
+                    <CSSTransition
+                        unmountOnExit
+                        in={this.state.showRefundSuccess}
+                        timeout={2000}
+                        classNames="fade-in-out">
+                      <React.Fragment>
+                        <br />
+                        <Alert bsStyle="success">
+                          {T.translate("tickets.refund_request_success_message")}
+                        </Alert>
+                      </React.Fragment>
                     </CSSTransition>
                     <div className="ticket-list">
                       {summit.ticket_types.map((s, index) => {                        
