@@ -449,7 +449,7 @@ class TicketPopup extends React.Component {
                     {orderOwned && summit.start_date > now && ticket.final_amount > 0 && ticket.final_amount > ticket.refunded_amount &&
                         <TabPanel ref={this.popUpPanelRef} className="popup-panel">
                             <div className="popup-scroll">
-                                <div className="ticket-info-wrapper">
+                                <div className="ticket-refund-button">
                                     <div className="row">
                                         <div className="col-md-12 text-center">
                                             <a onClick={this.handleTicketCancel} className="cancel">{T.translate("ticket_popup.cancel_ticket")}</a>

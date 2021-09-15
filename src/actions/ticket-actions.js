@@ -357,6 +357,7 @@ export const refundTicket = (ticket) => async (dispatch, getState) => {
       {},
       authErrorHandler
   )(params)(dispatch).then((payload) => {
+      dispatch(stopLoading());
       if(ticket.order_id) {        
         dispatch(getUserOrders(selectedOrder.id, orderPage));      
       } else {        

@@ -362,13 +362,11 @@ export const cancelOrder = (order) => async (dispatch, getState) => {
         {},
         authErrorHandler
     )(params)(dispatch).then((payload) => {
-            dispatch(getUserOrders(null, current_page));
+            dispatch(getUserOrders(order.id, current_page));
             dispatch(stopLoading());
-            history.push('/a/member/orders');
-        }
-    ).catch(e => {
+    }).catch(e => {
         dispatch(stopLoading());
-        return (e);
+        throw (e);
     });
 }
 

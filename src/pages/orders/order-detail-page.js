@@ -145,7 +145,10 @@ class OrderDetailPage extends React.Component {
       }
     })
     if(ev === true) {      
-      this.props.cancelOrder(order);
+      this.props.cancelOrder(order).then( _ =>{
+        window.setTimeout(() => this.toggleRefundSuccessMessage(), 500);
+        window.setTimeout(() => this.toggleRefundSuccessMessage(), 5000);
+      }).catch(_=> {});
     }
   }
 
