@@ -19,7 +19,8 @@ import cloneDeep from "lodash.clonedeep";
 import TicketAssignForm from '../components/ticket-assign-form';
 import TicketOptions from '../components/ticket-options';
 
-import { getTicketByHash, getTicketPDFByHash, refundTicket, regenerateTicketHash, handleTicketChange, assignTicketByHash } from '../actions/ticket-actions'
+import { getTicketByHash, getTicketPDFByHash,
+  regenerateTicketHash, handleTicketChange, assignTicketByHash } from '../actions/ticket-actions'
 
 import {getNow} from '../actions/timer-actions';
 
@@ -107,11 +108,6 @@ class GuestsLayout extends React.Component {
     handleTicketDownload() {
       let ticketHash = this.props.match.params.ticket_hash;
       this.props.getTicketPDFByHash(ticketHash);
-    }
-
-    handleTicketCancel() {
-      let ticketHash = this.props.match.params.ticket_hash;
-      this.props.refundTicket(ticketHash);
     }
 
     handleTicketSave(ticket){
@@ -256,7 +252,6 @@ class GuestsLayout extends React.Component {
                   guest={true}
                   now={this.props.getNow()}
                   downloadTicket={this.handleTicketDownload} 
-                  cancelTicket={this.handleTicketCancel}
                   ticket={ticket}
                   summit={summit}
                   summits={summits}
@@ -297,7 +292,6 @@ export default connect(
   {
     getTicketByHash,
     getTicketPDFByHash,
-    refundTicket,
     regenerateTicketHash,
     handleTicketChange,
     assignTicketByHash,

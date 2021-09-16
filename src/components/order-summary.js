@@ -58,7 +58,7 @@ class OrderSummary extends React.Component {
                 
         let purchaseDiscountTotal = 0;
 
-        order.tickets.filter(tix => tix.discount && tix.status !== "Refunded").map(tix => {
+        order.tickets.filter(tix => tix.discount).map(tix => {
             let tixType = ticket_types.find(tt => tt.id == tix.type_id || tix.ticket_type_id);
 
             let discountPercentageTmp = (tix.discount * 100) / tixType.cost;

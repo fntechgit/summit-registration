@@ -348,26 +348,6 @@ class TicketAssignForm extends React.Component {
                     </div>
                 </React.Fragment>
                 }
-                {showCancel && !guest && orderOwned && summit.start_date > now &&
-                <React.Fragment>
-                    <div className="row field-wrapper">
-                        <div className="col-sm-4"></div>
-                        <div className="col-sm-8">
-                            <h4 className="popup-cancel-ticket"
-                                onClick={this.props.cancelTicket}>{T.translate("ticket_popup.cancel_ticket")}</h4>
-                            <p></p>
-                        </div>
-                    </div>
-                    <div className="field-wrapper-mobile">
-                        <div></div>
-                        <div>
-                            <h4 className="popup-cancel-ticket"
-                                onClick={this.props.cancelTicket}>{T.translate("ticket_popup.cancel_ticket")}</h4>
-                            <p></p>
-                        </div>
-                    </div>
-                </React.Fragment>
-                }
             </div>
         );
     }
