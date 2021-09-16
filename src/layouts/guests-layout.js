@@ -42,7 +42,6 @@ class GuestsLayout extends React.Component {
     };
 
     this.handleTicketDownload = this.handleTicketDownload.bind(this);
-    this.handleTicketCancel = this.handleTicketCancel.bind(this);    
     this.handleReassignDate = this.handleReassignDate.bind(this);
     this.handleTicketSave = this.handleTicketSave.bind(this);
     this.handleTicketUpdate = this.handleTicketUpdate.bind(this);
