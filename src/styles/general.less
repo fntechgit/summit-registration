@@ -167,7 +167,6 @@ input::placeholder {
 .header-title {
   font-size: 23px;  
   height: 100%;
-  width: 80%;
   display: flex;
   padding-left: 30px;
   flex-direction: column;
@@ -517,12 +516,12 @@ input::placeholder {
   margin: 0 -15px;
   &.open {
     position: fixed;
-    top: 120px;
+    top: 140px;
     height: 100%;
     width: 100%;
     z-index: 5;
     overflow-y: scroll;
-    height: calc(100vh - 120px);
+    height: calc(100vh - 140px);
   }
   .closed {
     display: none;
@@ -644,19 +643,32 @@ input::placeholder {
 @media(max-width: 768px) {
 
   .header {
-    height: 120px;
+    height: 140px;
     margin-top: 0;
     position: absolute;
     width: 100%;
     padding: 10px 0;
   }
 
+  .header-top {
+    flex-direction: column;
+  }
+
   .header-title {        
-    width: 80%;
+    width: 100%;
     padding-left: 15px;
     .summit-info {
-      flex-direction: column;
+      flex-direction: row;
       align-items: flex-start;
+      justify-content: space-around;
+      .summit-text {        
+        width: 100%;
+        text-align: right;
+        padding-right: 10px;
+        .registration-title {
+          text-align: center;
+        }
+      }
       .summit-logo {
         max-height: 40px;
       }
@@ -670,46 +682,13 @@ input::placeholder {
   }
 
   .header-user {
-    padding-right: 15px;
+    padding: 15px 4px 0px;
     .user-menu {
+      display: flex;
+      justify-content: space-around;
+      padding-bottom: 0;
       .profile-pic {
       margin-left: auto;
-      }
-      .dropdown-container {      
-        top: 82px;
-        right: 18px;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 120px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);    
-        z-index: 1;
-        .dropdown-item button, a {
-          color: black;    
-          text-decoration: none;
-          display: block;
-        }
-        .dropdown-item button, a {
-          color: black;    
-          text-decoration: none;
-          display: block;
-        }
-      }        
-      &:hover .dropdown-container, &:active .dropdown-container {
-        display: flex;
-        flex-direction: column;
-        .dropdown-item {
-          font-size: 12px;
-          width: 100%;
-          padding: 12px 30px;
-          cursor: pointer;
-          a {
-            border-bottom: none;
-            color: #297fca;
-          }
-          &:hover, &:active {
-            background-color: lightgrey;
-          }
-        }      
       }
     }
   }
@@ -719,7 +698,7 @@ input::placeholder {
   }
 
   .primary-layout{
-    margin: 120px 0;
+    margin: 140px 0;
   }
 
   .not-found-summit {
@@ -745,12 +724,11 @@ input::placeholder {
     display: none;
   }
 
-  button.btn-header {
-    display: none;
-  }
-
   .user-menu {
-    flex-direction: column;
+    flex-direction: row;
+    .btn-wrapper {
+      width: 100%;
+    }
     .dropdown-container{
       margin-left: -35px;
     }
@@ -771,19 +749,19 @@ input::placeholder {
   }
 
   .guest-layout{
-    margin-top: 140px;
+    margin-top: 160px;
     margin-bottom: 50px;
   }
 
   .invalid-hash{
     margin-top: 40px;
-    margin-top: 140px;
+    margin-top: 160px;
     margin-bottom: 50px;
     padding: 0;
   }
 
   .guest-complete{
-    margin-top: 140px;
+    margin-top: 160px;
     margin-bottom: 50px;
     padding: 0;
   }
