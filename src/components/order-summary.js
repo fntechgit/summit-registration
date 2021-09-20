@@ -55,20 +55,8 @@ class OrderSummary extends React.Component {
   
               purchaseTicketTotal = purchaseTicketTotal + tixType.cost;
         });
-                
-        let purchaseDiscountTotal = 0;
 
-        order.tickets.filter(tix => tix.discount).map(tix => {
-            let tixType = ticket_types.find(tt => tt.id == tix.type_id || tix.ticket_type_id);
-
-            let discountPercentageTmp = (tix.discount * 100) / tixType.cost;
-            let discountTmp = (discountPercentageTmp / 100) * tixType.cost;
-            purchaseDiscountTotal = purchaseDiscountTotal + discountTmp;
-
-            return {tix_type: tixType, percentage: discountPercentageTmp, code: tix.promo_code_id};
-        });
-
-        let purchaseTotal = purchaseTicketTotal - purchaseDiscountTotal;
+        let purchaseTotal = purchaseTicketTotal;
 
         if(type === "mobile") {
           return(
@@ -102,13 +90,13 @@ class OrderSummary extends React.Component {
                             );
                         })}
 
-                        {reservation?.discount_amount > 0 || discount_amount > 0 || purchaseDiscountTotal > 0 &&
+                        {reservation?.discount_amount > 0 || discount_amount > 0 &&
                         <div className="row order-discounts order-row">
                             <div className="col-xs-7 text-left">
                                 {T.translate("order_summary.discounts")}
                             </div>
                             <div className="col-xs-5 text-right subtotal">
-                                -${reservation?.discount_amount ? reservation.discount_amount.toFixed(2) : discount_amount? discount_amount.toFixed(2) : purchaseDiscountTotal.toFixed(2)}
+                                -${reservation?.discount_amount ? reservation.discount_amount.toFixed(2) : discount_amount?.toFixed(2)}
                             </div>
                         </div>
                         }
@@ -128,7 +116,7 @@ class OrderSummary extends React.Component {
                                 {T.translate("order_summary.taxes")}
                             </div>
                             <div className="col-xs-5 text-right subtotal">
-                                -${reservation?.taxes_amount? reservation.taxes_amount.toFixed(2) : taxes_amount?.toFixed(2)}
+                                ${reservation?.taxes_amount? reservation.taxes_amount.toFixed(2) : taxes_amount?.toFixed(2)}
                             </div>
                         </div>
                         }
@@ -185,13 +173,13 @@ class OrderSummary extends React.Component {
                           </div>
                       );
                   })}
-                  {reservation?.discount_amount > 0 || discount_amount > 0 || purchaseDiscountTotal > 0 &&
+                  {reservation?.discount_amount > 0 || discount_amount > 0 &&
                   <div className="row order-discounts order-row">
                       <div className="col-xs-7 text-left">
                           {T.translate("order_summary.discounts")}
                       </div>
                       <div className="col-xs-5 text-right subtotal">
-                          -${reservation?.discount_amount ? reservation.discount_amount.toFixed(2) : discount_amount? discount_amount.toFixed(2) : purchaseDiscountTotal.toFixed(2)}
+                          -${reservation?.discount_amount ? reservation.discount_amount.toFixed(2) : discount_amount?.toFixed(2)}
                       </div>
                   </div>
                   }
@@ -211,7 +199,7 @@ class OrderSummary extends React.Component {
                                 {T.translate("order_summary.taxes")}
                             </div>
                             <div className="col-xs-5 text-right subtotal">
-                                -${reservation?.taxes_amount? reservation.taxes_amount.toFixed(2) : taxes_amount?.toFixed(2)}
+                                ${reservation?.taxes_amount? reservation.taxes_amount.toFixed(2) : taxes_amount?.toFixed(2)}
                             </div>
                         </div>
                   }
