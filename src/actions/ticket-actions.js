@@ -35,14 +35,12 @@ export const SELECT_TICKET            = 'SELECT_TICKET';
 export const CHANGE_TICKET            = 'CHANGE_TICKET';
 export const ASSIGN_TICKET            = 'ASSIGN_TICKET';
 export const REMOVE_TICKET_ATTENDEE   = 'REMOVE_TICKET_ATTENDEE';
-export const GET_TICKET_PDF           = 'GET_TICKET_PDF';
 export const REFUND_TICKET            = 'REFUND_TICKET';
 export const GET_TICKET_BY_HASH       = 'GET_TICKET_BY_HASH';
 export const GET_TICKET_BY_HASH_ERROR = 'GET_TICKET_BY_HASH_ERROR';
 export const ASSIGN_TICKET_BY_HASH    = 'ASSIGN_TICKET_BY_HASH';
 export const GUEST_TICKET_COMPLETED   = 'GUEST_TICKET_COMPLETED';
 export const REGENERATE_TICKET_HASH   = 'REGENERATE_TICKET_HASH';
-export const GET_TICKET_PDF_BY_HASH   = 'GET_TICKET_PDF_BY_HASH';
 export const RESEND_NOTIFICATION      = 'RESEND_NOTIFICATION';
 
 const customFetchErrorHandler = (response) => {
@@ -84,9 +82,9 @@ export const getUserTickets = (ticketRefresh, page = 1, per_page = 5) => async (
   
   let params = {
       access_token : accessToken,
-      expand       : 'order, owner, owner.extra_questions, order, badge, badge.features',
+      expand       : 'order, owner, owner.extra_questions, order, badge, badge.features, refund_requests',
       order        : '-id',
-      filter       : 'status==RefundRequested,status==Refunded,status==Confirmed,status==Paid,status==Error',
+      filter       : 'status==Confirmed,status==Paid,status==Error',
       page         : page,
       per_page     : per_page,
   };    
@@ -359,6 +357,7 @@ export const refundTicket = (ticket) => async (dispatch, getState) => {
       {},
       authErrorHandler
   )(params)(dispatch).then((payload) => {
+      dispatch(stopLoading());
       if(ticket.order_id) {        
         dispatch(getUserOrders(selectedOrder.id, orderPage));      
       } else {        
@@ -367,7 +366,7 @@ export const refundTicket = (ticket) => async (dispatch, getState) => {
     }
   ).catch(e => {
     dispatch(stopLoading());
-    return (e);
+    throw(e);
   });
 
 }

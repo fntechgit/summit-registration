@@ -28,6 +28,7 @@ class TicketList extends React.Component {
         this.state = {
           showPopup: false,
           showSave:false,
+          showRefundSuccess:false,
         };  
 
         this.togglePopup = this.togglePopup.bind(this);
@@ -44,6 +45,7 @@ class TicketList extends React.Component {
         this.handlePastSummit = this.handlePastSummit.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.toggleSaveMessage = this.toggleSaveMessage.bind(this);
+        this.toggleRefundSuccessMessage = this.toggleRefundSuccessMessage.bind(this);
     }
 
     togglePopup(ticket) {
@@ -58,6 +60,10 @@ class TicketList extends React.Component {
 
     toggleSaveMessage(){
         this.setState({...this.state, showSave: !this.state.showSave });
+    }
+
+    toggleRefundSuccessMessage(){
+        this.setState({...this.state, showRefundSuccess: !this.state.showRefundSuccess });
     }
 
     handleTicketStatus(ticket){
@@ -82,7 +88,7 @@ class TicketList extends React.Component {
       if(owner.email !== attendee_email) {
           this.props.removeAttendee(ticket).then(() => {
               window.setTimeout(() => this.toggleSaveMessage(), 500);
-              window.setTimeout(() => this.toggleSaveMessage(), 2000);
+              window.setTimeout(() => this.toggleSaveMessage(), 5000);
           });
           return;
       }
@@ -164,7 +170,10 @@ class TicketList extends React.Component {
 
     handleTicketCancel() {
       let {selectedTicket, refundTicket} = this.props;      
-      refundTicket(selectedTicket);
+      refundTicket(selectedTicket).then( _ =>{
+          window.setTimeout(() => this.toggleRefundSuccessMessage(), 500);
+          window.setTimeout(() => this.toggleRefundSuccessMessage(), 5000);
+      }).catch(_=> {});
     }
   
     handleChange(ev) {
@@ -196,19 +205,30 @@ class TicketList extends React.Component {
                 unmountOnExit
                 in={this.state.showSave}
                 timeout={2000}
-                classNames="fade-in-out"
-            >
+                classNames="fade-in-out">
                 <React.Fragment>                    
                     <Alert bsStyle="success col-sm-8 col-sm-offset-2">
                         {T.translate("tickets.save_message")}
                     </Alert>
                 </React.Fragment>
             </CSSTransition>
+              <CSSTransition
+                  unmountOnExit
+                  in={this.state.showRefundSuccess}
+                  timeout={2000}
+                  classNames="fade-in-out">
+                  <React.Fragment>
+                      <br />
+                      <Alert bsStyle="success">
+                          {T.translate("tickets.refund_request_success_message")}
+                      </Alert>
+                  </React.Fragment>
+              </CSSTransition>
             <div className="list-desktop">
               {tickets.map((t) => {
                 return (
                   <div className={`ticket ${this.handleTicketStatus(t).text === "UNASSIGNED" ? now > this.handleReassignDate(t) ? 'disabled' : this.handleTicketStatus(t).orderClass : this.handleTicketStatus(t).orderClass} p-2 col-sm-8 col-sm-offset-2`} key={t.id}
-                    onClick={() => {t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded" || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
+                    onClick={() => {t.status === "Cancelled" || !t.is_active  || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
                       <div className="col-sm-1">
                           <i className={`fa fa-2x ${this.handleTicketStatus(t).icon} ${this.handleTicketStatus(t).class}`}></i>                             
                       </div>
@@ -220,7 +240,7 @@ class TicketList extends React.Component {
                          <h4>{this.handleTicketName(t)}</h4> <h5>{ t.number }</h5>
                          <p>Purchased By {t.order.owner_first_name} {t.order.owner_last_name} ({t.order.owner_email})</p>
                       </div>
-                      {(t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded") ?
+                      {(t.status === "Cancelled" || !t.is_active ) ?
                         <div className="arrow col-sm-2"></div>
                         :
                         <div className="arrow col-sm-2">
@@ -235,7 +255,7 @@ class TicketList extends React.Component {
               {tickets.map((t) => {
                 return (
                   <div className={`ticket ${this.handleTicketStatus(t).text === "UNASSIGNED" ? now > this.handleReassignDate(t) ? 'disabled' : this.handleTicketStatus(t).orderClass : this.handleTicketStatus(t).orderClass} p-2 col-sm-8 col-sm-offset-2`} key={t.id}
-                  onClick={() => {t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded" || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
+                  onClick={() => {t.status === "Cancelled" || !t.is_active || (this.handleTicketStatus(t).text === "UNASSIGNED" && now > this.handleReassignDate(t)) ? null: this.togglePopup(t)}}>
                       <div className="col-sm-1">
                           <i className={`fa fa-2x ${this.handleTicketStatus(t).icon} ${this.handleTicketStatus(t).class}`}></i>                             
                       </div>
@@ -245,7 +265,7 @@ class TicketList extends React.Component {
                           <p className={`status ${this.handleTicketStatus(t).class}`}>{this.handleTicketStatus(t).text}</p>
                           <p>{ t.number }</p>
                       </div>                                            
-                      {(t.status === "Cancelled" || t.status === "RefundRequested" || t.status === "Refunded") ?
+                      {(t.status === "Cancelled" || !t.is_active) ?
                         <div className="arrow col-sm-2"></div>
                         :
                         <div className="arrow col-sm-2">

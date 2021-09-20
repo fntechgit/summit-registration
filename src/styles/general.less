@@ -480,6 +480,37 @@ input::placeholder {
   }
 }
 
+.ticket-refund-button{
+
+  border: 1px solid lightgray;
+  margin-top: 20px;
+  padding: 15px;
+  font-weight: bold;
+  width: 50%;
+  margin-right: auto;
+  margin-left: auto;
+
+  a {
+    line-height: 2em;
+    cursor: pointer;
+  }
+  .cancel {
+    color: #da0000;
+  }
+  .info {
+    font-weight: normal;
+    h4 {
+      font-weight: bold;
+    }
+    .role-badge {
+      text-transform: uppercase;
+    }
+  }
+  &:empty {
+    display: none;
+  }
+}
+
 .order-summary-mobile {
   background-color: #337ab7;
   color: white;      

@@ -310,7 +310,7 @@ class TicketPopup extends React.Component {
       let reassign_date = summit.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date;
       let {ticket} = this.props;
 
-      console.log(`TicketPopup::render now ${now} reassign_date ${reassign_date} summit.end_date ${summit.end_date}`);
+        console.log(`TicketPopup::render now ${now} reassign_date ${reassign_date} summit.end_date ${summit.end_date}`);
 
         return (!loading &&
         <div className='popup-bg'>
@@ -342,6 +342,9 @@ class TicketPopup extends React.Component {
                         {status.text !== 'UNASSIGNED' && 
                           (!fromTicketList && member.email !== owner.email && now < reassign_date) &&
                           <Tab>{T.translate("ticket_popup.tab_notify")}</Tab>
+                        }
+                        { orderOwned && summit.start_date > now && ticket.final_amount > 0 && ticket.final_amount > ticket.refunded_amount &&
+                        <Tab>{T.translate("ticket_popup.tab_refund")}</Tab>
                         }
                     </TabList>
                     {status.text === 'UNASSIGNED' && 
@@ -386,7 +389,6 @@ class TicketPopup extends React.Component {
                             extraQuestions={extraQuestions}
                             readOnly={now > reassign_date}
                             onChange={this.handleChange} 
-                            cancelTicket={this.handleTicketCancel}
                             summit={summit}
                             now={now}
                             errors={errors}/>
@@ -443,6 +445,19 @@ class TicketPopup extends React.Component {
                           </div>
                         </div>
                       </TabPanel>
+                    }
+                    {orderOwned && summit.start_date > now && ticket.final_amount > 0 && ticket.final_amount > ticket.refunded_amount &&
+                        <TabPanel ref={this.popUpPanelRef} className="popup-panel">
+                            <div className="popup-scroll">
+                                <div className="ticket-refund-button">
+                                    <div className="row">
+                                        <div className="col-md-12 text-center">
+                                            <a onClick={this.handleTicketCancel} className="cancel">{T.translate("ticket_popup.cancel_ticket")}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </TabPanel>
                     }
                 </Tabs>
             </div>

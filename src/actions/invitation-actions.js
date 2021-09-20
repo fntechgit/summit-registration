@@ -29,7 +29,7 @@ import { selectSummitById } from "./summit-actions";
 import { openWillLogoutModal } from "./auth-actions";
 export const GET_INVITATION_BY_HASH       = 'GET_INVITATION_BY_HASH';
 export const GET_INVITATION_BY_HASH_ERROR = 'GET_INVITATION_BY_HASH_ERROR';
-
+export const RESET_INVITATION = 'RESET_INVITATION';
 
 const customErrorHandler = (err, res) => (dispatch) => {
     let code = err.status;
@@ -86,7 +86,7 @@ export const getInvitationByHash = (hash) => async (dispatch, getState) => {
     };
 
     return getRequest(
-        null,
+        createAction(RESET_INVITATION),
         createAction(GET_INVITATION_BY_HASH),
         `${window.API_BASE_URL}/api/v1/summits/all/registration-invitations/${hash}`,
         customErrorHandler,

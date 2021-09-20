@@ -17,13 +17,9 @@ import T from 'i18n-react/dist/i18n-react'
 import { daysBetweenDates, getFormatedDate } from '../utils/helpers';
 
 class TicketOptions extends React.Component {
+
     constructor(props) {
         super(props);
-
-        this.state = {
-
-        };
-
         this.handleTicketName = this.handleTicketName.bind(this);
         this.handleSummitLocation = this.handleSummitLocation.bind(this);
         this.handleTicketDate = this.handleTicketDate.bind(this);
@@ -38,6 +34,7 @@ class TicketOptions extends React.Component {
 
     handleTicketDate(ticket) {
       let {summits} = this.props;
+      if(!summits.length) return '';
       let summit = summits.find(s => s.id === ticket.owner.summit_id);
       let dateRange = daysBetweenDates(summit.start_date, summit.end_date, summit.time_zone_id);
       
@@ -78,15 +75,17 @@ class TicketOptions extends React.Component {
       }
     }
 
-
     render() {
-
-      let {guest, summit, ticket, now} = this.props;
-
+        let {guest, summit, ticket, now, order } = this.props;
+        // summit not set
+        if (!summit || (Object.entries(summit).length <= 1 && summit.constructor === Object)) return null;
+        // if we are in guess layout we need the ticket set
+        if(!ticket && guest) return null;
+        console.log(`order?.amount ${order?.amount}  order?.refunded_amount ${ order?.refunded_amount}`);
         return (
+          <>
             <div className="order-info-wrapper">
-                {guest && 
-                <React.Fragment>
+                {guest &&
                   <div className="row">
                     <div className="col-md-12 info">
                       <h4>{summit.name}</h4>
@@ -95,23 +94,23 @@ class TicketOptions extends React.Component {
                       <p className="role-badge">{this.handleTicketRole(ticket.badge)}</p>
                     </div>
                   </div>
-                </React.Fragment>
                 }
-                {!guest && summit.start_date > now &&
+                {!guest && summit.start_date > now && order && order?.status === 'Paid' && order?.amount > 0 && order?.amount > order?.refunded_amount &&
                 <div className="row">
-                    <div className="col-md-12">                        
+                    <div className="col-md-12 text-center">
                         <a onClick={this.props.cancelOrder} className="cancel">{T.translate("order_info.cancel_order")}</a>
                     </div>
                 </div>
                 }
-                {/* {guest && 
-                <div className="row">
-                    <div className="col-md-12">
-                        <a onClick={this.props.downloadTicket}>{T.translate("order_info.download")}<br/></a>                        
+            </div>
+            <div className="order-info-wrapper">
+              <div className="row">
+                    <div className="col-md-12 text-center">
+                        <a className="cancel" target="_blank" href={`mailto:${window.REGISTRATION_EMAIL}`}>{T.translate("order_info.email_support")}</a>
                     </div>
                 </div>
-                } */}
             </div>
+          </>
         );
     }
 }

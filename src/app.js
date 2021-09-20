@@ -63,6 +63,7 @@ window.OAUTH2_CLIENT_ID         = process.env['OAUTH2_CLIENT_ID'];
 window.SCOPES                   = process.env['SCOPES'];
 window.ALLOWED_USER_GROUPS      = process.env['ALLOWED_USER_GROUPS'];
 window.SUPPORT_EMAIL            = process.env['SUPPORT_EMAIL'];
+window.REGISTRATION_EMAIL       = process.env['REGISTRATION_EMAIL'];
 window.MAX_TICKET_QTY_TO_EDIT   = process.env['MAX_TICKET_QTY_TO_EDIT'];
 window.OAUTH2_FLOW              = process.env['OAUTH2_FLOW'] || "token id_token";
 window.DEFAULT_FAV_ICON         = process.env['DEFAULT_FAV_ICON'] || DefaultFavIconFallback;
