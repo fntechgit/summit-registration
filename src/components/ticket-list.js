@@ -236,14 +236,15 @@ class TicketList extends React.Component {
                           <h4>{this.handleEventName(t)}</h4>  <h5>{this.handleTicketDate(t)}</h5>
                           <p className={`status ${this.handleTicketStatus(t).class}`}>{this.handleTicketStatus(t).text}</p>
                       </div>                      
-                      <div className="col-sm-5">
-                         <h4>{this.handleTicketName(t)}</h4> <h5>{ t.number }</h5>
+                      <div className="col-sm-6">
+                         <h4>{this.handleTicketName(t)}</h4> 
+                         <h5 style={{fontSize: 10}}>{ t.number }</h5>
                          <p>Purchased By {t.order.owner_first_name} {t.order.owner_last_name} ({t.order.owner_email})</p>
                       </div>
                       {(t.status === "Cancelled" || !t.is_active ) ?
-                        <div className="arrow col-sm-2"></div>
+                        <div className="arrow col-sm-1"></div>
                         :
-                        <div className="arrow col-sm-2">
+                        <div className="arrow col-sm-1">
                             <i className="fa fa-angle-right"></i>
                         </div>
                       }
