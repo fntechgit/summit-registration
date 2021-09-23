@@ -264,7 +264,7 @@ class OrderList extends React.Component {
                             last
                             ellipsis
                             boundaryLinks
-                            maxButtons={2}
+                            maxButtons={10}
                             items={lastPage}
                             activePage={currentPage}
                             onSelect={this.handlePageChange}
