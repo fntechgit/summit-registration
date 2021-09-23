@@ -19,23 +19,17 @@ export default class
 AuthButton extends React.Component {
 
     constructor(props) {
-        super(props);
-
-        this.state = {
-            showLogOut: false,
-        };
-        
-        this.NONCE_LEN = 16;
+        super(props);        
     }
     
     render() {
-        let { isLoggedUser, doLogin, member, picture, initLogOut } = this.props;
+        let { isLoggedUser, doLogin, picture, initLogOut, summitSlug } = this.props;
 
 
         if (isLoggedUser) {
             return (
                 <div className="user-menu">
-                    <UserButtons initLogOut={initLogOut} />
+                    <UserButtons initLogOut={initLogOut} summitSlug={summitSlug} />
                     <div className="profile-pic">
                         <img src={picture} />
                     </div>
