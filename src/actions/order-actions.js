@@ -33,6 +33,7 @@ import IdTokenVerifier from 'idtoken-verifier';
 import {getUserSummits} from './summit-actions';
 import {openWillLogoutModal} from "./auth-actions";
 import {stepDefs} from '../global/constants';
+import { updateProfile } from "./user-actions";
 
 export const RESET_ORDER = 'RESET_ORDER';
 export const RECEIVE_ORDER = 'RECEIVE_ORDER';
@@ -49,39 +50,9 @@ export const GET_USER_ORDERS = 'GET_ORDERS';
 export const SELECT_ORDER = 'SELECT_ORDER';
 export const REFUND_ORDER = 'REFUND_ORDER';
 export const CLEAR_RESERVATION = 'CLEAR_RESERVATION';
-export const START_LOADING_IDP_PROFILE = 'START_LOADING_IDP_PROFILE';
-export const STOP_LOADING_IDP_PROFILE = 'STOP_LOADING_IDP_PROFILE';
-export const UPDATE_IDP_PROFILE = 'UPDATE_IDP_PROFILE';
 
 export const handleResetOrder = (step = null) => (dispatch, getState) => {
     dispatch(createAction(RESET_ORDER)({step: step}));
-}
-
-export const updateProfile = (profile) => async (dispatch, getState) => {
-
-  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
-  if (!accessToken) return;
-
-  dispatch(startLoading());
-
-  let params = {
-    access_token: accessToken,
-  };
-
-  dispatch(createAction(START_LOADING_IDP_PROFILE)());
-
-  putRequest(
-    null,
-    createAction(UPDATE_IDP_PROFILE),
-    `${window.IDP_BASE_URL}/api/v1/users/me`,
-    profile,
-    authErrorHandler
-  )(params)(dispatch)
-    .then(() => dispatch(stopLoading()))
-    .catch(() => {
-      dispatch(createAction(STOP_LOADING_IDP_PROFILE)())
-      dispatch(stopLoading());
-    });
 }
 
 export const checkOrderData = () => (dispatch, getState) => {
@@ -288,6 +259,7 @@ export const payReservation = (token = null, stripe = null) => (dispatch, getSta
                 return (payload);
             } else if (reservation.hasOwnProperty('tickets') && reservation.tickets.length <= window.MAX_TICKET_QTY_TO_EDIT && (hasTicketExtraQuestion || mandatoryDisclaimer)) {
                 // if we reach the required qty of tix to update and we have extra questions for tix ..
+                  dispatch(checkOrderData());
                   history.push(stepDefs[3]);
                   return (payload);
               } else {
@@ -333,6 +305,7 @@ export const payReservation = (token = null, stripe = null) => (dispatch, getSta
                     .then((payload) => {
                         dispatch(stopLoading());
                         if (reservation.hasOwnProperty('tickets') && reservation.tickets.length <= window.MAX_TICKET_QTY_TO_EDIT && hasTicketExtraQuestion) {
+                            dispatch(checkOrderData());
                             history.push(stepDefs[3]);
                             return (payload);
                         }
