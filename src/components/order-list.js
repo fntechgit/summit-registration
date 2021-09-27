@@ -50,9 +50,12 @@ class OrderList extends React.Component {
                     }
                 });
             } else {
-                let name = summit.ticket_types.find(q => q.id === t.ticket_type_id).name;
-                let addTicket = {quantity: 1, name, ...t};
-                quantity.push(addTicket);
+                let ticketType = summit.ticket_types.find(q => q.id === t.ticket_type_id);
+                if(ticketType) {
+                    let name = ticketType.name;
+                    let addTicket = {quantity: 1, name, ...t};
+                    quantity.push(addTicket);
+                }
             }
         });
         return quantity;
