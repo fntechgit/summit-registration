@@ -24,6 +24,7 @@
     "order_summary"   : "Order Summary",
     "discounts"       : "Discount",
     "refunds"         : "Refund",
+    "taxes"           : "Taxes",
     "total"           : "Total Due",
     "amount_paid"     : "Amount Paid"
   },
