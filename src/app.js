@@ -121,11 +121,6 @@ class App extends React.PureComponent {
                             </div>
                           }
                       </div>
-                      <div className="header-bottom">
-                          <div className="header-menu">                        
-                            {isLoggedUser && location.match(memberLocation) && <NavBar />}
-                          </div>
-                      </div>
                   </div>
                   <Switch>
                       <AuthorizedRoute isLoggedUser={isLoggedUser} doLogin={this.onClickLogin.bind(this)} backUrl={backUrl} path="/a/member" component={DashboardLayout} />
