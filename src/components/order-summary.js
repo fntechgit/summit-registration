@@ -23,7 +23,6 @@ class OrderSummary extends React.Component {
         };
 
         this.handleSummaryDisplay = this.handleSummaryDisplay.bind(this);
-
     }
 
     handleSummaryDisplay(){      
@@ -33,7 +32,6 @@ class OrderSummary extends React.Component {
         }
       }, () => this.state.summaryToggle ? document.body.style.overflow = "hidden" : document.body.style.overflow = "visible", window.scrollTo(0, 0))      
     }
-
 
     render() {
 
@@ -105,18 +103,8 @@ class OrderSummary extends React.Component {
                             </div>
                         </div>
                         }
-                        {refundTotal > 0 && 
-                        <div className="row order-refunds order-row">
-                            <div className="col-xs-7 text-left">
-                                {T.translate("order_summary.refunds")}                          
-                            </div>
-                            <div className="col-xs-5 text-right subtotal">
-                                -${refundTotal}
-                            </div>
-                        </div>
-                        }
                         {taxesTotal > 0 && 
-                        <div className="row order-refunds order-row">
+                        <div className="row order-taxes order-row">
                             <div className="col-xs-7 text-left">
                                 {T.translate("order_summary.taxes")}
                             </div>
@@ -132,9 +120,19 @@ class OrderSummary extends React.Component {
                                     {T.translate("order_summary.amount_paid")}
                                 </div>
                                 <div className="col-xs-5 text-right subtotal">
-                                    -${ (amount)?.toFixed(2)}
+                                    -${ amountTotal}
                                 </div>
                             </div>
+                        }
+                        {refundTotal > 0 && 
+                        <div className="row order-refunds order-row">
+                            <div className="col-xs-7 text-left">
+                                {T.translate("order_summary.refunds")}                          
+                            </div>
+                            <div className="col-xs-5 text-right subtotal">
+                                ${refundTotal}
+                            </div>
+                        </div>
                         }
                         <div className="row total-row">
                             <div className="col-xs-6 text-left">
@@ -188,18 +186,8 @@ class OrderSummary extends React.Component {
                       </div>
                   </div>
                   }
-                  {refundTotal > 0 && 
-                  <div className="row order-refunds order-row">
-                      <div className="col-xs-7 text-left">
-                          {T.translate("order_summary.refunds")}                          
-                      </div>
-                      <div className="col-xs-5 text-right subtotal">
-                          -${refundTotal}
-                      </div>
-                  </div>
-                  }
                   {taxesTotal > 0 && 
-                        <div className="row order-refunds order-row">
+                        <div className="row order-taxes order-row">
                             <div className="col-xs-7 text-left">
                                 {T.translate("order_summary.taxes")}
                             </div>
@@ -215,9 +203,19 @@ class OrderSummary extends React.Component {
                               {T.translate("order_summary.amount_paid")}
                           </div>
                           <div className="col-xs-5 text-right subtotal">
-                              -${ (amount)?.toFixed(2)}
+                              -${ amountTotal}
                           </div>
                       </div>
+                  }
+                  {refundTotal > 0 && 
+                  <div className="row order-refunds order-row">
+                      <div className="col-xs-7 text-left">
+                          {T.translate("order_summary.refunds")}
+                      </div>
+                      <div className="col-xs-5 text-right subtotal">
+                          ${refundTotal}
+                      </div>
+                  </div>
                   }
                   <div className="row total-row">
                       <div className="col-xs-6 text-left">
