@@ -23,7 +23,6 @@ class OrderSummary extends React.Component {
         };
 
         this.handleSummaryDisplay = this.handleSummaryDisplay.bind(this);
-
     }
 
     handleSummaryDisplay(){      
@@ -34,12 +33,12 @@ class OrderSummary extends React.Component {
       }, () => this.state.summaryToggle ? document.body.style.overflow = "hidden" : document.body.style.overflow = "visible", window.scrollTo(0, 0))      
     }
 
-
     render() {
 
-        let {order, summit: {ticket_types}, type} = this.props;
-        let ticketTotal = 0;
-        let ticketSummary = [];        
+        let {order, order: {refunded_amount, discount_amount, raw_amount, taxes_amount, amount, reservation}, summit: {ticket_types}, type} = this.props;
+
+        let ticketSummary = [];
+        let purchaseTicketTotal = 0;                        
 
         order.tickets.forEach(tix => {
               let idx = ticketSummary.findIndex(o => o.ticket_type_id == (tix.type_id ? tix.type_id : tix.ticket_type_id));
@@ -52,28 +51,15 @@ class OrderSummary extends React.Component {
                   ticketSummary.push({ticket_type_id: (tix.type_id ? tix.type_id : tix.ticket_type_id), tix_type: tixType, name, qty: 1})
               }
   
-              ticketTotal = ticketTotal + tixType.cost;
-
-        });
-        
-        let discountTotal = 0;
-
-        order.tickets.filter(tix => tix.discount).map(tix => {
-            let tixType = ticket_types.find(tt => tt.id == tix.type_id || tix.ticket_type_id);
-
-            let discountPercentageTmp = (tix.discount * 100) / tixType.cost;            
-            let discountTmp = (discountPercentageTmp / 100) * tixType.cost;            
-            discountTotal = discountTotal + discountTmp;
-
-            return {tix_type: tixType, percentage: discountPercentageTmp, code: tix.promo_code_id};
+              purchaseTicketTotal = purchaseTicketTotal + tixType.cost;
         });
 
-        let refundTotal = 0;
-        order.tickets.filter(tix => tix.status === "Paid" && tix.refunded_amount > 0.0).map(tix => {
-          refundTotal += tix.refunded_amount;
-        });
+        let purchaseTotal = purchaseTicketTotal;
 
-        let total = ticketTotal - discountTotal - refundTotal;
+        let discountTotal = reservation?.discount_amount ? reservation.discount_amount.toFixed(2) : discount_amount?.toFixed(2);
+        let refundTotal = reservation?.refunded_amount ? reservation.refunded_amount.toFixed(2) : refunded_amount?.toFixed(2);
+        let taxesTotal = reservation?.taxes_amount? reservation.taxes_amount.toFixed(2) : taxes_amount?.toFixed(2);
+        let amountTotal = reservation?.amount? reservation.amount.toFixed(2) : amount ? amount.toFixed(2) : purchaseTotal.toFixed(2);
 
         if(type === "mobile") {
           return(
@@ -82,7 +68,7 @@ class OrderSummary extends React.Component {
                   <div className="order-summary-mobile--title" onClick={this.handleSummaryDisplay}>
                     <span>Order Summary</span>                  
                     <span>
-                      ${total.toFixed(2)} &nbsp; <i className={`fa ${this.state.summaryToggle ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden="true"></i>                            
+                      ${amountTotal} &nbsp; <i className={`fa ${this.state.summaryToggle ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden="true"></i>
                     </span>
                   </div>
                   <div className={this.state.summaryToggle ? 'open':'closed' }>
@@ -101,7 +87,7 @@ class OrderSummary extends React.Component {
                                         <span>x{tix.qty}</span>
                                     </div>                                    
                                     <div className="col-xs-5 text-right subtotal">
-                                        ${total.toFixed(2)}
+                                        ${total?.toFixed(2)}
                                     </div>
                                 </div>
                             );
@@ -113,17 +99,17 @@ class OrderSummary extends React.Component {
                                 {T.translate("order_summary.discounts")}
                             </div>
                             <div className="col-xs-5 text-right subtotal">
-                                -${discountTotal.toFixed(2)}
+                                -${discountTotal}
                             </div>
                         </div>
                         }
-                        {refundTotal > 0 && 
-                        <div className="row order-refunds order-row">
+                        {taxesTotal > 0 && 
+                        <div className="row order-taxes order-row">
                             <div className="col-xs-7 text-left">
-                                {T.translate("order_summary.refunds")}                          
+                                {T.translate("order_summary.taxes")}
                             </div>
                             <div className="col-xs-5 text-right subtotal">
-                                -${refundTotal.toFixed(2)}
+                                ${taxesTotal}
                             </div>
                         </div>
                         }
@@ -134,21 +120,30 @@ class OrderSummary extends React.Component {
                                     {T.translate("order_summary.amount_paid")}
                                 </div>
                                 <div className="col-xs-5 text-right subtotal">
-                                    -${ total.toFixed(2)}
+                                    -${ amountTotal}
                                 </div>
                             </div>
+                        }
+                        {refundTotal > 0 && 
+                        <div className="row order-refunds order-row">
+                            <div className="col-xs-7 text-left">
+                                {T.translate("order_summary.refunds")}                          
+                            </div>
+                            <div className="col-xs-5 text-right subtotal">
+                                ${refundTotal}
+                            </div>
+                        </div>
                         }
                         <div className="row total-row">
                             <div className="col-xs-6 text-left">
                                 {T.translate("order_summary.total")}
                             </div>
                             <div className="col-xs-6 text-right total">
-                                ${ order.status === 'Paid' ? '0.00' : total.toFixed(2)}
+                                ${ order.status === 'Paid' ? '0.00' : amountTotal }
                             </div>
                         </div>
                       </div>
                       <div className="order-summary-mobile--coupon">
-
                       </div>
                       <div className="order-summary-mobile--close-text" onClick={this.handleSummaryDisplay}>
                           Close
@@ -176,7 +171,7 @@ class OrderSummary extends React.Component {
                                   <span>x{tix.qty}</span>
                               </div>
                               <div className="col-xs-5 text-right subtotal">
-                                  ${total.toFixed(2)}
+                                  ${total?.toFixed(2)}
                               </div>
                           </div>
                       );
@@ -187,19 +182,19 @@ class OrderSummary extends React.Component {
                           {T.translate("order_summary.discounts")}
                       </div>
                       <div className="col-xs-5 text-right subtotal">
-                          -${discountTotal.toFixed(2)}
+                          -${discountTotal}
                       </div>
                   </div>
                   }
-                  {refundTotal > 0 && 
-                  <div className="row order-refunds order-row">
-                      <div className="col-xs-7 text-left">
-                          {T.translate("order_summary.refunds")}                          
-                      </div>
-                      <div className="col-xs-5 text-right subtotal">
-                          -${refundTotal.toFixed(2)}
-                      </div>
-                  </div>
+                  {taxesTotal > 0 && 
+                        <div className="row order-taxes order-row">
+                            <div className="col-xs-7 text-left">
+                                {T.translate("order_summary.taxes")}
+                            </div>
+                            <div className="col-xs-5 text-right subtotal">
+                                ${taxesTotal}
+                            </div>
+                        </div>
                   }
                   {
                       order.status === 'Paid' &&
@@ -208,16 +203,26 @@ class OrderSummary extends React.Component {
                               {T.translate("order_summary.amount_paid")}
                           </div>
                           <div className="col-xs-5 text-right subtotal">
-                              -${ total.toFixed(2)}
+                              -${ amountTotal}
                           </div>
                       </div>
+                  }
+                  {refundTotal > 0 && 
+                  <div className="row order-refunds order-row">
+                      <div className="col-xs-7 text-left">
+                          {T.translate("order_summary.refunds")}
+                      </div>
+                      <div className="col-xs-5 text-right subtotal">
+                          ${refundTotal}
+                      </div>
+                  </div>
                   }
                   <div className="row total-row">
                       <div className="col-xs-6 text-left">
                           {T.translate("order_summary.total")}
                       </div>
                       <div className="col-xs-6 text-right total">
-                          ${ order.status === 'Paid' ? '0.00' : total.toFixed(2)}
+                          ${ order.status === 'Paid' ? '0.00' : amountTotal}
                       </div>
                   </div>
               </div>
