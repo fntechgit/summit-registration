@@ -4,7 +4,6 @@
 
 .tickets-list {
   position: relative;
-
   margin-top: 50px;  
       .ticket {
         display: flex;
@@ -131,7 +130,17 @@
         background-color: #fff;
       }
     }
-    
+}
+
+@media (max-width: 991px) {
+  .tickets-list {
+    .list-desktop {
+      .ticket {
+        width: 100%;
+        margin: 0.5em 0 0;
+      }
+    }
+  }
 }
 
 @media (min-width: 768px) {
