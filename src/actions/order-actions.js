@@ -25,11 +25,15 @@ import {
     createAction,
     stopLoading,
     startLoading,
+    getIdToken
 } from 'openstack-uicore-foundation/lib/methods';
+
+import IdTokenVerifier from 'idtoken-verifier';
 
 import {getUserSummits} from './summit-actions';
 import {openWillLogoutModal} from "./auth-actions";
 import {stepDefs} from '../global/constants';
+import { updateProfile } from "./user-actions";
 
 export const RESET_ORDER = 'RESET_ORDER';
 export const RECEIVE_ORDER = 'RECEIVE_ORDER';
@@ -49,6 +53,36 @@ export const CLEAR_RESERVATION = 'CLEAR_RESERVATION';
 
 export const handleResetOrder = (step = null) => (dispatch, getState) => {
     dispatch(createAction(RESET_ORDER)({step: step}));
+}
+
+export const checkOrderData = () => (dispatch, getState) => {
+
+  const { loggedUserState: {member: {first_name, last_name}}} = getState();
+  const { orderState: { purchaseOrder: {reservation: { owner_company, owner_first_name, owner_last_name }}}} = getState();  
+
+  const idToken = getIdToken();
+  let company = '';  
+  if(idToken) {
+    try {
+      const verifier = new IdTokenVerifier();
+      let jwt = verifier.decode(idToken);      
+      company = jwt.payload.company;      
+    }
+    catch (e){
+      console.log('error', e);      
+    }
+  }  
+
+  if (owner_company !== company || owner_first_name !== first_name || owner_last_name !== last_name) {
+      const newProfile = {
+          first_name: owner_first_name,
+          last_name: owner_last_name,
+          company: owner_company
+      };
+      dispatch(updateProfile(newProfile));
+  }
+
+  dispatch(createAction(CLEAR_RESERVATION)({}));
 }
 
 export const handleOrderChange = (order, errors = {}) => (dispatch, getState) => {
@@ -198,45 +232,46 @@ export const payReservation = (token = null, stripe = null) => (dispatch, getSta
 
     dispatch(startLoading());
 
-    if (!token && !stripe) {
-        let normalizedEntity = {
-            billing_address_1: purchaseOrder.billing_address,
-            billing_address_2: purchaseOrder.billing_address_two,
-            billing_address_zip_code: purchaseOrder.billing_zipcode,
-            billing_address_city: purchaseOrder.billing_city,
-            billing_address_state: purchaseOrder.billing_state,
-            billing_address_country: purchaseOrder.billing_country
-        };
+    if(!token && !stripe) {
+      let normalizedEntity = {
+        billing_address_1: purchaseOrder.billing_address,
+        billing_address_2: purchaseOrder.billing_address_two,
+        billing_address_zip_code: purchaseOrder.billing_zipcode,
+        billing_address_city: purchaseOrder.billing_city,
+        billing_address_state: purchaseOrder.billing_state,
+        billing_address_country: purchaseOrder.billing_country
+      };
 
-        return putRequest(
-            null,
-            createAction(PAY_RESERVATION),
-            `${window.API_BASE_URL}/api/public/v1/summits/${purchaseSummit.id}/orders/${reservation.hash}/checkout`,
-            normalizedEntity,
-            authErrorHandler,
-            // entity
-        )(params)(dispatch).then((payload) => {
-            dispatch(stopLoading());
-            // if the order is free, the evaluation to the extra questions page was performed on the previous step
-            const isFree = payload.response.discount_amount === payload.response.raw_amount;
-            if (isFree) {
-                dispatch(createAction(CLEAR_RESERVATION)({}));
+      return putRequest(
+          null,
+          createAction(PAY_RESERVATION),
+          `${window.API_BASE_URL}/api/public/v1/summits/${purchaseSummit.id}/orders/${reservation.hash}/checkout`,
+          normalizedEntity,
+          authErrorHandler,
+          // entity
+      )(params)(dispatch).then((payload) => {                    
+              dispatch(stopLoading());
+              // if the order is free, the evaluation to the extra questions page was performed on the previous step
+              const isFree = payload.response.discount_amount === payload.response.raw_amount;
+              if(isFree) {
+                dispatch(checkOrderData());
                 history.push(stepDefs[4]);
                 return (payload);
             } else if (reservation.hasOwnProperty('tickets') && reservation.tickets.length <= window.MAX_TICKET_QTY_TO_EDIT && (hasTicketExtraQuestion || mandatoryDisclaimer)) {
                 // if we reach the required qty of tix to update and we have extra questions for tix ..
-                history.push(stepDefs[3]);
-                return (payload);
-            } else {
-                dispatch(createAction(CLEAR_RESERVATION)({}));
-                history.push(stepDefs[4]);
-                return (payload);
-            }
-        })
-            .catch(e => {
-                dispatch(stopLoading());
-                return (e);
-            });
+                  dispatch(checkOrderData());
+                  history.push(stepDefs[3]);
+                  return (payload);
+              } else {
+              dispatch(checkOrderData());
+              history.push(stepDefs[4]);
+              return (payload);
+              }              
+          })
+          .catch(e => {
+              dispatch(stopLoading());
+              return (e);
+          });
     } else {
         const {id} = token;
         stripe.confirmCardPayment(
@@ -270,10 +305,11 @@ export const payReservation = (token = null, stripe = null) => (dispatch, getSta
                     .then((payload) => {
                         dispatch(stopLoading());
                         if (reservation.hasOwnProperty('tickets') && reservation.tickets.length <= window.MAX_TICKET_QTY_TO_EDIT && hasTicketExtraQuestion) {
+                            dispatch(checkOrderData());
                             history.push(stepDefs[3]);
                             return (payload);
                         }
-                        dispatch(createAction(CLEAR_RESERVATION)({}));
+                        dispatch(checkOrderData());
 
                         history.push(stepDefs[4]);
                         return (payload);
