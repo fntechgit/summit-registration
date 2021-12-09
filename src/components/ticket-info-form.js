@@ -167,18 +167,17 @@ class TicketInfoForm extends React.Component {
                             </div>
                         </div>
                     }
-
-                    <div className="row ticket-add-wrapper">
-                        <div className="col-md-10 text-right">
-                            <button className="btn btn-primary" onClick={this.addTicket.bind(this, ticketType.id)}
-                            disabled={(
-                                ticketType.max_quantity_per_order > 0 && ticketType.max_quantity_per_order <= orderedTickets.length) 
-                                || (orderedTickets.length >= ticketType.quantity_2_sell - ticketType.quantity_sold)}>
-                                {T.translate("step_two.add_ticket")}
-                            </button>
-                        </div>
-                    </div>
-
+                  
+                    {(ticketType.max_quantity_per_order > 0 && ticketType.max_quantity_per_order > orderedTickets.length) 
+                      && (orderedTickets.length < ticketType.quantity_2_sell - ticketType.quantity_sold) &&                    
+                      <div className="row ticket-add-wrapper">
+                          <div className="col-md-10 text-right">
+                              <button className="btn btn-primary" onClick={this.addTicket.bind(this, ticketType.id)}>
+                                  {T.translate("step_two.add_ticket")}
+                              </button>
+                          </div>
+                      </div>
+                    }
 
                 </div>
             );
