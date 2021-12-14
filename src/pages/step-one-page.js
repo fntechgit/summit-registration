@@ -34,6 +34,7 @@ class StepOnePage extends React.Component {
 
     this.handleAddTicket = this.handleAddTicket.bind(this);
     this.handleSubstractTicket = this.handleSubstractTicket.bind(this);
+    this.handleTicketToSale = this.handleTicketToSale.bind(this);    
   }
 
   componentDidMount() {
@@ -60,21 +61,34 @@ class StepOnePage extends React.Component {
     }
   }
 
+  handleTicketToSale() {
+    let {summit, invitation, now} = this.props;
+
+    let ticketsTypesToSell =
+        Object.entries(summit).length === 0 && summit.constructor === Object
+          ? []
+          : summit.ticket_types.filter(
+              (tt) =>
+                // if it's an invitation only show allowed ticket types
+                invitation?.summit_id === summit.id && invitation?.allowed_ticket_types.length > 0 ? 
+                invitation.allowed_ticket_types.includes(tt.id) &&
+                // if ticket does not has sales start/end date set could be sell all the registration period
+                (tt.sales_start_date == null && tt.sales_end_date == null) || (now >= tt.sales_start_date && now <= tt.sales_end_date) 
+                :
+                (tt.sales_start_date == null && tt.sales_end_date == null) || (now >= tt.sales_start_date && now <= tt.sales_end_date)
+            );
+
+    return ticketsTypesToSell;
+  }
+
   render() {
-    let { summit, order, member, now } = this.props;
+    let { summit, order, member, invitation, now } = this.props;
     if (Object.entries(summit).length === 0 && summit.constructor === Object) return null;
 
     // let now = this.props.getNow();
     //order.status = 'Reserved';
     // filter tickets types
-    let ticketsTypesToSell =
-      Object.entries(summit).length === 0 && summit.constructor === Object
-        ? []
-        : summit.ticket_types.filter(
-            (tt) =>
-              // if ticket does not has sales start/end date set could be sell all the registration period
-              (tt.sales_start_date == null && tt.sales_end_date == null) || (now >= tt.sales_start_date && now <= tt.sales_end_date)
-          );
+    let ticketsTypesToSell = this.handleTicketToSale();      
 
     return (
       <div className="step-one">
@@ -113,12 +127,13 @@ class StepOnePage extends React.Component {
   }
 }
 
-const mapStateToProps = ({ loggedUserState, summitState, orderState, timerState }) => ({
+const mapStateToProps = ({ loggedUserState, summitState, orderState, invitationState, timerState }) => ({
   member: loggedUserState.member,
   summit: summitState.purchaseSummit,
   order: orderState.purchaseOrder,
   now: timerState.now,
   errors: orderState.errors,
+  invitation: invitationState.selectedInvitation,
 });
 
 export default connect(mapStateToProps, {

@@ -45,6 +45,7 @@ class StepTwoPage extends React.Component {
         this.onAcceptDisclaimer = this.onAcceptDisclaimer.bind(this);
         this.onRejectDisclaimer = this.onRejectDisclaimer.bind(this);
         this.hasInPersonTicketTypes = this.hasInPersonTicketTypes.bind(this);
+        this.handleTicketToSale = this.handleTicketToSale.bind(this);        
 
         this.state = {
             dirty: false,
@@ -189,10 +190,29 @@ class StepTwoPage extends React.Component {
         this.setState({dirty: true});
     }
 
+    handleTicketToSale() {
+        let {summit, invitation, now} = this.props;
+    
+        let ticketsTypesToSell =
+            Object.entries(summit).length === 0 && summit.constructor === Object
+              ? []
+              : summit.ticket_types.filter(
+                  (tt) => {                    
+                    return invitation?.summit_id === summit.id && invitation?.allowed_ticket_types.length > 0 ? 
+                    invitation.allowed_ticket_types.includes(tt.id)
+                    :
+                    tt
+                  }
+                );
+    
+        return ticketsTypesToSell;
+      }
+
     render(){
         let {summit, order, errors, member} = this.props;
         let {dirty} = this.state;
         const disclaimer = getMarketingValue('registration_in_person_disclaimer');
+        let ticketsTypesToSell = this.handleTicketToSale();
         if((Object.entries(summit).length === 0 && summit.constructor === Object) ) return null;
         return (
             <div className="step-two">
@@ -201,7 +221,7 @@ class StepTwoPage extends React.Component {
                 <div className="row">
                     <div className="col-md-8">
                         <BasicInfoForm order={order} errors={dirty? errors : {}} onChange={this.handleChange} member={member}/>
-                        {summit.ticket_types.map((t,i) => (
+                        {ticketsTypesToSell.map((t,i) => (
                             <TicketInfoForm
                                 now={this.props.getNow()}
                                 key={`tixinfo_${t.ticket_type_id}_${i}`}
@@ -237,12 +257,13 @@ class StepTwoPage extends React.Component {
     }
 }
 
-const mapStateToProps = ({ loggedUserState, summitState, orderState, baseState }) => ({
+const mapStateToProps = ({ loggedUserState, summitState, orderState, baseState, invitationState }) => ({
     member: loggedUserState.member,
     summit: summitState.purchaseSummit,
     order: orderState.purchaseOrder,
     errors: orderState.errors,
     marketingSettings: baseState.marketingSettings,
+    invitation: invitationState.selectedInvitation,
 })
 
 export default connect (
