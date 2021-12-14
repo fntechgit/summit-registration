@@ -22,10 +22,12 @@ import {
     stopLoading,
     startLoading,
     objectToQueryString,
+    getIdToken
 } from 'openstack-uicore-foundation/lib/methods';
 import { getUserSummits, selectSummitById } from "./summit-actions";
 import { getUserOrders } from "./order-actions";
 import { openWillLogoutModal } from "./auth-actions";
+import { updateProfile } from "./user-actions";
 
 import Swal from 'sweetalert2';
 
@@ -198,6 +200,7 @@ export const assignAttendee = (attendee_email, attendee_first_name, attendee_las
 
 export const editOwnedTicket = (attendee_email, attendee_first_name, attendee_last_name, attendee_company, disclaimer_accepted, extra_questions, updateOrder = false) => async (dispatch, getState) => {  
 
+  const { loggedUserState: {member: {first_name, last_name}}} = getState();  
   let { orderState: { selectedOrder }, ticketState: { selectedTicket } } = getState();
 
   let orderPage = getState().orderState.current_page;   
@@ -213,6 +216,20 @@ export const editOwnedTicket = (attendee_email, attendee_first_name, attendee_la
     expand: 'owner, owner.extra_questions'
   };
 
+
+  const idToken = getIdToken();
+  let company = '';  
+  if(idToken) {
+    try {
+      const verifier = new IdTokenVerifier();
+      let jwt = verifier.decode(idToken);      
+      company = jwt.payload.company;      
+    }
+    catch (e){
+      console.log('error', e);      
+    }
+  }  
+
   let normalizedEntity = { attendee_email, attendee_first_name, attendee_last_name, attendee_company, disclaimer_accepted, extra_questions };
 
   return putRequest(
@@ -222,7 +239,16 @@ export const editOwnedTicket = (attendee_email, attendee_first_name, attendee_la
       normalizedEntity,
       authErrorHandler
   )(params)(dispatch).then(() => {
-      updateOrder ? dispatch(getUserOrders(selectedOrder.id, orderPage)) : dispatch(getUserTickets(null, ticketPage));      
+      // Check if there's changes in the ticket data to update the profile    
+      if (attendee_company !== company || attendee_first_name !== first_name || attendee_last_name !== last_name) {
+        const newProfile = {
+          first_name: attendee_first_name,
+          last_name: attendee_last_name,
+          company: attendee_company
+        };
+        dispatch(updateProfile(newProfile));
+      }
+      updateOrder ? dispatch(getUserOrders(selectedOrder.id, orderPage)) : dispatch(getUserTickets(null, ticketPage));
     }
   ).catch(e => {
     dispatch(stopLoading());
