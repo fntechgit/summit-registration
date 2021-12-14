@@ -164,14 +164,14 @@ class GuestsLayout extends React.Component {
     }
 
     handlePopupSave() {
-      let {tempTicket: {disclaimer_accepted, attendee_first_name, attendee_last_name}} = this.state;
+      let {tempTicket: {disclaimer_accepted, attendee_first_name, attendee_last_name, attendee_company}} = this.state;
       let {summit:{registration_disclaimer_mandatory}} = this.props;
 
       let mandatoryExtraQuestions = this.handleMandatoryExtraQuestions();
-      let saveEnabled = attendee_first_name && attendee_last_name && mandatoryExtraQuestions;
+      let saveEnabled = attendee_first_name && attendee_last_name && attendee_company && mandatoryExtraQuestions;
       
       if (registration_disclaimer_mandatory) {
-        saveEnabled = attendee_first_name && attendee_last_name && mandatoryExtraQuestions && disclaimer_accepted;
+        saveEnabled = attendee_first_name && attendee_last_name && attendee_company && mandatoryExtraQuestions && disclaimer_accepted;
       }
 
       // return the reverse value for disabled prop
