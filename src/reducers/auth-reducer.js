@@ -28,6 +28,8 @@ import {
 } from "../actions/auth-actions";
 
 const DEFAULT_STATE = {
+  allows_native_auth: false,
+  allows_otp_auth: false,
   signInModalOpened: false,
   logoutModalOpened: false,
   isAuthorized: false,
@@ -91,8 +93,8 @@ const AuthReducer = (state = DEFAULT_STATE, action) => {
       return { ...state, passwordless: { ...state.passwordless, error: true } };
     }
     case GET_THIRD_PARTY_PROVIDERS: {
-      const providers = payload.response.third_party_identity_providers;
-      return { ...state, loading: false, third_party_providers: providers };
+      const { allows_native_auth, allows_otp_auth, third_party_identity_providers } = payload.response;
+      return { ...state, loading: false, allows_native_auth, allows_otp_auth, third_party_providers: third_party_identity_providers };
     }
     case SET_AUTHORIZED_USER:
       return { ...state, isAuthorized: payload };

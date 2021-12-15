@@ -19,9 +19,12 @@ import fntechIcon from "../../../assets/svg/logo_fn.svg"
 import appleIcon from "../../../assets/svg/logo_apple.svg"
 import facebookIcon from "../../../assets/svg/logo_facebook.svg"
 import linkedinIcon from "../../../assets/svg/logo_linkedin.svg"
+import oktaIcon from "../../../assets/svg/logo_okta.svg"
 import "./index.less";
 
 const LoginStepOneComponent = ({
+  allowsNativeAuth,
+  allowsOtpAuth,
   thirdPartyProviders,
   login,
   getLoginCode
@@ -43,17 +46,19 @@ const LoginStepOneComponent = ({
   };
 
   const formatAuthProviderButtons = (thirdPartyProviders) => {
-      const fnidBtn = [
-          { button_color: '#082238', provider_label: T.translate("signin.fn_login_btn"), provider_icon: `${fntechIcon}` },
-      ];
 
-      const thirdPartyProvBtns = [
-          { button_color: '#1877F2', provider_label: T.translate("signin.fb_login_btn"), provider_param: 'facebook', provider_icon: `${facebookIcon}` },
-          { button_color: '#0A66C2', provider_label: T.translate("signin.ln_login_btn"), provider_param: 'linkedin', provider_icon: `${linkedinIcon}` },
-          { button_color: '#000000', provider_label: T.translate("signin.ap_login_btn"), provider_param: 'apple', provider_icon: `${appleIcon}` }
-      ];
+    const fnidBtn = [
+      { button_color: '#082238', provider_label: T.translate("signin.fn_login_btn"), provider_icon: `${fntechIcon}` },
+    ];
 
-      return [...fnidBtn, ...thirdPartyProvBtns.filter(p => thirdPartyProviders?.includes(p.provider_param))];
+    const thirdPartyProvBtns = [
+      { button_color: '#1877F2', provider_label: T.translate("signin.fb_login_btn"), provider_param: 'facebook', provider_icon: `${facebookIcon}` },
+      { button_color: '#0A66C2', provider_label: T.translate("signin.ln_login_btn"), provider_param: 'linkedin', provider_icon: `${linkedinIcon}` },
+      { button_color: '#000000', provider_label: T.translate("signin.ap_login_btn"), provider_param: 'apple', provider_icon: `${appleIcon}` },
+      { button_color: '#FFFFFF', font_color: '#00297a', provider_label: T.translate("signin.ok_login_btn"), provider_param: 'okta', provider_icon: `${oktaIcon}` }
+    ];
+
+    return [...fnidBtn, ...thirdPartyProvBtns.filter(p => thirdPartyProviders?.includes(p.provider_param))];
   };
 
   return (
@@ -62,38 +67,55 @@ const LoginStepOneComponent = ({
         <span>{T.translate("signin.login_with_title")}</span>
         {options && options.map((o) => {
           return (
-            <div
-              className="button left-icon-holder"
-              key={`provider-${o.provider_param ? o.provider_param : "fnid"}`}
-              style={{ backgroundColor: o.button_color }}
-              onClick={() => login(o.provider_param)}
-            >
-              <img src={o.provider_icon} className='icon' />
-              {o.provider_label}
-            </div>
+            o.provider_param ?
+              <div
+                className="button left-icon-holder"
+                key={`provider-${o.provider_param}`}
+                style={{ backgroundColor: o.button_color, color: o.font_color }}
+                onClick={() => login(o.provider_param)}
+              >
+                <img src={o.provider_icon} className='icon' />
+                {o.provider_label}
+              </div>
+              :
+              allowsNativeAuth ?
+                <div
+                  className="button left-icon-holder"
+                  key={`provider-fnid`}
+                  style={{ backgroundColor: o.button_color }}
+                  onClick={() => login(o.provider_param)}
+                >
+                  <img src={o.provider_icon} className='icon' />
+                  {o.provider_label}
+                </div>
+                :
+                null
           );
+
         })}
-        <div className="loginCode">
-          {T.translate("signin.send_code_option")} 
-          <div className="input">
-            <input
-              placeholder="youremail@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyPress={(ev) => (ev.key === "Enter" ? loginCode() : null)}
-              data-testid="email-input"
-            />
-            <button onClick={() => loginCode()} data-testid="email-button">
-              &gt;
-            </button>
-            <br />
+        {allowsOtpAuth &&
+          <div className="loginCode">
+            {T.translate("signin.send_code_option")}
+            <div className="input">
+              <input
+                placeholder="youremail@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyPress={(ev) => (ev.key === "Enter" ? loginCode() : null)}
+                data-testid="email-input"
+              />
+              <button onClick={() => loginCode()} data-testid="email-button">
+                &gt;
+              </button>
+              <br />
+            </div>
+            {emailError && (
+              <span data-testid="email-error">
+                {T.translate("signin.invalid_email_addr")}
+              </span>
+            )}
           </div>
-          {emailError && (
-            <span data-testid="email-error">
-              {T.translate("signin.invalid_email_addr")} 
-            </span>
-          )}
-        </div>
+        }
       </div>
     </div>
   );

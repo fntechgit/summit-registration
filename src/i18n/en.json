@@ -244,7 +244,8 @@
     "fn_login_btn": "Continue with FNid",
     "fb_login_btn": "Continue with Facebook",
     "ln_login_btn": "Sign in with LinkedIn",
-    "ap_login_btn": "Continue with Apple"
+    "ap_login_btn": "Continue with Apple",
+    "ok_login_btn": "Continue with Okta"
   },
   "logout_popup": {
     "title": "Re-login required",
