@@ -47,8 +47,6 @@ const LoginStepOneComponent = ({
 
   const formatAuthProviderButtons = (thirdPartyProviders) => {
 
-    console.log('third party', thirdPartyProviders)
-
     const fnidBtn = [
       { button_color: '#082238', provider_label: T.translate("signin.fn_login_btn"), provider_icon: `${fntechIcon}` },
     ];
