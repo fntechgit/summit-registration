@@ -19,6 +19,7 @@ import fntechIcon from "../../../assets/svg/logo_fn.svg"
 import appleIcon from "../../../assets/svg/logo_apple.svg"
 import facebookIcon from "../../../assets/svg/logo_facebook.svg"
 import linkedinIcon from "../../../assets/svg/logo_linkedin.svg"
+import oktaIcon from "../../../assets/svg/logo_okta.svg"
 import "./index.less";
 
 const LoginStepOneComponent = ({
@@ -45,6 +46,9 @@ const LoginStepOneComponent = ({
   };
 
   const formatAuthProviderButtons = (thirdPartyProviders) => {
+
+    console.log('third party', thirdPartyProviders)
+
     const fnidBtn = [
       { button_color: '#082238', provider_label: T.translate("signin.fn_login_btn"), provider_icon: `${fntechIcon}` },
     ];
@@ -52,7 +56,8 @@ const LoginStepOneComponent = ({
     const thirdPartyProvBtns = [
       { button_color: '#1877F2', provider_label: T.translate("signin.fb_login_btn"), provider_param: 'facebook', provider_icon: `${facebookIcon}` },
       { button_color: '#0A66C2', provider_label: T.translate("signin.ln_login_btn"), provider_param: 'linkedin', provider_icon: `${linkedinIcon}` },
-      { button_color: '#000000', provider_label: T.translate("signin.ap_login_btn"), provider_param: 'apple', provider_icon: `${appleIcon}` }
+      { button_color: '#000000', provider_label: T.translate("signin.ap_login_btn"), provider_param: 'apple', provider_icon: `${appleIcon}` },
+      { button_color: '#FFFFFF', font_color: '#00297a', provider_label: T.translate("signin.ok_login_btn"), provider_param: 'okta', provider_icon: `${oktaIcon}` }
     ];
 
     return [...fnidBtn, ...thirdPartyProvBtns.filter(p => thirdPartyProviders?.includes(p.provider_param))];
@@ -68,7 +73,7 @@ const LoginStepOneComponent = ({
               <div
                 className="button left-icon-holder"
                 key={`provider-${o.provider_param}`}
-                style={{ backgroundColor: o.button_color }}
+                style={{ backgroundColor: o.button_color, color: o.font_color }}
                 onClick={() => login(o.provider_param)}
               >
                 <img src={o.provider_icon} className='icon' />
