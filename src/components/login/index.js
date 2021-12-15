@@ -21,6 +21,8 @@ import "./index.less";
 const LoginComponent = ({
   isLoggedUser,
   isLoading,
+  allowsNativeAuth,
+  allowsOtpAuth,
   thirdPartyProviders,
   summit,
   passwordlessEmail,
@@ -87,6 +89,8 @@ const LoginComponent = ({
             <LoginStepOneComponent
               login={(provider) => authUser(provider)}
               getLoginCode={getLoginCode}
+              allowsNativeAuth={allowsNativeAuth}
+              allowsOtpAuth={allowsOtpAuth}
               thirdPartyProviders={thirdPartyProviders}
             />
           )}
@@ -117,6 +121,8 @@ const mapStateToProps = ({
   summit: summitState.purchaseSummit,
   isLoading: authState.loading,
   signInModalOpened: authState.signInModalOpened,
+  allowsNativeAuth: authState.allows_native_auth,
+  allowsOtpAuth: authState.allows_otp_auth,
   thirdPartyProviders: authState.third_party_providers,
   passwordlessEmail: authState.passwordless.email,
   passwordlessCode: authState.passwordless.otp_length,
