@@ -94,7 +94,7 @@ const AuthReducer = (state = DEFAULT_STATE, action) => {
     }
     case GET_THIRD_PARTY_PROVIDERS: {
       const { allows_native_auth, allows_otp_auth, third_party_identity_providers } = payload.response;
-      return { ...state, loading: false, allows_native_auth, allows_otp_auth, third_party_identity_providers };
+      return { ...state, loading: false, allows_native_auth, allows_otp_auth, third_party_providers: third_party_identity_providers };
     }
     case SET_AUTHORIZED_USER:
       return { ...state, isAuthorized: payload };
