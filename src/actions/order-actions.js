@@ -140,6 +140,14 @@ export const createReservation = (owner_email, owner_first_name, owner_last_name
             t.attendee_company = owner_company;
         }
 
+        // if the summit is only invite, assign the ticket to the order owner
+        if(purchaseSummit.invite_only_registration) {
+            t.attendee_email = owner_email;
+            t.attendee_first_name = owner_first_name;
+            t.attendee_last_name = owner_last_name;
+            t.attendee_company = owner_company;
+        }
+
         return t;
     });
 

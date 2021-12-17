@@ -61,7 +61,7 @@ class BasicInfoForm extends React.Component {
 
 
     render() {
-        let {order, onChange, member} = this.props;
+        let {order, onChange, member, invitation} = this.props;
 
         return (
             <div className="basic-info">
@@ -89,9 +89,10 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="first_name"
-                            className="form-control"
+                            className={`form-control ${!!invitation ? 'disabled': ''}`}
                             error={this.hasErrors('first_name')}
                             onChange={onChange}
+                            disabled={!!invitation && !invitation?.first_name}
                             value={order.first_name}
                         />
                     </div>
@@ -103,9 +104,10 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="last_name"
-                            className="form-control"
+                            className={`form-control ${!!invitation ? 'disabled': ''}`}
                             error={this.hasErrors('last_name')}
                             onChange={onChange}
+                            disabled={!!invitation && !invitation?.last_name}
                             value={order.last_name}
                         />
                     </div>
@@ -117,9 +119,10 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="email"
-                            className="form-control"
+                            className={`form-control ${!!invitation ? 'disabled': ''}`}
                             error={this.hasErrors('email')}
                             onChange={onChange}
+                            disabled={!!invitation && !invitation?.email}
                             value={order.email}
                         />
                     </div>
