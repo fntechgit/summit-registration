@@ -55,18 +55,19 @@ if (language === 'en' || language === 'es') {
 } else {
   T.setTexts(require(`./i18n/en.json`));
 }
-const DefaultFavIconFallback    = "https://object-storage-ca-ymq-1.vexxhost.net/swift/v1/6e4619c416ff4bd19e1c087f27a43eea/images-fn/favicon.svg";
-window.IDP_BASE_URL             = process.env['IDP_BASE_URL'];
-window.API_BASE_URL             = process.env['API_BASE_URL'];
-window.MARKETING_API_BASE_URL   = process.env['MARKETING_API_BASE_URL'];
-window.OAUTH2_CLIENT_ID         = process.env['OAUTH2_CLIENT_ID'];
-window.SCOPES                   = process.env['SCOPES'];
-window.ALLOWED_USER_GROUPS      = process.env['ALLOWED_USER_GROUPS'];
-window.SUPPORT_EMAIL            = process.env['SUPPORT_EMAIL'];
-window.REGISTRATION_EMAIL       = process.env['REGISTRATION_EMAIL'];
-window.MAX_TICKET_QTY_TO_EDIT   = process.env['MAX_TICKET_QTY_TO_EDIT'];
-window.OAUTH2_FLOW              = process.env['OAUTH2_FLOW'] || "token id_token";
-window.DEFAULT_FAV_ICON         = process.env['DEFAULT_FAV_ICON'] || DefaultFavIconFallback;
+const DefaultFavIconFallback      = "https://object-storage-ca-ymq-1.vexxhost.net/swift/v1/6e4619c416ff4bd19e1c087f27a43eea/images-fn/favicon.svg";
+window.IDP_BASE_URL               = process.env['IDP_BASE_URL'];
+window.API_BASE_URL               = process.env['API_BASE_URL'];
+window.MARKETING_API_BASE_URL     = process.env['MARKETING_API_BASE_URL'];
+window.OAUTH2_CLIENT_ID           = process.env['OAUTH2_CLIENT_ID'];
+window.SCOPES                     = process.env['SCOPES'];
+window.ALLOWED_USER_GROUPS        = process.env['ALLOWED_USER_GROUPS'];
+window.SUPPORT_EMAIL              = process.env['SUPPORT_EMAIL'];
+window.REGISTRATION_EMAIL         = process.env['REGISTRATION_EMAIL'];
+window.MAX_TICKET_QTY_TO_EDIT     = process.env['MAX_TICKET_QTY_TO_EDIT'];
+window.OAUTH2_FLOW                = process.env['OAUTH2_FLOW'] || "token id_token";
+window.DEFAULT_FAV_ICON           = process.env['DEFAULT_FAV_ICON'] || DefaultFavIconFallback;
+window.INVITATION_DEFAULT_COMPANY = process.env['INVITATION_DEFAULT_COMPANY'];
 
 class App extends React.PureComponent {
 

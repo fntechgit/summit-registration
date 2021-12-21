@@ -209,7 +209,7 @@ class StepTwoPage extends React.Component {
       }
 
     render(){
-        let {summit, order, errors, member} = this.props;
+        let {summit, order, invitation, errors, member} = this.props;
         let {dirty} = this.state;
         const disclaimer = getMarketingValue('registration_in_person_disclaimer');
         let ticketsTypesToSell = this.handleTicketToSale();
@@ -220,8 +220,13 @@ class StepTwoPage extends React.Component {
                 <StepRow step={this.step} />
                 <div className="row">
                     <div className="col-md-8">
-                        <BasicInfoForm order={order} errors={dirty? errors : {}} onChange={this.handleChange} member={member}/>
-                        {ticketsTypesToSell.map((t,i) => (
+                        <BasicInfoForm 
+                            order={order} 
+                            invitation={invitation?.summit_id === summit.id ? invitation : null}
+                            errors={dirty? errors : {}} 
+                            onChange={this.handleChange} 
+                            member={member}/>
+                        {invitation?.summit_id !== summit.id && ticketsTypesToSell.map((t,i) => (
                             <TicketInfoForm
                                 now={this.props.getNow()}
                                 key={`tixinfo_${t.ticket_type_id}_${i}`}

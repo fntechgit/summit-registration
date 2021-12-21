@@ -61,7 +61,7 @@ class BasicInfoForm extends React.Component {
 
 
     render() {
-        let {order, onChange, member} = this.props;
+        let {order, onChange, member, invitation} = this.props;
 
         return (
             <div className="basic-info">
@@ -117,9 +117,10 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="email"
-                            className="form-control"
+                            className={`form-control disabled`}
                             error={this.hasErrors('email')}
                             onChange={onChange}
+                            disabled={true}
                             value={order.email}
                         />
                     </div>
@@ -131,10 +132,11 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="company"
-                            className="form-control"
+                            className={`form-control ${!!invitation ? 'disabled': ''}`}
                             error={this.hasErrors('company')}
                             onChange={onChange}
-                            value={order.company}
+                            disabled={!!invitation}
+                            value={!!invitation ? window.INVITATION_DEFAULT_COMPANY : order.company}
                         />
                     </div>
                 </div>
