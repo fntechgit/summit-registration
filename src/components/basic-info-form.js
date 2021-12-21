@@ -92,7 +92,7 @@ class BasicInfoForm extends React.Component {
                             className={`form-control ${!!invitation ? 'disabled': ''}`}
                             error={this.hasErrors('first_name')}
                             onChange={onChange}
-                            disabled={!!invitation && !invitation?.first_name}
+                            disabled={!!invitation}
                             value={order.first_name}
                         />
                     </div>
@@ -107,7 +107,7 @@ class BasicInfoForm extends React.Component {
                             className={`form-control ${!!invitation ? 'disabled': ''}`}
                             error={this.hasErrors('last_name')}
                             onChange={onChange}
-                            disabled={!!invitation && !invitation?.last_name}
+                            disabled={!!invitation}
                             value={order.last_name}
                         />
                     </div>
@@ -122,7 +122,7 @@ class BasicInfoForm extends React.Component {
                             className={`form-control ${!!invitation ? 'disabled': ''}`}
                             error={this.hasErrors('email')}
                             onChange={onChange}
-                            disabled={!!invitation && !invitation?.email}
+                            disabled={!!invitation}
                             value={order.email}
                         />
                     </div>
@@ -134,10 +134,11 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="company"
-                            className="form-control"
+                            className={`form-control ${!!invitation ? 'disabled': ''}`}
                             error={this.hasErrors('company')}
                             onChange={onChange}
-                            value={order.company}
+                            disabled={!!invitation}
+                            value={!!invitation ? window.INVITATION_DEFAULT_COMPANY : order.company}
                         />
                     </div>
                 </div>
