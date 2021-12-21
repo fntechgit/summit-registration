@@ -264,7 +264,7 @@ class TicketList extends React.Component {
                           <h4>{this.handleEventName(t)}</h4>
                           <p>{this.handleTicketDate(t)} <br/> {this.handleTicketLocation(t)} </p>
                           <p className={`status ${this.handleTicketStatus(t).class}`}>{this.handleTicketStatus(t).text}</p>
-                          <p>{ t.number }</p>
+                          <p className="ticket-number">{ t.number }</p>
                       </div>                                            
                       {(t.status === "Cancelled" || !t.is_active) ?
                         <div className="arrow col-sm-2"></div>
