@@ -117,10 +117,10 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="email"
-                            className={`form-control ${!!invitation ? 'disabled': ''}`}
+                            className={`form-control disabled`}
                             error={this.hasErrors('email')}
                             onChange={onChange}
-                            disabled={!!invitation}
+                            disabled={true}
                             value={order.email}
                         />
                     </div>
