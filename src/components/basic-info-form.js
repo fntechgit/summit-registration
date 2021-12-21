@@ -88,7 +88,8 @@ class BasicInfoForm extends React.Component {
                     </div>
                     <div className="col-md-6">
                         <Input
-                            id="first_name"                            
+                            id="first_name"
+                            className="form-control"
                             error={this.hasErrors('first_name')}
                             onChange={onChange}
                             value={order.first_name}
@@ -101,7 +102,8 @@ class BasicInfoForm extends React.Component {
                     </div>
                     <div className="col-md-6">
                         <Input
-                            id="last_name"                            
+                            id="last_name"
+                            className="form-control"
                             error={this.hasErrors('last_name')}
                             onChange={onChange}
                             value={order.last_name}
