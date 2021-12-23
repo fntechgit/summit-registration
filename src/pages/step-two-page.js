@@ -108,7 +108,7 @@ class StepTwoPage extends React.Component {
                     let jwt = verifier.decode(idToken);
                     first_name = member.first_name;
                     last_name = member.last_name;
-                    email = member.email;                    
+                    email = member.email;
                     company = invitation?.summit_id === summit.id ? window.INVITATION_DEFAULT_COMPANY : jwt.payload.company;
                 }
                 catch (e){

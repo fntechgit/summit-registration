@@ -265,7 +265,9 @@ class TicketAssignForm extends React.Component {
                         <div
                             className="col-sm-4">{T.translate("ticket_popup.edit_company")}{ T.translate("ticket_popup.edit_required_star")}</div>
                         <div className="col-sm-8">
-
+                            {readOnly ?
+                                <span>{ticket.attendee_last_name}</span>
+                                :
                                 <Input
                                     id="attendee_company"
                                     className="form-control"
@@ -273,14 +275,16 @@ class TicketAssignForm extends React.Component {
                                     onChange={this._innerOnChange}
                                     value={ticket.attendee_company}
                                 />
-
+                            }
                         </div>
                     </div>
 
                 <div className="field-wrapper-mobile">
                     <div>{T.translate("ticket_popup.edit_company")}{T.translate("ticket_popup.edit_required_star")}</div>
                     <div>
-
+                        {readOnly ?
+                            <span>{ticket.attendee_last_name}</span>
+                            :
                             <Input
                                 id="attendee_company"
                                 className="form-control"
@@ -288,7 +292,7 @@ class TicketAssignForm extends React.Component {
                                 onChange={this._innerOnChange}
                                 value={ticket.attendee_company}
                             />
-
+                        }
                     </div>
                 </div>
                 {extraQuestions && extraQuestions.length > 0 &&
