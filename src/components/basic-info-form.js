@@ -89,8 +89,9 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="first_name"
-                            className="form-control"
+                            className={`form-control ${!!invitation ? 'disabled': ''}`}
                             error={this.hasErrors('first_name')}
+                            disabled={!!invitation}
                             onChange={onChange}
                             value={order.first_name}
                         />
@@ -103,8 +104,9 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="last_name"
-                            className="form-control"
+                            className={`form-control ${!!invitation ? 'disabled': ''}`}
                             error={this.hasErrors('last_name')}
+                            disabled={!!invitation}
                             onChange={onChange}
                             value={order.last_name}
                         />
