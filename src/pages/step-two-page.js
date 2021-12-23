@@ -82,7 +82,7 @@ class StepTwoPage extends React.Component {
 
     componentWillMount() {
         let order = {...this.props.order};
-        let {member} = this.props;
+        let {member, invitation, summit} = this.props;
         
         order = {
             ...order,
@@ -108,8 +108,8 @@ class StepTwoPage extends React.Component {
                     let jwt = verifier.decode(idToken);
                     first_name = member.first_name;
                     last_name = member.last_name;
-                    email = member.email;
-                    company = jwt.payload.company;
+                    email = member.email;                    
+                    company = invitation?.summit_id === summit.id ? window.INVITATION_DEFAULT_COMPANY : jwt.payload.company;
                 }
                 catch (e){
                     log.error(e);
