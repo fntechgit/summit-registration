@@ -12,12 +12,13 @@
  **/
 
 import {LOGOUT_USER, START_LOADING, STOP_LOADING} from "openstack-uicore-foundation/lib/actions";
-import {GET_INVITATION_BY_HASH, GET_INVITATION_BY_HASH_ERROR, RESET_INVITATION} from "../actions/invitation-actions";
+import {GET_INVITATION_BY_HASH, GET_INVITATION_BY_HASH_ERROR, INVALID_INVITATION, RESET_INVITATION} from "../actions/invitation-actions";
 
 
 const DEFAULT_STATE = {
     loading: false,
     selectedInvitation: null,
+    error: null,
 };
 
 const InvitationReducer = (state = DEFAULT_STATE, action) => {
@@ -27,7 +28,7 @@ const InvitationReducer = (state = DEFAULT_STATE, action) => {
         case LOGOUT_USER:
             return DEFAULT_STATE;
         case RESET_INVITATION:{
-            return {...state, selectedInvitation: null};
+            return {...state, error: null, selectedInvitation: null};
         }
         case START_LOADING:
             return {...state, loading: true};
@@ -36,7 +37,9 @@ const InvitationReducer = (state = DEFAULT_STATE, action) => {
             return {...state, loading: false};
             break;
         case GET_INVITATION_BY_HASH:
-            return {...state, selectedInvitation: payload.response};
+            return {...state, selectedInvitation: payload.response, error: null};
+        case INVALID_INVITATION:
+            return {...state, error: payload}
         default:
             return state;
             break;

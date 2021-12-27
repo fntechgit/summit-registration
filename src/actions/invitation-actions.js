@@ -30,6 +30,7 @@ import { openWillLogoutModal } from "./auth-actions";
 export const GET_INVITATION_BY_HASH       = 'GET_INVITATION_BY_HASH';
 export const GET_INVITATION_BY_HASH_ERROR = 'GET_INVITATION_BY_HASH_ERROR';
 export const RESET_INVITATION = 'RESET_INVITATION';
+export const INVALID_INVITATION = 'INVALID_INVITATION';
 
 const customErrorHandler = (err, res) => (dispatch) => {
     let code = err.status;
@@ -61,13 +62,9 @@ const customErrorHandler = (err, res) => (dispatch) => {
                     msg += key + ': ';
                 }
 
-                msg += value + '<br>';
+                msg += value;
             }
-            Swal.fire("Validation error", msg, "warning");
-            dispatch({
-                type: VALIDATE,
-                payload: {errors: err.response.body.errors}
-            });
+            dispatch(createAction(INVALID_INVITATION)(msg));            
             break;
         default:
             Swal.fire("ERROR", T.translate("errors.server_error"), "error");
