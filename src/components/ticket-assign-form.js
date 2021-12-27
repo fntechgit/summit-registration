@@ -266,7 +266,7 @@ class TicketAssignForm extends React.Component {
                             className="col-sm-4">{T.translate("ticket_popup.edit_company")}{ T.translate("ticket_popup.edit_required_star")}</div>
                         <div className="col-sm-8">
                             {readOnly ?
-                                <span>{ticket.attendee_last_name}</span>
+                                <span>{ticket.attendee_company}</span>
                                 :
                                 <Input
                                     id="attendee_company"
@@ -283,7 +283,7 @@ class TicketAssignForm extends React.Component {
                     <div>{T.translate("ticket_popup.edit_company")}{T.translate("ticket_popup.edit_required_star")}</div>
                     <div>
                         {readOnly ?
-                            <span>{ticket.attendee_last_name}</span>
+                            <span>{ticket.attendee_company}</span>
                             :
                             <Input
                                 id="attendee_company"
