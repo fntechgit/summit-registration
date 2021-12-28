@@ -13,8 +13,8 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import {getInvitationByHash} from "../actions/invitation-actions";
-import {Redirect, Route, Switch} from "react-router-dom";
+import { getInvitationByHash } from "../actions/invitation-actions";
+import { Redirect, Route, Switch } from "react-router-dom";
 import StepOnePage from "../pages/step-one-page";
 import StepTwoPage from "../pages/step-two-page";
 import StepThreePage from "../pages/step-three-page";
@@ -34,31 +34,43 @@ class InviteesLayout extends React.Component {
         }
     }
 
-    render(){
-        let { match, invitation, summit} = this.props;
-        if(invitation != null && !invitation.is_accepted && Object.entries(summit).length > 0){
-            return(
-            <div className="primary-layout">
-                <main id="page-wrap">
-                    <Switch>
-                        <Route exact path={`${match.url}/register/start`} component={StepOnePage}/>
-                        <Route exact path={`${match.url}/register/details`} component={StepTwoPage}/>
-                        <Route exact path={`${match.url}/register/checkout`} component={StepThreePage}/>
-                        <Route exact path={`${match.url}/register/extra`} component={StepExtraQuestionsPage}/>
-                        <Route exact path={`${match.url}/register/done`} component={StepFourPage}/>
-                        <Route render={props => (<Redirect to={`${match.url}/register/start`} />)}/>
-                    </Switch>
-                </main>
-            </div>
+    render() {
+        let { match, invitation, invalidInvitation, summit } = this.props;
+        if (invalidInvitation) {
+            return (
+                <div className="primary-layout">
+                    <main id="page-wrap" style={{ marginTop: 20, fontSize: 16 }}>
+                        <span>
+                            {invalidInvitation}
+                        </span>
+                    </main>
+                </div>
+            )
+        }
+        if (invitation != null && !invitation.is_accepted && Object.entries(summit).length > 0) {
+            return (
+                <div className="primary-layout">
+                    <main id="page-wrap">
+                        <Switch>
+                            <Route exact path={`${match.url}/register/start`} component={StepOnePage} />
+                            <Route exact path={`${match.url}/register/details`} component={StepTwoPage} />
+                            <Route exact path={`${match.url}/register/checkout`} component={StepThreePage} />
+                            <Route exact path={`${match.url}/register/extra`} component={StepExtraQuestionsPage} />
+                            <Route exact path={`${match.url}/register/done`} component={StepFourPage} />
+                            <Route render={props => (<Redirect to={`${match.url}/register/start`} />)} />
+                        </Switch>
+                    </main>
+                </div>
             );
         }
         return null;
     }
 }
 
-const mapStateToProps = ({ summitState, invitationState  }) => ({
+const mapStateToProps = ({ summitState, invitationState }) => ({
     summit: summitState.purchaseSummit,
     invitation: invitationState.selectedInvitation,
+    invalidInvitation: invitationState.error
 });
 
 export default connect(
