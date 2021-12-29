@@ -68,7 +68,7 @@ h1 {
   background-color: var(--color_secondary_contrast);
 
   &:hover, &:focus, &:visited {
-    background-color: var(--color_secondary_contrast) !important;
+    background-color: var(--color_secondary_contrast);
   }
 
   &:active {
@@ -126,7 +126,7 @@ input::placeholder {
 .not-found-container {
   text-align: center;
   .error-message {
-    color: @font_blue_2;        
+    color: @font_blue_2;
   }
 }
 
@@ -136,7 +136,7 @@ input::placeholder {
   flex-wrap: wrap;
   width: 100%;
   justify-content: center;
-  .summit-card {  
+  .summit-card {
     border: 1px solid #afafaf;
     border-radius: 3px;
     margin: 15px;
@@ -149,28 +149,28 @@ input::placeholder {
         object-fit: cover;
       }
     }
-    .summit-container {    
+    .summit-container {
       padding: 20px 15px;
       .summit-label {
         display: flex;
         margin-left: 75%;
         margin-right: -30px;
         margin-bottom: 5px;
-        border-radius: 5px 0 0 5px;      
+        border-radius: 5px 0 0 5px;
         font-size: 12px;
         font-weight: bold;
-        text-align: center;      
+        text-align: center;
         padding: 2px 20px 2px 20px;
         color: #ffffff;
         &--last-hours{
-          background-color: #da0000;    
+          background-color: #da0000;
         }
         &--sold-out {
           background-color: grey;
         }
         &--empty {
           background-color: transparent;
-        }        
+        }
       }
       .bottom-row {
         display: flex;
@@ -181,13 +181,13 @@ input::placeholder {
           h4 {
             margin-left: 10px;
           }
-        }      
+        }
       }
       h4 {
         margin-top: 0;
-        font-weight: bold;    
+        font-weight: bold;
       }
-    }  
+    }
   }
 }
 
@@ -210,7 +210,7 @@ input::placeholder {
 }
 
 .header-title {
-  font-size: 23px;  
+  font-size: 23px;
   height: 100%;
   display: flex;
   padding-left: 30px;
@@ -224,7 +224,7 @@ input::placeholder {
   .summit-info{
     display: flex;
     height: 100%;
-    align-items: flex-start;    
+    align-items: flex-start;
     img {
       height: 100%;
       width: auto;
@@ -245,11 +245,11 @@ input::placeholder {
 }
 
 @media not all and (min-resolution:.001dpcm) {
-   @supports (-webkit-appearance:none) and (stroke-color:transparent) {
-      .header-title--no-logo { 
-        margin-top: 10px; 
-      } 
-  } 
+  @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+    .header-title--no-logo {
+      margin-top: 10px;
+    }
+  }
 }
 
 .header-title.center {
@@ -286,7 +286,7 @@ input::placeholder {
 
 .header-user {
   padding-right: 30px;
-  .user-menu {  
+  .user-menu {
     display: inline-flex;
     justify-content: flex-end;
     align-items: center;
@@ -325,7 +325,7 @@ input::placeholder {
     }
     .dropdown-container {
       display: none;
-    }    
+    }
   }
 }
 
@@ -351,7 +351,7 @@ input::placeholder {
 
 .not-found-summit {
   margin-top: 20px;
-  margin-left: 15px;  
+  margin-left: 15px;
   .field-wrapper{
     margin-top: 15px;
     input {
@@ -361,7 +361,7 @@ input::placeholder {
         color: @font_blue_2;
       }
     }
-    .css-bg1rzq-control, .css-1szy77t-control {    
+    .css-bg1rzq-control, .css-1szy77t-control {
       background-color: @lblue_color_1;
       border-color: @header_lblue_color;
       .css-dvua67-singleValue {
@@ -436,7 +436,7 @@ input::placeholder {
 .submit-buttons-wrapper {
   margin-top: 30px;
   text-align: center;
-  border-top: 1px solid lightgray;
+  border-top: none;
   padding: 15px;
   position: fixed;
   bottom: 0;
@@ -444,14 +444,33 @@ input::placeholder {
   left: 16px;
   background-color: white;
 
-  .continue-btn {
-    width: 140px;
+  button {
+    width: 160px;
     height: 40px;
+    background-color: @dory_blue;
+    font-weight: bold;
+    &:hover, &:focus, &:visited {
+      background-color: #125BD4 !important;
+    }
+  }
+
+  .continue-btn {
+    width: 160px;
+    height: 40px;
+    background-color: @dory_blue;
+    font-weight: bold;
+    &:hover, &:focus, &:visited {
+      background-color: #125BD4 !important;
+    }
   }
 
   .back-btn {
     margin-right: 60px;
-    color: @lblue_color_2;
+    font-weight: bold;
+    color: @dory_blue;
+    &:hover, &:focus, &:visited {
+      color: #125BD4 !important;
+    }
 
     i {
       margin-right: 5px;
@@ -485,7 +504,7 @@ input::placeholder {
 }
 
 .footer-pagination {
-  text-align: center;  
+  text-align: center;
   clear: left;
 }
 
@@ -517,7 +536,7 @@ input::placeholder {
     }
     .role-badge {
       text-transform: uppercase;
-    }    
+    }
   }
   &:empty {
     display: none;
@@ -556,8 +575,8 @@ input::placeholder {
 }
 
 .order-summary-mobile {
-  background-color: #337ab7;
-  color: white;      
+  background-color: @malbec;
+  color: white;
   margin: 0 -15px;
   &.open {
     position: fixed;
@@ -574,13 +593,13 @@ input::placeholder {
   &--title {
     display: flex;
     justify-content: space-between;
-    line-height: 50px;    
-    font-weight: bold;    
+    line-height: 50px;
+    font-weight: bold;
     padding: 0 15px;
     cursor: pointer;
   }
   &--close-text {
-    text-align: center;    
+    text-align: center;
     margin: 15px;
     padding: 0 0 15px;
     cursor: pointer;
@@ -688,6 +707,38 @@ input::placeholder {
   }
 }
 
+.header-title {
+  .summit-info {
+    .summit-text {
+      h1 {
+        margin: 5px 0 0;
+        font-size: 18px;
+        line-height: 19.8px;
+        text-align: left;
+      }
+      span {
+        display: block;
+        margin: 5px 0 0;
+        font-size: 14px;
+        line-height: 15.4px;
+      }
+    }
+    .summit-text--no-logo {
+      h1 {
+        margin: 5px 0 0;
+        font-size: 18px;
+        line-height: 19.8px;
+      }
+      span {
+        display: block;
+        margin: 5px 0 0;
+        font-size: 14px;
+        line-height: 15.4px;
+      }
+    }
+  }
+}
+
 @media(max-width: 768px) {
 
   .header {
@@ -702,14 +753,14 @@ input::placeholder {
     flex-direction: column;
   }
 
-  .header-title {        
+  .header-title {
     width: 100%;
     padding-left: 15px;
     .summit-info {
       flex-direction: row;
       align-items: flex-start;
       justify-content: space-around;
-      .summit-text {        
+      .summit-text {
         width: 100%;
         text-align: right;
         padding-right: 10px;
@@ -730,9 +781,9 @@ input::placeholder {
           height: auto;
         }
       }
-    }    
+    }
     &--no-logo {
-      margin-top: 0px; 
+      margin-top: 0px;
     }
   }
 
@@ -743,7 +794,7 @@ input::placeholder {
       justify-content: space-around;
       padding-bottom: 0;
       .profile-pic {
-      margin-left: auto;
+        margin-left: auto;
       }
     }
   }
@@ -769,7 +820,7 @@ input::placeholder {
 
   .no-tickets-text{
     padding-top: 5px;
-  } 
+  }
 
   .not-found-container {
     margin: 150px 0;
@@ -826,7 +877,7 @@ input::placeholder {
   }
 
   .summit-card-container {
-    .summit-card {  
+    .summit-card {
       margin: 3%;
       width: 100%;
       .image-container {
@@ -835,6 +886,16 @@ input::placeholder {
           width: 100%;
         }
       }
+    }
+  }
+
+  .submit-buttons-wrapper {
+    .back-btn {
+      margin-right: 0;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
@@ -857,12 +918,13 @@ input::placeholder {
     .summit-card {
       width: 45%;
     }
-  } 
+  }
 
   .summit-info {
     a {
       display: flex;
       align-self: center;
+      margin-bottom: 13px;
       .summit-logo {
         width: 200px;
       }
@@ -873,7 +935,7 @@ input::placeholder {
 @media (min-width: 992px) {
   .summit-info {
     a {
-      display: inline;      
+      display: inline;
       .summit-logo {
         width: auto;
       }
@@ -886,19 +948,11 @@ input::placeholder {
     .summit-card {
       width: 30%;
     }
-  } 
+  }
 }
 
 @media(min-width: 1091) {
   .header-title {
     padding-left: 30px;
-  }
-}
-
-.question-control-container{
-  font-size: 14px;
-  h4
-  {
-    font-size: 14px;
   }
 }
