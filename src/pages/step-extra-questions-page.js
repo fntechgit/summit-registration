@@ -32,7 +32,17 @@ class StepExtraQuestionsPage extends React.Component {
         super(props);
 
         let { order } = this.props;
-        let tickets = order.tickets.map((ticket, index) => {
+        let uniqueOwners = [];
+
+        let tickets = order.tickets.filter((ticket) => {
+            // just filter unique attendees, bc we are only interested to get answers per attendee ...
+            let attendee_email=  ticket.hasOwnProperty('owner') ? ticket.owner.email : '';
+            // if attendee is empty then it should show
+            if(attendee_email == '') return true;
+            if(uniqueOwners.includes(attendee_email)) return false;
+            uniqueOwners.push(attendee_email);
+            return true;
+        }).map((ticket, index) => {
             let t = {
                 id: ticket.id,
                 owner_id: ticket.hasOwnProperty('owner_id') ? ticket.owner_id : (ticket.hasOwnProperty('owner') ? ticket.owner.id : 0),
@@ -171,11 +181,14 @@ class StepExtraQuestionsPage extends React.Component {
                             let status = model.getStatus();
                             return (
                                 <React.Fragment key={ticket.id}>
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                            <h4>{`Ticket # ${index + 1}`} <i className={`fa ${status.icon} ${status.class}`}></i></h4>
+                                    { this.state.tickets.length > 1 &&
+                                        <div className="row">
+                                            <div className="col-md-12">
+                                                <h4>{`Ticket # ${index + 1}`} <i
+                                                    className={`fa ${status.icon} ${status.class}`}></i></h4>
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
                                     <div className="row">
                                         <div className="col-md-12">
                                             <TicketAssignForm key={ticket.id}
