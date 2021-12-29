@@ -22,10 +22,9 @@ import AuthorizationCallbackRoute from "./routes/authorization-callback-route"
 import LogOutCallbackRoute from './routes/logout-callback-route'
 import AuthButton from './components/auth-button'
 import HeaderTitle from './components/header-title'
-import NavBar from './components/nav-bar'
 import { connect } from 'react-redux'
 import { AjaxLoader } from "openstack-uicore-foundation/lib/components";
-import { onUserAuth, doLogin, doLogout, initLogOut, getUserInfo, getIdToken } from "openstack-uicore-foundation/lib/methods";
+import { onUserAuth, doLogout, initLogOut, getUserInfo, getIdToken } from "openstack-uicore-foundation/lib/methods";
 import { openSignInModal } from "./actions/auth-actions";
 import { handleResetReducers } from './actions/summit-actions'
 import T from 'i18n-react';
@@ -116,7 +115,8 @@ class App extends React.PureComponent {
                                             member={member}
                                             summitSlug={summit.slug}
                                             picture={profile_pic}
-                                            doLogin={this.onClickLogin.bind(this)} initLogOut={initLogOut}
+                                            doLogin={this.onClickLogin.bind(this)}
+                                            initLogOut={initLogOut}
                                             location={location} clearState={this.props.handleResetReducers}/>
                             
                             </div>

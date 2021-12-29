@@ -64,6 +64,8 @@ class LogOutCallbackRoute extends React.Component {
 
         // special case, force relogin
         if (backUrl === detailUrl) return memberUrl;
+        // invitation flow
+        if(backUrl.startsWith('/a/invitations')) return backUrl;
 
         return startUrl
     }

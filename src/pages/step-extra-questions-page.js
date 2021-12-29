@@ -165,9 +165,10 @@ class StepExtraQuestionsPage extends React.Component {
 
     render() {
         let now = this.props.getNow();
-        let { summit, extraQuestions, order } = this.props;
+        let { summit, extraQuestions, order, invitation } = this.props;
         if ((Object.entries(summit).length === 0 && summit.constructor === Object)) return null;
         order.status = 'Paid';
+        let hasValidInvitation = invitation?.summit_id == summit.id;
         return (
             <div className="step-extra-questions">
                 <OrderSummary order={order} summit={summit} type={'mobile'} />
@@ -192,7 +193,7 @@ class StepExtraQuestionsPage extends React.Component {
                                     <div className="row">
                                         <div className="col-md-12">
                                             <TicketAssignForm key={ticket.id}
-                                                shouldEditBasicInfo={true}
+                                                shouldEditBasicInfo={!hasValidInvitation}
                                                 showCancel={false}
                                                 ticket={ticket}
                                                 status={status.text}
@@ -214,7 +215,6 @@ class StepExtraQuestionsPage extends React.Component {
                     <div className="col-md-4">
                         <OrderSummary order={order} summit={summit} type={'desktop'} /><br />
                         <br />
-
                     </div>
                 </div>
                 <div className="row submit-buttons-wrapper">
@@ -229,7 +229,6 @@ class StepExtraQuestionsPage extends React.Component {
                             {T.translate("ticket_popup.do_it_later")}
                             <i className="fa fa-chevron-right" aria-hidden="true"></i>
                         </a>
-
                     </div>
                 </div>
             </div>
@@ -237,12 +236,13 @@ class StepExtraQuestionsPage extends React.Component {
     }
 }
 
-const mapStateToProps = ({ loggedUserState, summitState, orderState }) => ({
+const mapStateToProps = ({ loggedUserState, summitState, orderState, invitationState }) => ({
     member: loggedUserState.isLoggedUser,
     summit: summitState.purchaseSummit,
     order: orderState.purchaseOrder,
     selectedSummit : summitState.selectedSummit,
     extraQuestions: summitState.purchaseSummit.order_extra_questions,
+    invitation: invitationState.selectedInvitation,
 });
 
 export default connect(
