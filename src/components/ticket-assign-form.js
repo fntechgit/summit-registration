@@ -81,6 +81,7 @@ class TicketAssignForm extends React.Component {
     }
 
     render() {
+
         let {guest, ownedTicket, owner, ticket, extraQuestions, status, summit, orderOwned, readOnly, now, shouldEditBasicInfo} = this.props;
         let showCancel = true;
         if(!shouldEditBasicInfo) shouldEditBasicInfo = false;
@@ -88,7 +89,6 @@ class TicketAssignForm extends React.Component {
             showCancel = this.props.showCancel;
         let {extra_questions, input_email} = this.state;
         ticket.disclaimer_accepted = ticket.disclaimer_accepted == null ? false : ticket.disclaimer_accepted
-
         return (
             <div className="ticket-assign-form">
                 <div className="row popup-basic-info">
@@ -182,7 +182,7 @@ class TicketAssignForm extends React.Component {
                                     />
                                     :
                                     <span>{ticket.attendee_email}
-                                        {!guest && !readOnly && orderOwned && <span
+                                        {shouldEditBasicInfo && !guest && !readOnly && orderOwned && <span
                                             onClick={() => this.setState({input_email: true})}> | <u>Change</u></span>}
                         </span>
                                 }
@@ -199,13 +199,14 @@ class TicketAssignForm extends React.Component {
                         {(owner && owner.first_name)?
                             <span>{ticket.attendee_first_name}</span>
                             :
-                            <Input
+                            (shouldEditBasicInfo ? <Input
                                 id="attendee_first_name"
                                 className="form-control"
                                 error={this.hasErrors('attendee_first_name')}
                                 onChange={this._innerOnChange}
-                                value={ticket.attendee_first_name}
-                            />
+                                value={ticket.attendee_first_name}/>:
+                                <span>{ticket.attendee_first_name}</span>
+                            )
                         }
                     </div>
                 </div>
@@ -215,13 +216,13 @@ class TicketAssignForm extends React.Component {
                         {(owner && owner.first_name)?
                             <span>{ticket.attendee_first_name}</span>
                             :
-                            <Input
+                            (shouldEditBasicInfo ? <Input
                                 id="attendee_first_name"
                                 className="form-control"
                                 error={this.hasErrors('attendee_first_name')}
                                 onChange={this._innerOnChange}
                                 value={ticket.attendee_first_name}
-                            />
+                            />: <span>{ticket.attendee_first_name}</span>)
                         }
                     </div>
                 </div>
@@ -234,13 +235,13 @@ class TicketAssignForm extends React.Component {
                         {(owner && owner.last_name)?
                             <span>{ticket.attendee_last_name}</span>
                             :
-                            <Input
+                            (shouldEditBasicInfo ? <Input
                                 id="attendee_last_name"
                                 className="form-control"
                                 error={this.hasErrors('attendee_last_name')}
                                 onChange={this._innerOnChange}
                                 value={ticket.attendee_last_name}
-                            />
+                            />:  <span>{ticket.attendee_last_name}</span>)
                         }
                     </div>
                 </div>
@@ -250,13 +251,13 @@ class TicketAssignForm extends React.Component {
                         {(owner && owner.last_name) ?
                             <span>{ticket.attendee_last_name}</span>
                             :
-                            <Input
+                            (shouldEditBasicInfo ? <Input
                                 id="attendee_last_name"
                                 className="form-control"
                                 error={this.hasErrors('attendee_last_name')}
                                 onChange={this._innerOnChange}
                                 value={ticket.attendee_last_name}
-                            />
+                            />:  <span>{ticket.attendee_last_name}</span>)
                         }
                     </div>
                 </div>
@@ -268,13 +269,13 @@ class TicketAssignForm extends React.Component {
                             {readOnly ?
                                 <span>{ticket.attendee_company}</span>
                                 :
-                                <Input
+                                (shouldEditBasicInfo ? <Input
                                     id="attendee_company"
                                     className="form-control"
                                     error={this.hasErrors('attendee_company')}
                                     onChange={this._innerOnChange}
                                     value={ticket.attendee_company}
-                                />
+                                />: <span>{ticket.attendee_company}</span>)
                             }
                         </div>
                     </div>
@@ -285,13 +286,13 @@ class TicketAssignForm extends React.Component {
                         {readOnly ?
                             <span>{ticket.attendee_company}</span>
                             :
-                            <Input
+                            (shouldEditBasicInfo ?<Input
                                 id="attendee_company"
                                 className="form-control"
                                 error={this.hasErrors('attendee_company')}
                                 onChange={this._innerOnChange}
                                 value={ticket.attendee_company}
-                            />
+                            />:<span>{ticket.attendee_company}</span>)
                         }
                     </div>
                 </div>
@@ -320,8 +321,6 @@ class TicketAssignForm extends React.Component {
                             <div className="form-check abc-checkbox">
                                 <input type="checkbox" id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
                                        onChange={this._innerOnChange} className="form-check-input"/>
-
-
                                 <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
                                     { summit.registration_disclaimer_mandatory? '*' : ''}
                                 </label>
