@@ -191,21 +191,19 @@ class StepTwoPage extends React.Component {
     }
 
     handleTicketToSale() {
-        let {summit, invitation, now} = this.props;
-    
-        let ticketsTypesToSell =
-            Object.entries(summit).length === 0 && summit.constructor === Object
-              ? []
-              : summit.ticket_types.filter(
-                  (tt) => {                    
-                    return invitation?.summit_id === summit.id && invitation?.allowed_ticket_types.length > 0 ? 
-                    invitation.allowed_ticket_types.includes(tt.id)
-                    :
-                    tt
-                  }
-                );
-    
-        return ticketsTypesToSell;
+        let {summit, invitation} = this.props;
+        let hasValidInvitation = invitation?.summit_id == summit.id;
+        let invitationHasTicketTypes = invitation?.allowed_ticket_types.length > 0;
+
+        if(Object.entries(summit).length === 0 && summit.constructor === Object)
+            return [];
+
+        return summit.ticket_types.filter(
+            (tt) => {
+                return hasValidInvitation && invitationHasTicketTypes ?
+                invitation.allowed_ticket_types.includes(tt.id):tt
+            }
+        );
       }
 
     render(){

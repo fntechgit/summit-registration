@@ -63,22 +63,21 @@ class StepOnePage extends React.Component {
 
   handleTicketToSale() {
     let {summit, invitation, now} = this.props;
+    let hasValidInvitation = invitation?.summit_id == summit.id;
+    let invitationHasTicketTypes = invitation?.allowed_ticket_types.length > 0;
 
-    let ticketsTypesToSell =
-        Object.entries(summit).length === 0 && summit.constructor === Object
-          ? []
-          : summit.ticket_types.filter(
-              (tt) =>
-                // if it's an invitation only show allowed ticket types
-                invitation?.summit_id === summit.id && invitation?.allowed_ticket_types.length > 0 ? 
-                invitation.allowed_ticket_types.includes(tt.id) &&
-                // if ticket does not has sales start/end date set could be sell all the registration period
-                (tt.sales_start_date == null && tt.sales_end_date == null) || (now >= tt.sales_start_date && now <= tt.sales_end_date) 
-                :
-                (tt.sales_start_date == null && tt.sales_end_date == null) || (now >= tt.sales_start_date && now <= tt.sales_end_date)
-            );
+    if((Object.entries(summit).length === 0 && summit.constructor === Object))
+      return [];
 
-    return ticketsTypesToSell;
+    return summit.ticket_types.filter(
+      (tt) => {
+                let itsOnSellPeriod = (tt.sales_start_date == null && tt.sales_end_date == null) || (now >= tt.sales_start_date && now <= tt.sales_end_date);
+                return hasValidInvitation && invitationHasTicketTypes?
+                    invitation.allowed_ticket_types.includes(tt.id) && itsOnSellPeriod
+                    :
+                    itsOnSellPeriod;
+              }
+    );
   }
 
   render() {
