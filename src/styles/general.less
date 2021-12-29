@@ -1,6 +1,18 @@
 @import 'constants.less';
 @import 'bootstrap-4-utilities.less';
 
+@font-face {
+  font-family: 'Yahoo Sans';
+  font-weight: normal;
+  src: url("../assets/fonts/YahooSans-Medium.otf") format("opentype");
+}
+
+@font-face {
+  font-family: 'Yahoo Sans';
+  font-weight: bold;
+  src: url("../assets/fonts/YahooSans-Bold.otf") format("opentype");
+}
+
 .right-space {
   margin-right: 20px;
 }
@@ -58,8 +70,8 @@ input::placeholder {
   border: none;
 }
 
-#root {
-  font-family: 'Roboto', sans-serif;
+* {
+  font-family: 'Yahoo Sans', Helvetica, sans-serif;
 }
 
 .error {
