@@ -1,16 +1,49 @@
 @import 'constants.less';
 @import 'bootstrap-4-utilities.less';
 
-@font-face {
-  font-family: 'Yahoo Sans';
-  font-weight: normal;
-  src: url("../assets/fonts/YahooSans-Medium.otf") format("opentype");
+@font-face{
+  font-family:YahooSans;
+  src:url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Regular.woff2') format('woff2'),
+  url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Regular.woff') format('woff'),
+  url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Regular.ttf') format('ttf');
+  font-weight:normal;
+  font-style:normal;
+  font-display:fallback
 }
-
-@font-face {
-  font-family: 'Yahoo Sans';
-  font-weight: bold;
-  src: url("../assets/fonts/YahooSans-Bold.otf") format("opentype");
+@font-face{
+  font-family:YahooSans;
+  src:url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Medium.woff2') format('woff2'),
+  url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Medium.woff') format('woff'),
+  url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Medium.ttf') format('ttf');
+  font-weight:500;
+  font-style:normal;
+  font-display:fallback
+}
+@font-face{
+  font-family:YahooSans;
+  src:url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Semibold.woff2') format('woff2'),
+  url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Semibold.woff') format('woff'),
+  url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Semibold.ttf') format('ttf');
+  font-weight:600;
+  font-style:normal;
+  font-display:fallback
+}
+@font-face{
+  font-family:YahooSans;
+  src:url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Bold.woff2') format('woff2'),
+  url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Bold.woff') format('woff'),
+  url('https://www.yahoo.com/sy/os/fontserver/YahooSans/Bold.ttf') format('ttf');
+  font-weight:700;font-style:normal;font-display:fallback
+}
+@font-face
+{
+  font-family:YahooSans;
+  src:url('https://www.yahoo.com/sy/os/fontserver/YahooSans/ExtraBold.woff2') format('woff2'),
+  url('https://www.yahoo.com/sy/os/fontserver/YahooSans/ExtraBold.woff') format('woff'),
+  url('https://www.yahoo.com/sy/os/fontserver/YahooSans/ExtraBold.ttf') format('ttf');
+  font-weight:800;
+  font-style:normal;
+  font-display:fallback
 }
 
 .right-space {
@@ -71,7 +104,7 @@ input::placeholder {
 }
 
 * {
-  font-family: 'Yahoo Sans', Helvetica, sans-serif;
+  font-family: YahooSans, Helvetica, sans-serif;
 }
 
 .error {
