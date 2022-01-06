@@ -26,7 +26,7 @@ export default class
             showLogOut: false,
         };
 
-        this.toggleLogOut = this.toggleLogOut.bind(this);        
+        this.toggleLogOut = this.toggleLogOut.bind(this);
         this.onTicketClick = this.onTicketClick.bind(this);
         this.onOrderClick = this.onOrderClick.bind(this);
         this.onLogOutClick = this.onLogOutClick.bind(this);
@@ -34,7 +34,7 @@ export default class
 
     toggleLogOut(ev) {
         this.setState({ showLogOut: !this.state.showLogOut });
-    }    
+    }
 
     onTicketClick() {
         this.setState({ showLogOut: !this.state.showLogOut }, () => history.push('/a/member/orders'));
@@ -72,7 +72,7 @@ export default class
                         {T.translate("landing.sign_out")}
                     </button>
                 </div>
-                <LogoutWarningPopUp initLogOut={initLogOut} />
+                <LogoutWarningPopUp initLogOut={() => this.onLogOutClick()} />
             </div>
         );
     }
