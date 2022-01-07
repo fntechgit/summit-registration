@@ -224,11 +224,6 @@ class StepExtraQuestionsPage extends React.Component {
                             onClick={this.onTicketsSave}>
                             {T.translate("ticket_popup.save_changes")}
                         </button>
-                        <span className="or">OR</span>
-                        <a className="back-btn" href="#" onClick={this.onSkip}>
-                            {T.translate("ticket_popup.do_it_later")}
-                            <i className="fa fa-chevron-right" aria-hidden="true"></i>
-                        </a>
                     </div>
                 </div>
             </div>
