@@ -12,9 +12,9 @@
  **/
 
 import React from 'react'
-import { connect } from 'react-redux';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import { getSummitBySlug } from '../actions/summit-actions';
+import {connect} from 'react-redux';
+import {Switch, Route, Redirect} from 'react-router-dom';
+import {getSummitBySlug} from '../actions/summit-actions';
 import StepOnePage from '../pages/step-one-page'
 import StepTwoPage from '../pages/step-two-page'
 import StepThreePage from '../pages/step-three-page'
@@ -24,13 +24,13 @@ import StepExtraQuestionsPage from '../pages/step-extra-questions-page';
 class PrimaryLayout extends React.Component {
 
     componentDidMount() {
-      let { getSummitBySlug } = this.props;
+        let {getSummitBySlug} = this.props;
 
-      let summitSlug = this.props.match.params.summit_slug;
+        let summitSlug = this.props.match.params.summit_slug;
 
-      if (summitSlug) {
-          getSummitBySlug(summitSlug);
-      }
+        if (summitSlug) {
+            getSummitBySlug(summitSlug);
+        }
     }
 
     componentWillReceiveProps(newProps) {
@@ -42,18 +42,27 @@ class PrimaryLayout extends React.Component {
         }
     }
 
-    render(){
-        let { match, selectedSummit, summitLoader } = this.props;        
+    render() {
+        let {match, selectedSummit, summitLoader, purchaseSummit} = this.props;
 
-        if (!summitLoader && (Object.entries(selectedSummit).length === 0 && 
-            selectedSummit.constructor === Object)) {                    
-          return <div>
-            <Switch>
-                <Route render={props => (<Redirect to={`/a/`} />)}/>
-            </Switch>
-          </div>;
-        } else {
-          return(
+        if (!summitLoader && (Object.entries(selectedSummit).length === 0 &&
+            selectedSummit.constructor === Object)) {
+            return <div>
+                <Switch>
+                    <Route render={props => (<Redirect to={`/a/`}/>)}/>
+                </Switch>
+            </div>;
+        }
+
+        if(purchaseSummit && purchaseSummit?.invite_only_registration){
+            return <div>
+                <Switch>
+                    <Route render={props => (<Redirect to={`/a/`}/>)}/>
+                </Switch>
+            </div>;
+        }
+
+        return (
             <div className="primary-layout">
                 <main id="page-wrap">
                     <Switch>
@@ -62,18 +71,19 @@ class PrimaryLayout extends React.Component {
                         <Route exact path={`${match.url}/register/checkout`} component={StepThreePage}/>
                         <Route exact path={`${match.url}/register/extra`} component={StepExtraQuestionsPage}/>
                         <Route exact path={`${match.url}/register/done`} component={StepFourPage}/>
-                        <Route render={props => (<Redirect to={`${match.url}/register/start`} />)}/>
+                        <Route render={props => (<Redirect to={`${match.url}/register/start`}/>)}/>
                     </Switch>
                 </main>
             </div>
-          );
-        }
+        );
+
     }
 
 }
 
-const mapStateToProps = ({ summitState  }) => ({
+const mapStateToProps = ({summitState}) => ({
     selectedSummit: summitState.selectedSummit,
+    purchaseSummit: summitState.purchaseSummit,
     summitLoader: summitState.loading
 })
 
