@@ -24,7 +24,7 @@ class StepRow extends React.Component {
         return (
             <div className="row step-row">
                 <div className="col-md-6">
-                {optional ? "Optional": ""} Step {step} of {totalSteps} 
+                Step {step} of {totalSteps} 
                 </div>
                 {((step === 2 || step === 3) && !optional)?
                 <div className="col-md-6">                    
