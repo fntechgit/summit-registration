@@ -20,7 +20,6 @@ import StepTwoPage from "../pages/step-two-page";
 import StepThreePage from "../pages/step-three-page";
 import StepFourPage from "../pages/step-four-page";
 import StepExtraQuestionsPage from '../pages/step-extra-questions-page';
-import T from "i18n-react/dist/i18n-react";
 
 class InviteesLayout extends React.Component {
 
