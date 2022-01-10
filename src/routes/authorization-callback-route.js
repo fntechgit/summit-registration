@@ -16,7 +16,8 @@ import React from 'react'
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AbstractAuthorizationCallbackRoute } from "openstack-uicore-foundation/lib/components";
-import { getUserInfo } from "openstack-uicore-foundation/lib/methods";
+import { getUserInfo, getCurrentHref } from "openstack-uicore-foundation/lib/methods";
+import URI from "urijs";
 
 class AuthorizationCallbackRoute extends AbstractAuthorizationCallbackRoute {
 
@@ -29,6 +30,18 @@ class AuthorizationCallbackRoute extends AbstractAuthorizationCallbackRoute {
     }
 
     _redirect2Error(error){
+        let url = URI(getCurrentHref());
+        let query = url.search(true);
+        let backUrl = query.hasOwnProperty('BackUrl') ? query['BackUrl'] : '/';
+        // invitation flow
+        if(backUrl.startsWith('/a/invitations')) {
+            return (
+                <Route render={ props => {
+                    return <Redirect to={`${backUrl}`} />
+                }} />
+            )
+        }
+
         return (
             <Route render={ props => {
                 return <Redirect to={`/error?error=${error}`} />
