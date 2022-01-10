@@ -176,7 +176,6 @@ class StepExtraQuestionsPage extends React.Component {
                     <StepRow step={this.step} optional={true} />
                     <div className="col-md-8 order-result">
 
-                        {T.translate("ticket_popup.do_it_later_exp")}
                         {this.state.tickets.map((ticket, index) => {
                             let model = new TicketModel(ticket, summit, now);
                             let status = model.getStatus();
