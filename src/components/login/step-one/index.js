@@ -14,11 +14,27 @@
 import React, { useState } from "react";
 import isEmail from 'validator/lib/isEmail';
 import T from "i18n-react/dist/i18n-react";
+import fntechIcon from "../../../assets/svg/logo_fn.svg";
+import facebookIcon from "../../../assets/svg/logo_facebook.svg";
+import linkedinIcon from "../../../assets/svg/logo_linkedin.svg";
+import appleIcon from "../../../assets/svg/logo_apple.svg";
+import oktaIcon from "../../../assets/svg/logo_okta.svg";
 
 import "./index.less";
 
+const fnidBtn = [
+  { button_color: '#082238', provider_label_key: "signin.fn_login_btn", provider_icon: `${fntechIcon}` },
+];
+
+const thirdPartyProvBtns = [
+  { button_color: '#1877F2', provider_label_key: "signin.fb_login_btn", provider_param: 'facebook', provider_icon: `${facebookIcon}` },
+  { button_color: '#0A66C2', provider_label_key: "signin.ln_login_btn", provider_param: 'linkedin', provider_icon: `${linkedinIcon}` },
+  { button_color: '#000000', provider_label_key: "signin.ap_login_btn", provider_param: 'apple', provider_icon: `${appleIcon}` },
+  { button_color: '#FFFFFF', font_color: '#00297a', provider_label_key: "signin.ok_login_btn", provider_param: 'okta', provider_icon: `${oktaIcon}` }
+];
+
 const formatAuthProviderButtons = (providers) => {
-  return [...window.fnidBtn, ...window.thirdPartyProvBtns.filter(p => providers?.includes(p.provider_param))];
+  return [...fnidBtn, ...thirdPartyProvBtns.filter(p => providers?.includes(p.provider_param))];
 };
 
 const LoginStepOneComponent = ({
@@ -55,7 +71,7 @@ const LoginStepOneComponent = ({
                 onClick={() => login(o.provider_param)}
               >
                 <img src={o.provider_icon} className='icon' />
-                {o.provider_label}
+                {T.translate(o.provider_label_key)}
               </div>
               :
               allowsNativeAuth ?
@@ -66,7 +82,7 @@ const LoginStepOneComponent = ({
                   onClick={() => login(o.provider_param)}
                 >
                   <img src={o.provider_icon} className='icon' />
-                  {o.provider_label}
+                  {T.translate(o.provider_label_key)}
                 </div>
                 :
                 null
