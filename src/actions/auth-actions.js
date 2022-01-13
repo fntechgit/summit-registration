@@ -21,6 +21,7 @@ import {
   passwordlessLogin,
   passwordlessStart,
 } from "openstack-uicore-foundation/lib/methods";
+import Swal from "sweetalert2";
 
 export const CLOSE_SIGNIN_MODAL         = "CLOSE_SIGNIN_MODAL";
 export const FINISH_PASSWORDLESS_LOGIN  = "FINISH_PASSWORDLESS_LOGIN";
@@ -91,6 +92,7 @@ export const getThirdPartyProviders = () => (dispatch) => {
     })
     .catch((e) => {
       dispatch(stopLoading());
+      Swal.fire("Server Error", "Please refresh the page.", "warning");
       return e;
     });
 };
