@@ -38,9 +38,10 @@ const LoginComponent = ({
   goToLogin,
   currentStep,
 }) => {
+
   useEffect(() => {
     getThirdPartyProviders();
-  }, [getThirdPartyProviders]);
+  }, []);
 
   const loginPasswordless = (code, email) => {
     const params = {
