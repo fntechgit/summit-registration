@@ -34,6 +34,11 @@ import SelectSummitPage from './pages/select-summit-page'
 import Timer from './components/timer';
 import IdTokenVerifier from 'idtoken-verifier';
 import {setFavIcon} from "./utils/helpers";
+import fntechIcon from "./assets/svg/logo_fn.svg";
+import facebookIcon from "./assets/svg/logo_facebook.svg";
+import linkedinIcon from "./assets/svg/logo_linkedin.svg";
+import appleIcon from "./assets/svg/logo_apple.svg";
+import oktaIcon from "./assets/svg/logo_okta.svg";
 
 // here is set by default user lang as en
 let language = (navigator.languages && navigator.languages[0]) || navigator.language || navigator.userLanguage;
@@ -54,6 +59,21 @@ if (language === 'en' || language === 'es') {
 } else {
   T.setTexts(require(`./i18n/en.json`));
 }
+
+const fnidBtn = [
+    { button_color: '#082238', provider_label: T.translate("signin.fn_login_btn"), provider_icon: `${fntechIcon}` },
+];
+
+const thirdPartyProvBtns = [
+    { button_color: '#1877F2', provider_label: T.translate("signin.fb_login_btn"), provider_param: 'facebook', provider_icon: `${facebookIcon}` },
+    { button_color: '#0A66C2', provider_label: T.translate("signin.ln_login_btn"), provider_param: 'linkedin', provider_icon: `${linkedinIcon}` },
+    { button_color: '#000000', provider_label: T.translate("signin.ap_login_btn"), provider_param: 'apple', provider_icon: `${appleIcon}` },
+    { button_color: '#FFFFFF', font_color: '#00297a', provider_label: T.translate("signin.ok_login_btn"), provider_param: 'okta', provider_icon: `${oktaIcon}` }
+];
+
+window.fnidBtn = fnidBtn;
+window.thirdPartyProvBtns = thirdPartyProvBtns;
+
 const DefaultFavIconFallback      = "https://object-storage-ca-ymq-1.vexxhost.net/swift/v1/6e4619c416ff4bd19e1c087f27a43eea/images-fn/favicon.svg";
 window.IDP_BASE_URL               = process.env['IDP_BASE_URL'];
 window.API_BASE_URL               = process.env['API_BASE_URL'];
