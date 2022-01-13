@@ -22,6 +22,21 @@ import linkedinIcon from "../../../assets/svg/logo_linkedin.svg"
 import oktaIcon from "../../../assets/svg/logo_okta.svg"
 import "./index.less";
 
+const fnidBtn = [
+  { button_color: '#082238', provider_label: T.translate("signin.fn_login_btn"), provider_icon: `${fntechIcon}` },
+];
+
+const thirdPartyProvBtns = [
+  { button_color: '#1877F2', provider_label: T.translate("signin.fb_login_btn"), provider_param: 'facebook', provider_icon: `${facebookIcon}` },
+  { button_color: '#0A66C2', provider_label: T.translate("signin.ln_login_btn"), provider_param: 'linkedin', provider_icon: `${linkedinIcon}` },
+  { button_color: '#000000', provider_label: T.translate("signin.ap_login_btn"), provider_param: 'apple', provider_icon: `${appleIcon}` },
+  { button_color: '#FFFFFF', font_color: '#00297a', provider_label: T.translate("signin.ok_login_btn"), provider_param: 'okta', provider_icon: `${oktaIcon}` }
+];
+
+const formatAuthProviderButtons = (providers) => {
+  return [...fnidBtn, ...thirdPartyProvBtns.filter(p => providers?.includes(p.provider_param))];
+};
+
 const LoginStepOneComponent = ({
   allowsNativeAuth,
   allowsOtpAuth,
@@ -31,11 +46,6 @@ const LoginStepOneComponent = ({
 }) => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState();
-  const [options, setOptions] = useState(null);
-
-  useEffect(() => {
-    setOptions(formatAuthProviderButtons(thirdPartyProviders));
-  }, []);
 
   const loginCode = () => {
     let isValidEmail = isEmail(email);
@@ -45,27 +55,13 @@ const LoginStepOneComponent = ({
     }
   };
 
-  const formatAuthProviderButtons = (thirdPartyProviders) => {
-
-    const fnidBtn = [
-      { button_color: '#082238', provider_label: T.translate("signin.fn_login_btn"), provider_icon: `${fntechIcon}` },
-    ];
-
-    const thirdPartyProvBtns = [
-      { button_color: '#1877F2', provider_label: T.translate("signin.fb_login_btn"), provider_param: 'facebook', provider_icon: `${facebookIcon}` },
-      { button_color: '#0A66C2', provider_label: T.translate("signin.ln_login_btn"), provider_param: 'linkedin', provider_icon: `${linkedinIcon}` },
-      { button_color: '#000000', provider_label: T.translate("signin.ap_login_btn"), provider_param: 'apple', provider_icon: `${appleIcon}` },
-      { button_color: '#FFFFFF', font_color: '#00297a', provider_label: T.translate("signin.ok_login_btn"), provider_param: 'okta', provider_icon: `${oktaIcon}` }
-    ];
-
-    return [...fnidBtn, ...thirdPartyProvBtns.filter(p => thirdPartyProviders?.includes(p.provider_param))];
-  };
+  const options = formatAuthProviderButtons(thirdPartyProviders);
 
   return (
     <div className="loginWrapper step-wrapper">
       <div className="innerWrapper">
         <span>{T.translate("signin.login_with_title")}</span>
-        {options && options.map((o) => {
+        {options && options.map(o => {
           return (
             o.provider_param ?
               <div
