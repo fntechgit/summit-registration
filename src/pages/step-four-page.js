@@ -105,17 +105,14 @@ class StepFourPage extends React.Component {
                 <OrderSummary order={order} summit={summit} type={'mobile'} />
                 <div className="row">
                     <div className="col-md-8 order-result">
-
                         <span>
-                        
-                          <h3>{T.translate("step_four.thank_you")}</h3>         
+                          <h3>{T.translate("step_four.thank_you")}</h3>
                           <br />                                           
                           <span>{T.translate("step_four.order_no")}</span> <br/>
                           <span className="order-number">{checkout.number}</span>
                           <br/>
                           <br/>                          
                         </span>
-                          
                         <span>
                          <br/><br/> 
                         <h4><StepRow step={this.step} /></h4>
@@ -126,81 +123,14 @@ class StepFourPage extends React.Component {
                         <React.Fragment> 
                         <span>
                          <br/> 
-                          <strong>{T.translate("step_four.member_exclamation")}</strong>{T.translate("step_four.member_text")}
-                        <Link to="/a/member/tickets">
-                          {T.translate("step_four.member_link_tickets")}
-                        </Link>
-                        {T.translate("step_four.member_text_1")} 
-                        <Link to="/a/member/orders">
-                          {T.translate("step_four.member_link_orders")}
-                        </Link>  
-                        {T.translate("step_four.member_text_2")}                                                                   
-                        <br/><br/>
+                            <p>{T.translate("step_four.member_exclamation")}</p>
+                            <p>{T.translate("step_four.member_text")}</p>
+                        <br/>
+                            <br/>
                         </span>
-
-  
-
-                        </React.Fragment>              
+                          </React.Fragment>
                         }
 
-                        {!member &&
-                        <React.Fragment>    
-                        
-
-                  {/*        <span>
-                            {T.translate("step_four.register_text")}
-                            <a href={`${window.IDP_BASE_URL}/auth/register`}>
-                              {T.translate("step_four.register_link_text")}
-                            </a> 
-                            {T.translate("step_four.register_text_2")}
-                            {order.email}
-                            {T.translate("step_four.register_text_3")}                              
-                          </span> 
-
-                        <span>
-                        <br/>
-                        {T.translate("step_four.required_text")}
-                        <br/><br/>
-                        <a href={`${window.IDP_BASE_URL}/auth/register`}>
-                            <button className="btn btn-primary manage-btn">
-                              {T.translate("step_four.getfnid")}
-                            </button>
-                          </a>
-                
-
-                         &nbsp;OR&nbsp;
-
-                          <Link to="/a/member/orders">
-                            <button className="btn btn-primary manage-btn">
-                              {T.translate("step_four.signin")}
-                            </button>
-                          </Link>
-                          <br/><br/>
-                            */}
-                          <h5><strong>{T.translate("step_four.register_email_bold")}</strong> 
-                            {T.translate("step_four.register_email_1")} 
-                            <Link to="/a/member/orders">
-                              {T.translate("step_four.register_email_orders")}
-                            </Link>  
-                            {T.translate("step_four.register_email_2")}        
-                          </h5>
-
-                     {/*   </span> */}
-
-                        </React.Fragment>  
-                        }
-
-                        <span>
-                        <br/>
-                        {T.translate("step_four.required_text")}
-                        <br/><br/>
-                        {/*  <Link to="/a/member/orders">
-                            <button className="btn btn-primary manage-btn">
-                              {T.translate("step_four.manage")}
-                            </button>
-                          </Link>
-                        */}
-                        </span>                
                         <span>
                         <br/><br/>
                           {T.translate("step_four.help_text")} 
