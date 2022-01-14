@@ -118,22 +118,19 @@ class StepFourPage extends React.Component {
                         <h4><StepRow step={this.step} /></h4>
                         <h4>{T.translate("step_four.subtitle")}</h4>
                         </span>
-
                         {member &&
                         <React.Fragment> 
                         <span>
-                         <br/> 
+                            <br/><br/>
                             <p>{T.translate("step_four.member_exclamation")}</p>
                             <br/><br/>
                             <p><span dangerouslySetInnerHTML={{__html: T.translate("step_four.member_text")}}></span></p>
-                        <br/>
-                            <br/>
                         </span>
                           </React.Fragment>
                         }
-
-                        <span>
                         <br/><br/>
+                        <span>
+
                           {T.translate("step_four.help_text")} 
                           <a href={`mailto:${summit.hasOwnProperty('support_email') && 
                             summit.support_email ? summit.support_email : window.SUPPORT_EMAIL}`} 
