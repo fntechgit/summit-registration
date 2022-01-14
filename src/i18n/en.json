@@ -106,7 +106,7 @@
     "thank_you"             : "Thank you for your order!",
     "subtitle"              : "Your Order is Now Complete",
     "member_exclamation"    : "You are signed in with your Okta account and will use it to log into the event(s) this March. Please reference your confirmation email with the subject line: \"You’re confirmed to attend TechWeek 2022!\"",
-    "member_text"           : "Be sure to visit techweek2022.com for more info and event updates. You can also seeTechWeek event(s) you are registered to attend.",
+    "member_text"           : "Be sure to visit <a href=\"https://techweek2022.yahoo.fnvirtual.app\">https://techweek2022.yahoo.fnvirtual.app</a> for more info and event updates. You can also seeTechWeek event(s) you are registered to attend.",
     "member_link_tickets"   : "My Tickets",
     "member_text_1"         : "If you have any questions or need to change your registration, please contact techweek@yahooinc.com.",
     "member_link_orders"    : "My Orders",
