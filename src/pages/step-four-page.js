@@ -124,7 +124,8 @@ class StepFourPage extends React.Component {
                         <span>
                          <br/> 
                             <p>{T.translate("step_four.member_exclamation")}</p>
-                            <p>{T.translate("step_four.member_text")}</p>
+                            <br/><br/>
+                            <p><span dangerouslySetInnerHTML={{__html: T.translate("step_four.member_text")}}></span></p>
                         <br/>
                             <br/>
                         </span>
