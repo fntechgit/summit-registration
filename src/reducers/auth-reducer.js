@@ -27,6 +27,8 @@ import {
   CLOSE_WILL_LOGOUT_MODAL,
 } from "../actions/auth-actions";
 
+import {RESET_STATE} from "../actions/base-actions";
+
 const DEFAULT_STATE = {
   allows_native_auth: false,
   allows_otp_auth: false,
@@ -46,6 +48,8 @@ const DEFAULT_STATE = {
 const AuthReducer = (state = DEFAULT_STATE, action) => {
   const { type, payload } = action;
   switch (type) {
+    case RESET_STATE:
+      return DEFAULT_STATE;
     case LOGIN_START_LOADING: {
       return { ...state, loading: true };
     }
