@@ -21,7 +21,6 @@ const onBeforeLift = () => {
     }
 };
 
-
 ReactDOM.render(
     <Provider store={store}>
         <PersistGate onBeforeLift={onBeforeLift} loading={null} persistor={persistor}>
