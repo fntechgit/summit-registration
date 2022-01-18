@@ -115,6 +115,11 @@ class TicketModel {
 
         return answeredQuestions;
     }
+
+    validateSummitDisclaimer(){
+        if(!this.summit.registration_disclaimer_mandatory) return true;
+        return this.dto.disclaimer_accepted;
+    }
 }
 
 export default TicketModel;
