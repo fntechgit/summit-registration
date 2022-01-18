@@ -115,10 +115,18 @@ class StepExtraQuestionsPage extends React.Component {
                 Swal.fire("Validation Error", "Please answer mandatory questions.", "warning");
             }
 
+            if(!model.validateSummitDisclaimer()){
+                canSave = false;
+                Swal.fire("Validation Error", "Please check Disclaimer.", "warning");
+            }
+
             if (ticket.attendee_email == '') {
                 canSave = false;
                 Swal.fire("Validation Error", "Please assign ticket.", "warning");
             }
+
+            // check summit disclaimer
+
         });
 
         if (canSave) {
