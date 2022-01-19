@@ -97,11 +97,11 @@
        <div className={`${summit.logo ? "header-title" : "header-title header-title--no-logo"}`}>
          <div className="summit-info">
            {location.match(purchaseLocation) && summit && summit.logo && (
-             <a href={`/a/${summit.slug}${purchaseLocation}`}>
+             <a>
                <img className="summit-logo" src={summit.logo} alt={summit.name ? summit.name : ""} />
              </a>
            )}
-           <div onClick={() => window.location = "/"} className={`${summit.logo ? "summit-text" : "summit-text--no-logo"}`}>{this.getHeaderTitle()}</div>
+           <div className={`${summit.logo ? "summit-text" : "summit-text--no-logo"}`}>{this.getHeaderTitle()}</div>
          </div>
        </div>
      );
