@@ -14,13 +14,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import T from "i18n-react/dist/i18n-react";
-import { Link } from 'react-router-dom';
 import OrderSummary from "../components/order-summary";
 import StepRow from '../components/step-row';
 import { handleOrderChange } from '../actions/order-actions'
 import history from '../history';
 import { stepDefs } from '../global/constants';
-
 import '../styles/step-four-page.less';
 
 class StepFourPage extends React.Component {

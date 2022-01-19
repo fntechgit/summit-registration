@@ -1,4 +1,7 @@
 {
+  "header": {
+    "virtual_event": "Virtual Event"
+  },
   "landing": {
     "sign_out"            : "Sign out",
     "sign_in"              : "FNid Sign In",
