@@ -48,7 +48,11 @@
        } else {
          summitDate = getFormatedDate(summit.start_date, summit.time_zone_id);
        }
-       if (location) {
+       // modality attr could be InPerson, Virtual or Hybrid
+       if(summit?.modality == 'Virtual'){
+         summitLocation = 'Virtual Event';
+       }
+       else if (location) {
          summitLocation = location.short_name
            ? `${location.short_name}, ${location.city}, ${location.country} `
            : `${location.city}, ${location.country} `;
