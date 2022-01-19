@@ -39,7 +39,7 @@ class InviteesLayout extends React.Component {
             return (
                 <div className="primary-layout">
                     <main id="page-wrap" style={{ marginTop: 20, fontSize: 16 }}>
-                        <span dangerouslySetInnerHTML={{html:invalidInvitation}}></span>
+                        <span dangerouslySetInnerHTML={{__html:invalidInvitation}}></span>
                     </main>
                 </div>
             )
