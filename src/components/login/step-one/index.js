@@ -64,7 +64,7 @@ const LoginStepOneComponent = ({
         {options && options.map(o => {
           return (
             o.provider_param ?
-              <div
+              <button
                 className="button left-icon-holder"
                 key={`provider-${o.provider_param}`}
                 style={{ backgroundColor: o.button_color, color: o.font_color }}
@@ -72,10 +72,10 @@ const LoginStepOneComponent = ({
               >
                 <img src={o.provider_icon} className='icon' />
                 {T.translate(o.provider_label_key)}
-              </div>
+              </button>
               :
               allowsNativeAuth ?
-                <div
+                <button
                   className="button left-icon-holder"
                   key={`provider-fnid`}
                   style={{ backgroundColor: o.button_color }}
@@ -83,7 +83,7 @@ const LoginStepOneComponent = ({
                 >
                   <img src={o.provider_icon} className='icon' />
                   {T.translate(o.provider_label_key)}
-                </div>
+                </button>
                 :
                 null
           );
