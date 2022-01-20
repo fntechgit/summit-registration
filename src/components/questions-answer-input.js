@@ -89,11 +89,15 @@ export default class QuestionAnswersInput extends React.Component {
                     <React.Fragment>
                       <div className="row field-wrapper">
                           <div className="col-sm-4">
-                              <RawHTML>{htmlLabel}</RawHTML>
+                              <label id={`${htmlLabel} label`} for={question.id}>
+                                <RawHTML>{htmlLabel}</RawHTML>
+                              </label>
                           </div>
                           <div className="col-sm-8">
                               <Input
                                   id={question.id}
+                                  name={htmlLabel}
+                                  aria-labelledby={`${htmlLabel} label`}
                                   value={answerValue}
                                   onChange={this.handleChange}
                                   placeholder={question.placeholder}
@@ -103,11 +107,15 @@ export default class QuestionAnswersInput extends React.Component {
                       </div>
                       <div className="field-wrapper-mobile">
                           <div>
-                              <RawHTML>{htmlLabel}</RawHTML>
+                              <label id={`${htmlLabel} label`} for={question.id}>
+                                <RawHTML>{htmlLabel}</RawHTML>
+                              </label>
                           </div>
                           <div>
                               <Input
                                   id={question.id}
+                                  name={htmlLabel}
+                                  aria-labelledby={`${htmlLabel} label`}
                                   value={answerValue}
                                   onChange={this.handleChange}
                                   placeholder={question.placeholder}
@@ -122,11 +130,15 @@ export default class QuestionAnswersInput extends React.Component {
                   <React.Fragment>
                     <div className='row field-wrapper--textarea'>
                         <div className="col-sm-4">
-                            <RawHTML>{htmlLabel}</RawHTML>
+                            <label id={`${htmlLabel} label`} for={question.id}>
+                                <RawHTML>{htmlLabel}</RawHTML>
+                            </label>
                         </div>
                         <div className="col-sm-8">
                             <textarea
                                 id={question.id}
+                                name={htmlLabel}
+                                aria-labelledby={`${htmlLabel} label`}
                                 value={answerValue}
                                 onChange={this.handleChange}
                                 placeholder={question.placeholder}
@@ -137,11 +149,15 @@ export default class QuestionAnswersInput extends React.Component {
                     </div>
                     <div className="field-wrapper-mobile">
                         <div>
-                            <RawHTML>{htmlLabel}</RawHTML>
+                            <label id={`${htmlLabel} label`} for={question.id}>
+                                <RawHTML>{htmlLabel}</RawHTML>
+                            </label>
                         </div>
                         <div>
                             <textarea
                                 id={question.id}
+                                name={htmlLabel}
+                                aria-labelledby={`${htmlLabel} label`}
                                 value={answerValue}
                                 onChange={this.handleChange}
                                 placeholder={question.placeholder}
@@ -155,10 +171,11 @@ export default class QuestionAnswersInput extends React.Component {
             case 'CheckBox':
                   return (
                     <div className="form-check abc-checkbox">
-                        <input type="checkbox" id={`${ticket.id}_${question.id}`} checked={(answerValue === "true")}
+                        <input type="checkbox" name={htmlLabel} aria-labelledby={`${htmlLabel} label`} 
+                               id={`${ticket.id}_${question.id}`} checked={(answerValue === "true")}
                                onChange={this.handleChange} className="form-check-input" />
 
-                        <label className="form-check-label" htmlFor={`${ticket.id}_${question.id}`} >
+                        <label className="form-check-label" id={`${htmlLabel} label`} htmlFor={`${ticket.id}_${question.id}`} >
                             <RawHTML>{htmlLabel}</RawHTML>
                         </label>
                     </div>
@@ -170,12 +187,16 @@ export default class QuestionAnswersInput extends React.Component {
                   return (
                     <React.Fragment>
                       <div className="row field-wrapper">
-                          <div className="col-sm-4">
-                            <RawHTML>{htmlLabel}</RawHTML>
+                          <div className="col-sm-4">                            
+                            <label id={`${htmlLabel} label`} for={question.id}>
+                                <RawHTML>{htmlLabel}</RawHTML>
+                            </label>
                           </div>
                           <div className="col-sm-8">                          
                             <Dropdown
                                 id={question.id}
+                                name={htmlLabel}
+                                aria-labelledby={`${htmlLabel} label`}
                                 value={value}
                                 options={questionValues}
                                 onChange={this.handleChange}
@@ -183,12 +204,16 @@ export default class QuestionAnswersInput extends React.Component {
                           </div>                        
                       </div>
                       <div className="field-wrapper-mobile">
-                          <div>
-                            <RawHTML>{htmlLabel}</RawHTML>
+                          <div>                            
+                            <label id={`${htmlLabel} label`} for={question.id}>
+                                <RawHTML>{htmlLabel}</RawHTML>
+                            </label>
                           </div>
                           <div>                          
                             <Dropdown
                                 id={question.id}
+                                name={htmlLabel}
+                                aria-labelledby={`${htmlLabel} label`}
                                 value={value}
                                 options={questionValues}
                                 onChange={this.handleChange}
@@ -205,11 +230,15 @@ export default class QuestionAnswersInput extends React.Component {
                     <React.Fragment>
                       <div className="row field-wrapper">
                           <div className="col-sm-4">
-                            <RawHTML>{htmlLabel}</RawHTML>
+                            <label id={`${htmlLabel} label`} for={`${ticket.id}_${question.id}`}>
+                                <RawHTML>{htmlLabel}</RawHTML>
+                            </label>
                           </div>
                           <div className="col-sm-8">                          
                               <CheckboxList
                                   id={`${ticket.id}_${question.id}`}
+                                  name={htmlLabel}
+                                  aria-labelledby={`${htmlLabel} label`}
                                   value={answerValue}
                                   options={questionValues}
                                   onChange={this.handleChange}
@@ -218,11 +247,15 @@ export default class QuestionAnswersInput extends React.Component {
                       </div>
                       <div className="field-wrapper-mobile">
                           <div>
-                            <RawHTML>{htmlLabel}</RawHTML>
+                            <label id={`${htmlLabel} label`} for={`${ticket.id}_${question.id}`}>
+                                <RawHTML>{htmlLabel}</RawHTML>
+                            </label>
                           </div>
                         <div>                          
                             <CheckboxList
                                 id={`${ticket.id}_${question.id}`}
+                                name={htmlLabel}
+                                aria-labelledby={`${htmlLabel} label`}
                                 value={answerValue}
                                 options={questionValues}
                                 onChange={this.handleChange}
@@ -237,11 +270,15 @@ export default class QuestionAnswersInput extends React.Component {
                   return (
                       <div className="row field-wrapper--radio-list">
                           <div className="col-sm-4">
-                            <RawHTML>{htmlLabel}</RawHTML>
+                            <label id={`${htmlLabel} label`} for={`${ticket.id}_${question.id}`}>
+                                <RawHTML>{htmlLabel}</RawHTML>
+                            </label>
                           </div>
                           <div className="col-sm-8">
                               <RadioList
                                   id={`${ticket.id}_${question.id}`}
+                                  name={htmlLabel}
+                                  aria-labelledby={`${htmlLabel} label`}
                                   value={answerValue}
                                   options={questionValues}
                                   onChange={this.handleChange}
