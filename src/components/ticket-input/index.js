@@ -66,11 +66,11 @@ export default class TicketInput extends React.Component {
                                 <div className="col-md-7">
                                     {t.quantity_2_sell > 0 ? 
                                     <div className="form-inline ticket-quantity">
-                                        <button className="btn btn-default" onClick={this.substractTicket.bind(this, t.id)}>
+                                        <button aria-label='substract' className="btn btn-default" onClick={this.substractTicket.bind(this, t.id)}>
                                             <i className="fa fa-minus"></i>
                                         </button>
                                         <div role="status" className="quantity-value" style={{opacity : t.quantity_2_sell > 0 ? '1' : '0.4'}}>{quantity}</div>
-                                        <button className="btn btn-default" onClick={this.addTicket.bind(this, t.id)} 
+                                        <button aria-label='add' className="btn btn-default" onClick={this.addTicket.bind(this, t.id)} 
                                           disabled={(t.max_quantity_per_order > 0 && t.max_quantity_per_order <= quantity) ||
                                           (quantity >= t.quantity_2_sell - t.quantity_sold)}>
                                             <i className="fa fa-plus"></i>
