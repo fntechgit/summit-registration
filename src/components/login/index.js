@@ -64,6 +64,8 @@ const LoginComponent = ({
     <Modal
       show={!isLoggedUser && signInModalOpened}
       onHide={closeSignInModal}
+      autoFocus={true}
+      keyboard={true}
     >
       <Modal.Header closeButton>
         <Modal.Title
