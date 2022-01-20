@@ -95,7 +95,7 @@ export default class QuestionAnswersInput extends React.Component {
                           </div>
                           <div className="col-sm-8">
                               <Input
-                                  id={question.id}
+                                  id={`${question.id}`}
                                   name={htmlLabel}
                                   aria-labelledby={`${htmlLabel} label`}
                                   value={answerValue}
@@ -113,7 +113,7 @@ export default class QuestionAnswersInput extends React.Component {
                           </div>
                           <div>
                               <Input
-                                  id={question.id}
+                                  id={`${question.id}-mobile`}
                                   name={htmlLabel}
                                   aria-labelledby={`${htmlLabel} label`}
                                   value={answerValue}
@@ -136,7 +136,7 @@ export default class QuestionAnswersInput extends React.Component {
                         </div>
                         <div className="col-sm-8">
                             <textarea
-                                id={question.id}
+                                id={`${question.id}`}
                                 name={htmlLabel}
                                 aria-labelledby={`${htmlLabel} label`}
                                 value={answerValue}
@@ -155,7 +155,7 @@ export default class QuestionAnswersInput extends React.Component {
                         </div>
                         <div>
                             <textarea
-                                id={question.id}
+                                id={`${question.id}-mobile`}
                                 name={htmlLabel}
                                 aria-labelledby={`${htmlLabel} label`}
                                 value={answerValue}
@@ -194,7 +194,7 @@ export default class QuestionAnswersInput extends React.Component {
                           </div>
                           <div className="col-sm-8">                          
                             <Dropdown
-                                id={question.id}
+                                id={`${question.id}`}
                                 name={htmlLabel}
                                 aria-labelledby={`${htmlLabel} label`}
                                 value={value}
@@ -211,7 +211,7 @@ export default class QuestionAnswersInput extends React.Component {
                           </div>
                           <div>                          
                             <Dropdown
-                                id={question.id}
+                                id={`${question.id}-mobile`}
                                 name={htmlLabel}
                                 aria-labelledby={`${htmlLabel} label`}
                                 value={value}
@@ -253,7 +253,7 @@ export default class QuestionAnswersInput extends React.Component {
                           </div>
                         <div>                          
                             <CheckboxList
-                                id={`${ticket.id}_${question.id}`}
+                                id={`${ticket.id}_${question.id}-mobile`}
                                 name={htmlLabel}
                                 aria-labelledby={`${htmlLabel} label`}
                                 value={answerValue}
