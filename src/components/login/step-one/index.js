@@ -70,7 +70,7 @@ const LoginStepOneComponent = ({
                 style={{ backgroundColor: o.button_color, color: o.font_color }}
                 onClick={() => login(o.provider_param)}
               >
-                <img src={o.provider_icon} className='icon' />
+                <img src={o.provider_icon} alt="" className='icon' />
                 {T.translate(o.provider_label_key)}
               </button>
               :
@@ -81,7 +81,7 @@ const LoginStepOneComponent = ({
                   style={{ backgroundColor: o.button_color }}
                   onClick={() => login(o.provider_param)}
                 >
-                  <img src={o.provider_icon} className='icon' />
+                  <img src={o.provider_icon} alt="" className='icon' />
                   {T.translate(o.provider_label_key)}
                 </button>
                 :
