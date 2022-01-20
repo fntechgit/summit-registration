@@ -23,7 +23,7 @@ AuthButton extends React.Component {
     }
     
     render() {
-        let { isLoggedUser, doLogin, picture, initLogOut, summitSlug } = this.props;
+        let { isLoggedUser, doLogin, picture, initLogOut, summitSlug, member } = this.props;
 
 
         if (isLoggedUser) {
@@ -31,7 +31,7 @@ AuthButton extends React.Component {
                 <div className="user-menu">
                     <UserButtons initLogOut={initLogOut} summitSlug={summitSlug} />
                     <div className="profile-pic">
-                        <img src={picture} />
+                        <img src={picture} alt={`${member?.first_name} ${member?.last_name} Profile Image`} />
                     </div>
                 </div>
             );
