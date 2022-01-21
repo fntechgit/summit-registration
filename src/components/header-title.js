@@ -82,12 +82,12 @@ class HeaderTitle extends React.Component {
         if (summit && location.match(purchaseLocation)) {
             return (
                 <>
-                    <h4>{summit.name ? summit.name : "Registration"}</h4>
-                    <h5>{location.match(purchaseLocation) ? this.handleEventDateLocation() : ""}</h5>
+                    <h1>{summit.name ? summit.name : "Registration"}</h1>
+                    <span>{location.match(purchaseLocation) ? this.handleEventDateLocation() : ""}</span>
                 </>
             );
         } else {
-            return <h4 className="registration-title">Registration</h4>;
+            return <h1 className="registration-title">Registration</h1>;
         }
     }
 
