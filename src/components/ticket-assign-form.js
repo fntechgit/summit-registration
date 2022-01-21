@@ -327,8 +327,9 @@ class TicketAssignForm extends React.Component {
                     <div className="row field-wrapper">
                         <div className="col-md-12">
                             <div className="form-check abc-checkbox">
-                                <input type="checkbox" id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
-                                       onChange={this._innerOnChange} className="form-check-input"/>
+                                <input type="checkbox" aria-label='accept disclaimer' 
+                                    id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
+                                    onChange={this._innerOnChange} className="form-check-input"/>
                                 <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
                                     { summit.registration_disclaimer_mandatory? '*' : ''}
                                 </label>

@@ -24,7 +24,7 @@ export default class QuestionAnswersInput extends React.Component {
             let defaultValue = (q.type === 'CheckBox') ? 'false' : '';
 
             let answer = props.answers.find(ans => ans.question_id === q.id);
-            let value = answer ? answer.answer : defaultValue;            
+            let value = answer ? answer.answer : defaultValue;
             return ({question_id: q.id, answer: value});
         });
 
@@ -74,7 +74,7 @@ export default class QuestionAnswersInput extends React.Component {
         this.props.onChange(newEv);
     }
 
-    getInput(question, answerValue) {        
+    getInput(question, answerValue) {
         let questionValues = question.values;
         let {ticket, allowEdit} = this.props;
         let {intialAnswers} = this.state;
@@ -85,184 +85,222 @@ export default class QuestionAnswersInput extends React.Component {
             htmlLabel = htmlLabel?.endsWith('</p>') ? htmlLabel.replace(/<\/p>$/g, " *</p>") : `${htmlLabel} *`;
         }
 
-        const answered = question.type === 'CheckBox' && intialAnswers.find(ans => ans.question_id === question.id)?.answer === 'false' ? 
-                         false : intialAnswers.find(ans => ans.question_id === question.id)?.answer ? true: false;       
+        const answered = question.type === 'CheckBox' && intialAnswers.find(ans => ans.question_id === question.id)?.answer === 'false' ?
+            false : intialAnswers.find(ans => ans.question_id === question.id)?.answer ? true: false;
 
         switch(question.type) {
             case 'Text':
-                  return (
+                return (
                     <React.Fragment>
-                      <div className="row field-wrapper">
-                          <div className="col-sm-4">
-                              <RawHTML>{htmlLabel}</RawHTML>
-                          </div>
-                          <div className="col-sm-8">
-                              <Input
-                                  id={question.id}
-                                  value={answerValue}
-                                  onChange={this.handleChange}
-                                  placeholder={question.placeholder}
-                                  disabled={!allowEdit && answered}
-                                  className="form-control"
-                              />
-                          </div>                        
-                      </div>
-                      <div className="field-wrapper-mobile">
-                          <div>
-                              <RawHTML>{htmlLabel}</RawHTML>
-                          </div>
-                          <div>
-                              <Input
-                                  id={question.id}
-                                  value={answerValue}
-                                  onChange={this.handleChange}
-                                  placeholder={question.placeholder}
-                                  disabled={!allowEdit && answered}
-                                  className="form-control"
-                              />
-                          </div>
-                      </div>
+                        <div className="row field-wrapper">
+                            <div className="col-sm-4">
+                                <label id={`${htmlLabel} label`} htmlFor={`${question.id}`}>
+                                    <RawHTML>{htmlLabel}</RawHTML>
+                                </label>
+                            </div>
+                            <div className="col-sm-8">
+                                <Input
+                                    id={`${question.id}`}
+                                    value={answerValue}
+                                    onChange={this.handleChange}
+                                    placeholder={question.placeholder}
+                                    disabled={!allowEdit && answered}
+                                    className="form-control"
+                                    name={htmlLabel}
+                                    aria-labelledby={`${htmlLabel} label`}
+                                />
+                            </div>
+                        </div>
+                        <div className="field-wrapper-mobile">
+                            <div>
+                                <label id={`${htmlLabel} label`} htmlFor={`${question.id}-mobile`}>
+                                    <RawHTML>{htmlLabel}</RawHTML>
+                                </label>
+                            </div>
+                            <div>
+                                <Input
+                                    id={`${question.id}-mobile`}
+                                    name={htmlLabel}
+                                    aria-labelledby={`${htmlLabel} label`}
+                                    value={answerValue}
+                                    onChange={this.handleChange}
+                                    placeholder={question.placeholder}
+                                    disabled={!allowEdit && answered}
+                                    className="form-control"
+                                />
+                            </div>
+                        </div>
                     </React.Fragment>
-                  );
+                );
             case 'TextArea':
                 return (
-                  <React.Fragment>
-                    <div className='row field-wrapper--textarea'>
-                        <div className="col-sm-4">
-                            <RawHTML>{htmlLabel}</RawHTML>
-                        </div>
-                        <div className="col-sm-8">
+                    <React.Fragment>
+                        <div className='row field-wrapper--textarea'>
+                            <div className="col-sm-4">
+                                <label id={`${htmlLabel} label`} htmlFor={`${question.id}`}>
+                                    <RawHTML>{htmlLabel}</RawHTML>
+                                </label>
+                            </div>
+                            <div className="col-sm-8">
                             <textarea
-                                id={question.id}
+                                id={`${question.id}`}
+                                name={htmlLabel}
+                                aria-labelledby={`${htmlLabel} label`}
                                 value={answerValue}
                                 onChange={this.handleChange}
                                 placeholder={question.placeholder}
                                 disabled={!allowEdit && answered}
-                                className="form-control"                                
+                                className="form-control"
                                 rows="4"
                             />
+                            </div>
                         </div>
-                    </div>
-                    <div className="field-wrapper-mobile">
-                        <div>
-                            <RawHTML>{htmlLabel}</RawHTML>
-                        </div>
-                        <div>
+                        <div className="field-wrapper-mobile">
+                            <div>
+                                <label id={`${htmlLabel} label`} htmlFor={`${question.id}-mobile`}>
+                                    <RawHTML>{htmlLabel}</RawHTML>
+                                </label>
+                            </div>
+                            <div>
                             <textarea
-                                id={question.id}
+                                id={`${question.id}-mobile`}
+                                name={htmlLabel}
+                                aria-labelledby={`${htmlLabel} label`}
                                 value={answerValue}
                                 onChange={this.handleChange}
                                 placeholder={question.placeholder}
                                 disabled={!allowEdit && answered}
-                                className="form-control"                                
+                                className="form-control"
                                 rows="4"
                             />
-                        </div>                        
-                    </div>
-                  </React.Fragment>
+                            </div>
+                        </div>
+                    </React.Fragment>
                 );
             case 'CheckBox':
-                  return (
+                return (
                     <div className="form-check abc-checkbox">
-                        <input type="checkbox" id={`${ticket.id}_${question.id}`} checked={(answerValue === "true")}
-                            disabled={!allowEdit && (!question.mandatory || answered)} onChange={this.handleChange} className="form-check-input" />
-                        <label className="form-check-label" htmlFor={`${ticket.id}_${question.id}`} >
+                        <input type="checkbox" id={`${ticket.id}_${question.id}`}
+                               name={htmlLabel} aria-labelledby={`${htmlLabel} label`}
+                               checked={(answerValue === "true")}
+                               disabled={!allowEdit && (!question.mandatory || answered)} onChange={this.handleChange} className="form-check-input" />
+                        <label className="form-check-label" id={`${htmlLabel} label`} htmlFor={`${ticket.id}_${question.id}`}>
                             <RawHTML>{htmlLabel}</RawHTML>
                         </label>
                     </div>
-                  );
+                );
             case 'ComboBox':
                 let value = answerValue ? questionValues.find(val => val.id == parseInt(answerValue)) : null;
                 questionValues = questionValues.map(val => ({...val, value: val.id}));
 
-                  return (
+                return (
                     <React.Fragment>
-                      <div className="row field-wrapper">
-                          <div className="col-sm-4">
-                            <RawHTML>{htmlLabel}</RawHTML>
-                          </div>
-                          <div className="col-sm-8">                          
-                            <Dropdown
-                                id={question.id}
-                                value={value}
-                                options={questionValues}
-                                disabled={!allowEdit && (!question.mandatory || answered)}
-                                onChange={this.handleChange}
-                            />
-                          </div>                        
-                      </div>
-                      <div className="field-wrapper-mobile">
-                          <div>
-                            <RawHTML>{htmlLabel}</RawHTML>
-                          </div>
-                          <div>                          
-                            <Dropdown
-                                id={question.id}
-                                value={value}
-                                options={questionValues}
-                                disabled={!allowEdit && (!question.mandatory || answered)}
-                                onChange={this.handleChange}
-                            />
-                          </div>                        
-                      </div>
+                        <div className="row field-wrapper">
+                            <div className="col-sm-4">
+                                <label id={`${htmlLabel} label`} htmlFor={`${question.id}`}>
+                                    <RawHTML>{htmlLabel}</RawHTML>
+                                </label>
+                            </div>
+                            <div className="col-sm-8">
+                                <Dropdown
+                                    id={`${question.id}`}
+                                    name={htmlLabel}
+                                    aria-labelledby={`${htmlLabel} label`}
+                                    value={value}
+                                    options={questionValues}
+                                    disabled={!allowEdit && (!question.mandatory || answered)}
+                                    onChange={this.handleChange}
+                                />
+                            </div>
+                        </div>
+                        <div className="field-wrapper-mobile">
+                            <div>
+                                <label id={`${htmlLabel} label`} htmlFor={`${question.id}-mobile`}>
+                                    <RawHTML>{htmlLabel}</RawHTML>
+                                </label>
+                            </div>
+                            <div>
+                                <Dropdown
+                                    id={`${question.id}-mobile`}
+                                    name={htmlLabel}
+                                    aria-labelledby={`${htmlLabel} label`}
+                                    value={value}
+                                    options={questionValues}
+                                    disabled={!allowEdit && (!question.mandatory || answered)}
+                                    onChange={this.handleChange}
+                                />
+                            </div>
+                        </div>
                     </React.Fragment>
-                  );
+                );
             case 'CheckBoxList':
                 questionValues = questionValues.map(val => ({...val, value: val.id}));
                 answerValue = answerValue ? answerValue.split(',').map(ansVal => parseInt(ansVal)) : [];
-           
-                  return(
+
+                return(
                     <React.Fragment>
-                      <div className="row field-wrapper">
-                          <div className="col-sm-4">
-                            <RawHTML>{htmlLabel}</RawHTML>
-                          </div>
-                          <div className="col-sm-8">                          
-                              <CheckboxList
-                                  id={`${ticket.id}_${question.id}`}
-                                  value={answerValue}
-                                  options={questionValues}
-                                  onChange={this.handleChange}
-                                  disabled={!allowEdit && (!question.mandatory || answered)}
-                              />
-                          </div>                        
-                      </div>
-                      <div className="field-wrapper-mobile">
-                          <div>
-                            <RawHTML>{htmlLabel}</RawHTML>
-                          </div>
-                        <div>                          
-                            <CheckboxList
-                                id={`${ticket.id}_${question.id}`}
-                                value={answerValue}
-                                options={questionValues}
-                                onChange={this.handleChange}
-                                disabled={!allowEdit && (!question.mandatory || answered)}
-                            />
-                        </div>                        
-                    </div>
+                        <div className="row field-wrapper">
+                            <div className="col-sm-4">
+                                <label id={`${htmlLabel} label`} htmlFor={`${ticket.id}_${question.id}`}>
+                                    <RawHTML>{htmlLabel}</RawHTML>
+                                </label>
+                            </div>
+                            <div className="col-sm-8">
+                                <CheckboxList
+                                    id={`${ticket.id}_${question.id}`}
+                                    name={htmlLabel}
+                                    aria-labelledby={`${htmlLabel} label`}
+                                    value={answerValue}
+                                    options={questionValues}
+                                    onChange={this.handleChange}
+                                    disabled={!allowEdit && (!question.mandatory || answered)}
+                                />
+                            </div>
+                        </div>
+                        <div className="field-wrapper-mobile">
+                            <div>
+                                <label id={`${htmlLabel} label`} htmlFor={`${ticket.id}_${question.id}-mobile`}>
+                                    <RawHTML>{htmlLabel}</RawHTML>
+                                </label>
+                            </div>
+                            <div>
+                                <CheckboxList
+                                    id={`${ticket.id}_${question.id}-mobile`}
+                                    name={htmlLabel}
+                                    aria-labelledby={`${htmlLabel} label`}
+                                    value={answerValue}
+                                    options={questionValues}
+                                    onChange={this.handleChange}
+                                    disabled={!allowEdit && (!question.mandatory || answered)}
+                                />
+                            </div>
+                        </div>
                     </React.Fragment>
-                  );
+                );
             case 'RadioButtonList':
                 questionValues = questionValues.map(val => ({...val, value: val.id}));
 
-                  return (
-                      <div className="row field-wrapper--radio-list">
-                          <div className="col-sm-4">
-                            <RawHTML>{htmlLabel}</RawHTML>
-                          </div>
-                          <div className="col-sm-8">
-                              <RadioList
-                                  id={`${ticket.id}_${question.id}`}
-                                  value={answerValue}
-                                  options={questionValues}
-                                  disabled={!allowEdit && (!question.mandatory || answered)}
-                                  onChange={this.handleChange}
-                                  inline
-                              />
-                          </div>
-                      </div>
-                  );
+                return (
+                    <div className="row field-wrapper--radio-list">
+                        <div className="col-sm-4">
+                            <label id={`${htmlLabel} label`} htmlFor={`${ticket.id}_${question.id}`}>
+                                <RawHTML>{htmlLabel}</RawHTML>
+                            </label>
+                        </div>
+                        <div className="col-sm-8">
+                            <RadioList
+                                id={`${ticket.id}_${question.id}`}
+                                name={htmlLabel}
+                                aria-labelledby={`${htmlLabel} label`}
+                                value={answerValue}
+                                options={questionValues}
+                                disabled={!allowEdit && (!question.mandatory || answered)}
+                                onChange={this.handleChange}
+                                inline
+                            />
+                        </div>
+                    </div>
+                );
         }
     }
 
@@ -277,7 +315,7 @@ export default class QuestionAnswersInput extends React.Component {
                 {orderedQuestions.filter(q => q.usage === "Both" || q.usage === questions_type).map( q => {
                     let answer = answers.find(ans => ans.question_id === q.id);
                     let answerValue = answer ? answer.answer : null;
-                    return (                      
+                    return (
                         <div className={`row form-group`} key={`question_answer_${q.id}`}>
                             <div className="col-md-12">
                                 {this.getInput(q, answerValue)}
