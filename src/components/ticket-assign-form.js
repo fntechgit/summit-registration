@@ -303,7 +303,7 @@ class TicketAssignForm extends React.Component {
                 </div>
                 {extraQuestions && extraQuestions.length > 0 &&
                 <React.Fragment>
-                    <hr/>
+                    <br/>
                     <div className="row popup-basic-info">
                         <div className="col-sm-6">{T.translate("ticket_popup.edit_preferences")}</div>
                         <div className="col-sm-6"></div>
@@ -323,7 +323,7 @@ class TicketAssignForm extends React.Component {
                 }
                 {(summit.registration_disclaimer_content) &&
                 <React.Fragment>
-                    <hr/>
+                    <br/>
                     <div className="row field-wrapper">
                         <div className="col-md-12">
                             <div className="form-check abc-checkbox">

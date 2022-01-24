@@ -61,7 +61,7 @@ export default class TicketInput extends React.Component {
                                 <div className="col-md-5">
                                     <div className="ticket-type">{t.name}</div>
                                     <div className="ticket-price">
-                                        {t.cost > 0 ? `$ ${t.cost}` : T.translate("step_one.free")}
+                                        {t.cost > 0 ? `$ ${t.cost}` : <>&nbsp;</>}
                                     </div>
                                 </div>
                                 <div className="col-md-7">

@@ -16,7 +16,7 @@
   },
   "general": {
     "continue"           : "Continue",
-    "save_and_continue"  : "Save and Continue",
+    "save_and_continue"  : "Save and continue",
     "back"               : "Back",
     "pay_now"            : "Pay Now",
     "confirm"            : "Confirm",
@@ -106,7 +106,7 @@
   },
   "step_four": {
     "thank_you"           : "Thank you for your order!",
-    "subtitle"            : "Your Order is Now Complete",
+    "subtitle"            : "Your order is now complete",
     "member_exclamation"  : "You are signed in with your FNid and will use it to log in to the event on show days. ",
     "member_text"         : "You may proceed directly to the \"",
     "member_link_tickets" : "My Tickets",
@@ -199,7 +199,7 @@
     "notify_text_2"         : "Email will be sent to",
     "notify_button"         : "Re-Send Notification",
     "cancel_ticket"         : "Cancel Ticket (Request Refund)",
-    "save_changes"          : "Save Changes",
+    "save_changes"          : "Save changes",
     "do_it_later"           : "Do this later",
     "do_it_later_exp"       : "You may fill in the required information now or complete this step on the 'My Orders' page later."
   },
