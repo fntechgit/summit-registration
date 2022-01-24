@@ -16,7 +16,7 @@
   },
   "general": {
     "continue"           : "Continue",
-    "save_and_continue"  : "Save and Continue",
+    "save_and_continue"  : "Save and continue",
     "back"               : "Back",
     "pay_now"            : "Pay Now",
     "confirm"            : "Confirm",
@@ -107,7 +107,7 @@
   },
   "step_four": {
     "thank_you"             : "Thank you for your order!",
-    "subtitle"              : "Your Order is Now Complete",
+    "subtitle"              : "Your order is now complete",
     "member_exclamation"    : "You are signed in with your Okta account and will use it to log into the event(s) this March. Please reference your confirmation email with the subject line: \"You’re confirmed to attend TechWeek 2022!\"",
     "member_text"           : "Be sure to visit <a href=\"https://techweek2022.yahoo.fnvirtual.app\">techweek2022.com</a> for more info and event updates. You can also see the TechWeek event(s) you are registered to attend.",
     "member_link_tickets"   : "My Tickets",
@@ -202,7 +202,7 @@
     "notify_text_2"         : "Email will be sent to",
     "notify_button"         : "Re-Send Notification",
     "cancel_ticket"         : "Request a refund for this ticket",
-    "save_changes"          : "Save Changes",
+    "save_changes"          : "Save changes",
     "do_it_later"           : "Do this later",
     "do_it_later_exp"       : "You may fill in the required information now or complete this step on the 'My Orders' page later."
   },

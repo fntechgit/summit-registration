@@ -436,7 +436,7 @@ input::placeholder {
 .submit-buttons-wrapper {
   margin-top: 30px;
   text-align: center;
-  border-top: 1px solid lightgray;
+  border-top: none;
   padding: 15px;
   position: fixed;
   bottom: 0;
@@ -445,13 +445,16 @@ input::placeholder {
   background-color: white;
 
   .continue-btn {
-    width: 140px;
+    width: 160px;
     height: 40px;
+    background-color: @dory_blue;
+    font-weight: bold;
   }
 
   .back-btn {
     margin-right: 60px;
-    color: @lblue_color_2;
+    font-weight: bold;
+    color: @dory_blue;
 
     i {
       margin-right: 5px;
