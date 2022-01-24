@@ -68,7 +68,7 @@ h1 {
   background-color: var(--color_secondary_contrast);
 
   &:hover, &:focus, &:visited {
-    background-color: var(--color_secondary_contrast) !important;
+    background-color: var(--color_secondary_contrast);
   }
 
   &:active {
@@ -449,19 +449,28 @@ input::placeholder {
     height: 40px;
     background-color: @dory_blue;
     font-weight: bold;    
+    &:hover, &:focus, &:visited {
+      background-color: #125BD4 !important;
+    }
   }
 
   .continue-btn {
     width: 160px;
     height: 40px;
-    background-color: @dory_blue;
+    background-color: @dory_blue;    
     font-weight: bold;
+    &:hover, &:focus, &:visited {
+      background-color: #125BD4 !important;
+    }
   }
 
   .back-btn {
     margin-right: 60px;
     font-weight: bold;
     color: @dory_blue;
+    &:hover, &:focus, &:visited {
+      color: #125BD4 !important;
+    }
 
     i {
       margin-right: 5px;
