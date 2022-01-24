@@ -45,7 +45,7 @@ class HeaderTitle extends React.Component {
                 if (startMonth === endMonth && startYear === endYear) {
                     endDate = endDate.substr(endDate.indexOf(" ") + 1);
                 }
-                summitDate = `${startDate} - ${endDate}`;
+                summitDate = `${startDate}—${endDate}`;
             } else {
                 summitDate = getFormatedDate(summit.start_date, summit.time_zone_id);
             }
