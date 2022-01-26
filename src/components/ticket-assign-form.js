@@ -328,7 +328,7 @@ class TicketAssignForm extends React.Component {
                                     id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
                                     onChange={this._innerOnChange} className="form-check-input"/>
                                 <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
-                                    { summit.registration_disclaimer_mandatory? '* I Agree' : 'I Agree'}
+                                    { summit.registration_disclaimer_mandatory? `* ${T.translate("ticket_popup.agree")}` : T.translate("ticket_popup.agree")}
                                 </label>
                             </div>
                         </div>
@@ -345,7 +345,7 @@ class TicketAssignForm extends React.Component {
                                        id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
                                        onChange={this._innerOnChange} className="form-check-input"/>
                                 <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
-                                    { summit.registration_disclaimer_mandatory? '* I Agree' : 'I Agree'}
+                                    { summit.registration_disclaimer_mandatory? `* ${T.translate("ticket_popup.agree")}` : T.translate("ticket_popup.agree")}
                                 </label>
                             </div>
                         </div>
