@@ -51,14 +51,14 @@ class LogOutCallbackRoute extends React.Component {
 
         if (backUrl) {
             //console.log(`LogOutCallbackRoute::render backUrl ${backUrl}`);
-            window.location = this.postProcessBackUrl(backUrl, summitSlug);
+            history.push(this.postProcessBackUrl(backUrl, summitSlug));
             return;
         }
-        window.location = "https://techweek2022.yahoo.fnvirtual.app/";
+        history.push("/");
     }
 
     postProcessBackUrl(backUrl, summitSlug) {
-        const startUrl = summitSlug ? `/a/${summitSlug}/register/start`: 'https://techweek2022.yahoo.fnvirtual.app/';
+        const startUrl = summitSlug ? `/a/${summitSlug}/register/start`: '/a/';
         const detailUrl = '/a/member/orders/detail';
         const memberUrl = '/a/member/orders';
         console.log(`startUrl ${startUrl}`);
