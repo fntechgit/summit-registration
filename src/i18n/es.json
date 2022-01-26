@@ -4,7 +4,7 @@
   },
   "landing": {
     "sign_out"            : "Sign out",
-    "sign_in"              : "FNid Sign In",
+    "sign_in"              : "Okta Sign In",
     "not_logged_in"       : "You are not logged in. Please log in to continue:"
   },
   "errors": {
