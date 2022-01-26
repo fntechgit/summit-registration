@@ -327,34 +327,34 @@ class TicketAssignForm extends React.Component {
                     <div className="row field-wrapper">
                         <div className="col-md-12">
                             <div className="form-check abc-checkbox">
-                                <input type="checkbox" aria-label='accept disclaimer' 
-                                    id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
-                                    onChange={this._innerOnChange} className="form-check-input"/>
-                                <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
-                                    { summit.registration_disclaimer_mandatory? '*' : ''}
-                                </label>
                                 <div className="disclaimer">
                                     <RawHTML>
                                         {summit.registration_disclaimer_content}
                                     </RawHTML>
                                 </div>
+                                <input type="checkbox" aria-label='accept disclaimer' 
+                                    id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
+                                    onChange={this._innerOnChange} className="form-check-input"/>
+                                <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
+                                    { summit.registration_disclaimer_mandatory? `* ${T.translate("ticket_popup.agree")}` : T.translate("ticket_popup.agree")}
+                                </label>
                             </div>
                         </div>
                     </div>
                     <div className="field-wrapper-mobile">
                         <div>
                             <div className="form-check abc-checkbox">
-                                <input type="checkbox"
-                                       id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
-                                       onChange={this._innerOnChange} className="form-check-input"/>
-                                <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
-                                    { summit.registration_disclaimer_mandatory? '*' : ''}
-                                </label>
                                 <div className="disclaimer">
                                     <RawHTML>
                                         {summit.registration_disclaimer_content}
                                     </RawHTML>
                                 </div>
+                                <input type="checkbox"
+                                       id={`${ticket.id}_disclaimer_accepted`} checked={ticket.disclaimer_accepted}
+                                       onChange={this._innerOnChange} className="form-check-input"/>
+                                <label className="form-check-label" htmlFor={`${ticket.id}_disclaimer_accepted`}>
+                                    { summit.registration_disclaimer_mandatory? `* ${T.translate("ticket_popup.agree")}` : T.translate("ticket_popup.agree")}
+                                </label>
                             </div>
                         </div>
                     </div>
