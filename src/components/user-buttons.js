@@ -46,10 +46,11 @@ export default class
 
     onLogOutClick() {
         let { initLogOut, summitSlug } = this.props;
-
         // save current location and summit slug, for further redirect logic
         window.localStorage.setItem('post_logout_back_uri', new URI(window.location.href).pathname());
-        window.localStorage.setItem('post_logout_summit_slug', summitSlug);
+        // if we have a current summit save it
+        if(summitSlug)
+            window.localStorage.setItem('post_logout_summit_slug', summitSlug);
         initLogOut();
     }
 

@@ -58,10 +58,10 @@ class LogOutCallbackRoute extends React.Component {
     }
 
     postProcessBackUrl(backUrl, summitSlug) {
-        const startUrl = `/a/${summitSlug}/register/start`;
+        const startUrl = summitSlug ? `/a/${summitSlug}/register/start`: '/';
         const detailUrl = '/a/member/orders/detail';
         const memberUrl = '/a/member/orders';
-
+        console.log(`startUrl ${startUrl}`);
         // special case, force relogin
         if (backUrl === detailUrl) return memberUrl;
         // invitation flow
