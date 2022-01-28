@@ -85,7 +85,8 @@ export default class QuestionAnswersInput extends React.Component {
             htmlLabel = htmlLabel?.endsWith('</p>') ? htmlLabel.replace(/<\/p>$/g, " *</p>") : `${htmlLabel} *`;
         }
 
-        const answered = !!intialAnswers.find(ans => ans.question_id === question.id)?.answer;        
+        const answered = question.type === 'CheckBox' && intialAnswers.find(ans => ans.question_id === question.id)?.answer === 'false' ? 
+                         false : intialAnswers.find(ans => ans.question_id === question.id)?.answer ? true: false;        
 
         switch(question.type) {
             case 'Text':
