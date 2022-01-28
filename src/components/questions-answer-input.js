@@ -30,6 +30,7 @@ export default class QuestionAnswersInput extends React.Component {
 
         this.state = {
             answers: answers,
+            intialAnswers: answers
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -75,13 +76,16 @@ export default class QuestionAnswersInput extends React.Component {
 
     getInput(question, answerValue) {        
         let questionValues = question.values;
-        let {ticket} = this.props;
+        let {ticket, allowEdit} = this.props;
+        let {intialAnswers} = this.state;
 
         let htmlLabel = question.label;
         if (question.mandatory) {
             //Assuming that labels generated as html are wrapped in <p> bc the react-rte component generates them that way (defaultBlockTag: 'p')
             htmlLabel = htmlLabel?.endsWith('</p>') ? htmlLabel.replace(/<\/p>$/g, " *</p>") : `${htmlLabel} *`;
         }
+
+        const answered = !!intialAnswers.find(ans => ans.question_id === question.id)?.answer;        
 
         switch(question.type) {
             case 'Text':
@@ -97,6 +101,7 @@ export default class QuestionAnswersInput extends React.Component {
                                   value={answerValue}
                                   onChange={this.handleChange}
                                   placeholder={question.placeholder}
+                                  disabled={!allowEdit && answered}
                                   className="form-control"
                               />
                           </div>                        
@@ -111,6 +116,7 @@ export default class QuestionAnswersInput extends React.Component {
                                   value={answerValue}
                                   onChange={this.handleChange}
                                   placeholder={question.placeholder}
+                                  disabled={!allowEdit && answered}
                                   className="form-control"
                               />
                           </div>
@@ -130,6 +136,7 @@ export default class QuestionAnswersInput extends React.Component {
                                 value={answerValue}
                                 onChange={this.handleChange}
                                 placeholder={question.placeholder}
+                                disabled={!allowEdit && answered}
                                 className="form-control"                                
                                 rows="4"
                             />
@@ -145,6 +152,7 @@ export default class QuestionAnswersInput extends React.Component {
                                 value={answerValue}
                                 onChange={this.handleChange}
                                 placeholder={question.placeholder}
+                                disabled={!allowEdit && answered}
                                 className="form-control"                                
                                 rows="4"
                             />
@@ -156,8 +164,7 @@ export default class QuestionAnswersInput extends React.Component {
                   return (
                     <div className="form-check abc-checkbox">
                         <input type="checkbox" id={`${ticket.id}_${question.id}`} checked={(answerValue === "true")}
-                               onChange={this.handleChange} className="form-check-input" />
-
+                            disabled={!allowEdit && answered} onChange={this.handleChange} className="form-check-input" />
                         <label className="form-check-label" htmlFor={`${ticket.id}_${question.id}`} >
                             <RawHTML>{htmlLabel}</RawHTML>
                         </label>
@@ -178,6 +185,7 @@ export default class QuestionAnswersInput extends React.Component {
                                 id={question.id}
                                 value={value}
                                 options={questionValues}
+                                disabled={!allowEdit && answered}
                                 onChange={this.handleChange}
                             />
                           </div>                        
@@ -191,6 +199,7 @@ export default class QuestionAnswersInput extends React.Component {
                                 id={question.id}
                                 value={value}
                                 options={questionValues}
+                                disabled={!allowEdit && answered}
                                 onChange={this.handleChange}
                             />
                           </div>                        
@@ -213,6 +222,7 @@ export default class QuestionAnswersInput extends React.Component {
                                   value={answerValue}
                                   options={questionValues}
                                   onChange={this.handleChange}
+                                  disabled={!allowEdit && answered}
                               />
                           </div>                        
                       </div>
@@ -226,6 +236,7 @@ export default class QuestionAnswersInput extends React.Component {
                                 value={answerValue}
                                 options={questionValues}
                                 onChange={this.handleChange}
+                                disabled={!allowEdit && answered}
                             />
                         </div>                        
                     </div>
@@ -244,6 +255,7 @@ export default class QuestionAnswersInput extends React.Component {
                                   id={`${ticket.id}_${question.id}`}
                                   value={answerValue}
                                   options={questionValues}
+                                  disabled={!allowEdit && answered}
                                   onChange={this.handleChange}
                                   inline
                               />

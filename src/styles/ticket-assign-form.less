@@ -34,6 +34,9 @@
       background-color: @lblue_color_1;
       border-color: @header_lblue_color;
       display: inline-flex;
+      &:disabled{
+        background-color: lightgray;        
+      }
     }
     .css-bg1rzq-control, .css-1szy77t-control {          
       background-color: @lblue_color_1;
@@ -45,6 +48,9 @@
     textarea {
       background-color: @lblue_color_1;
       border-color: @header_lblue_color;
+      &:disabled{
+        background-color: lightgray;        
+      }
     }
     &--textarea {
       align-items: flex-start;
@@ -85,6 +91,9 @@
       color: @font_blue_2 !important;
       &::placeholder {
         color: @input_hint_color !important;
+      }
+      &:disabled{
+        background-color: lightgray;        
       }
     }
     .abc-checkbox label{

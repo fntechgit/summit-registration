@@ -384,6 +384,7 @@ class TicketPopup extends React.Component {
                             ticket={tempTicket} 
                             status={status.text} 
                             ownedTicket={fromTicketList || owner? owner.email === member.email : false }
+                            fromTicketList={fromTicketList}
                             orderOwned={orderOwned}
                             owner={owner}
                             extraQuestions={extraQuestions}
