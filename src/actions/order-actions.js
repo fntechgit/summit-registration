@@ -278,6 +278,10 @@ export const payReservation = (token = null, stripe = null) => (dispatch, getSta
           })
           .catch(e => {
               dispatch(stopLoading());
+              if(e.err?.status === 412) {
+                  history.push(stepDefs[1]);
+                  dispatch(createAction(CLEAR_RESERVATION)({}));
+              }
               return (e);
           });
     } else {
@@ -324,6 +328,10 @@ export const payReservation = (token = null, stripe = null) => (dispatch, getSta
                     })
                     .catch(e => {
                         dispatch(stopLoading());
+                        if(e.err?.status === 412) {
+                            history.push(stepDefs[1]);
+                            dispatch(createAction(CLEAR_RESERVATION)({}));
+                        }
                         return (e);
                     });
                 // The payment has succeeded. Display a success message.
@@ -451,6 +459,10 @@ export const updateOrderTickets = (tickets) => (dispatch, getState) => {
             }
         }).catch(e => {
             dispatch(stopLoading());
+            if(e.err?.status === 412) {
+                history.push(stepDefs[1]);
+                dispatch(createAction(CLEAR_RESERVATION)({}));
+            }
             return (e);
         });
 };
