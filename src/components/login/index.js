@@ -57,26 +57,24 @@ const LoginComponent = ({
     const focusable = modal.querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])');
     const firstFocusable = focusable[0];
     const lastFocusable = focusable[focusable.length - 1];
+    const KEYCODE_TAB = 9;
+    const isTabPressed = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB);
 
-    if (e.ctrlKey || e.altKey) {
+    if (!isTabPressed) {
       return;
     }
 
-    const keys = {
-      9: () => { //9 = TAB
-        if (e.shiftKey && e.target === firstFocusable) {
-          lastFocusable.focus();
+    if ( e.shiftKey ) /* shift + tab */ {
+      if (document.activeElement === firstFocusable) {
+        lastFocusable.focus();
+          e.preventDefault();
         }
-
-        if (e.target === lastFocusable) {
-          firstFocusable.focus();
+      } else /* tab */ {
+      if (document.activeElement === lastFocusable) {
+        firstFocusable.focus();
+          e.preventDefault();
         }
       }
-    };
-
-    if (keys[e.keyCode]) {
-      keys[e.keyCode]();
-    }
   }
 
   const loginPasswordless = (code, email) => {
