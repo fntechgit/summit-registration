@@ -151,7 +151,7 @@ class TicketList extends React.Component {
     handleReassignDate(ticket) {
       let {summits} = this.props;
       let summit = summits.find(s => s.id === ticket.owner.summit_id);
-      let reassign_date = summit.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date
+      let reassign_date = summit?.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date
       return reassign_date;
     }
 
@@ -164,7 +164,7 @@ class TicketList extends React.Component {
     handlePastSummit(ticket) {
       let {summits, now} = this.props;
       let summit = summits.find(s => s.id === ticket.order.summit_id);
-      let reassign_date = summit.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date;      
+      let reassign_date = summit?.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date;      
       return now > reassign_date ? true : false;
     }
 

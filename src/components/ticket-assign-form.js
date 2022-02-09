@@ -73,7 +73,7 @@ class TicketAssignForm extends React.Component {
 
     handleFormatReassignDate(days) {
         let {summit, now} = this.props;
-        let reassign_date = summit.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date
+        let reassign_date = summit?.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date
         if (days) {
             return daysBetweenDates(now, reassign_date, summit.time_zone.name).length;
         }
@@ -82,14 +82,15 @@ class TicketAssignForm extends React.Component {
 
     render() {
 
-        let {guest, ownedTicket, owner, ticket, extraQuestions, status, summit, orderOwned, readOnly, now, shouldEditBasicInfo, fromTicketList} = this.props;
+        let {guest, ownedTicket, owner, ticket, extraQuestions, status, summit, orderOwned, readOnly, now, shouldEditBasicInfo, fromTicketList, fromOrderList} = this.props;
         let showCancel = true;
         if(!shouldEditBasicInfo) shouldEditBasicInfo = false;
         if(this.props.hasOwnProperty('showCancel'))
             showCancel = this.props.showCancel;
         let {extra_questions, input_email} = this.state;
         ticket.disclaimer_accepted = ticket.disclaimer_accepted == null ? false : ticket.disclaimer_accepted;
-        const allow_extra_questions_edit = fromTicketList !== true || ownedTicket && summit.allow_update_attendee_extra_questions;
+        // if the user is purchasing a ticket, allow to edit the extra questions (fromTicketList === undefined && fromOrderList === undefined)
+        const allow_extra_questions_edit = (fromTicketList === undefined && fromOrderList === undefined) || ownedTicket && summit.allow_update_attendee_extra_questions;
         return (
             <div className="ticket-assign-form">
                 <div className="row popup-basic-info">

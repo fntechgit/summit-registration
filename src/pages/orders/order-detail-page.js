@@ -194,7 +194,7 @@ class OrderDetailPage extends React.Component {
 
   handlePastSummit() {
     let {summit} = this.props;    
-    let reassign_date = summit.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date;
+    let reassign_date = summit?.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date;
     return this.props.getNow() > reassign_date ? true : false;
   }
 
@@ -399,6 +399,7 @@ class OrderDetailPage extends React.Component {
                   updateTicket={this.handleTicketUpdate}
                   resendNotification={this.handleResendNotification}
                   removeAttendee={this.handleTicketRemoveAttendee}
+                  fromOrderList={true}
                   summit={summit}
                   errors={errors}
                   now={this.props.getNow()}

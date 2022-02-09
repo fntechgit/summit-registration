@@ -222,13 +222,25 @@ class TicketPopup extends React.Component {
 
     handlePopupSave() {
 
-      let {tempTicket: {disclaimer_accepted, attendee_first_name, attendee_last_name, attendee_company, attendee_email, errors}} = this.state;
-      let {summit:{registration_disclaimer_mandatory}, member} = this.props;
+      let {tempTicket: {disclaimer_accepted, attendee_first_name, attendee_last_name, attendee_company, attendee_email, extra_questions, errors}} = this.state;
+      let {summit:{registration_disclaimer_mandatory}, member, ticket:{owner}} = this.props;
+
+      let extraQuestionsChanged = true;
+
+      if(owner) {
+        let originalExtraQuestions = [];
+        owner?.extra_questions.map(q => {
+          let question = {question_id: q.question_id, answer: q.value};
+          originalExtraQuestions.push(question);
+        })
+        
+        extraQuestionsChanged = JSON.stringify(originalExtraQuestions) !== JSON.stringify(extra_questions);        
+      }
 
       let model = new TicketModel(this.state.tempTicket, this.props.summit, this.props.now);
       let mandatoryExtraQuestions = model.validateExtraQuestions(this.props.extraQuestions);
 
-      let saveEnabled = errors && errors.attendee_email === '' && attendee_first_name && attendee_last_name && attendee_company && errors.constructor === Object && mandatoryExtraQuestions;
+      let saveEnabled = errors && errors.attendee_email === '' && attendee_first_name && attendee_last_name && attendee_company && errors.constructor === Object && mandatoryExtraQuestions && extraQuestionsChanged;
       
       if (registration_disclaimer_mandatory && member.email === attendee_email) {
         saveEnabled = errors.attendee_email === '' && attendee_first_name && attendee_last_name && attendee_company && mandatoryExtraQuestions && disclaimer_accepted;
@@ -297,13 +309,13 @@ class TicketPopup extends React.Component {
 
     handleFormatReassignDate() {
       let {summit} = this.props;
-      let reassign_date = summit.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date;
+      let reassign_date = summit?.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date;
       return getFormatedDate(reassign_date, summit.time_zone_id);
     }
 
     render() {
 
-      let {extraQuestions, status, ticket: {owner, badge, ticket_type_id}, fromTicketList, summit, orderOwned, member,
+      let {extraQuestions, status, ticket: {owner, badge, ticket_type_id}, fromTicketList, fromOrderList, summit, orderOwned, member,
           loading, now, order} = this.props;
 
       let {showPopup, tempTicket, tempTicket: {reassign_email, errors}, popupCase, cleanFields} = this.state;
@@ -385,6 +397,7 @@ class TicketPopup extends React.Component {
                             status={status.text} 
                             ownedTicket={fromTicketList || owner? owner.email === member.email : false }
                             fromTicketList={fromTicketList}
+                            fromOrderList={fromOrderList}
                             orderOwned={orderOwned}
                             owner={owner}
                             extraQuestions={extraQuestions}
