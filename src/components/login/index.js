@@ -43,6 +43,40 @@ const LoginComponent = ({
     getThirdPartyProviders();
   }, []);
 
+  useEffect(() => {
+    window.addEventListener('keydown', handleUserKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleUserKeyPress);
+    };
+  }, []);
+
+  const handleUserKeyPress = (e) => {
+
+    const modal = document.getElementById("login-modal");
+    const focusable = modal.querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])');
+    const firstFocusable = focusable[0];
+    const lastFocusable = focusable[focusable.length - 1];
+    const KEYCODE_TAB = 9;
+    const isTabPressed = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB);
+
+    if (!isTabPressed) {
+      return;
+    }
+
+    if ( e.shiftKey ) /* shift + tab */ {
+      if (document.activeElement === firstFocusable) {
+        lastFocusable.focus();
+          e.preventDefault();
+        }
+      } else /* tab */ {
+      if (document.activeElement === lastFocusable) {
+        firstFocusable.focus();
+          e.preventDefault();
+        }
+      }
+  }
+
   const loginPasswordless = (code, email) => {
     const params = {
       connection: "email",
@@ -66,6 +100,7 @@ const LoginComponent = ({
       onHide={closeSignInModal}
       autoFocus={true}
       keyboard={true}
+      id='login-modal'
     >
       <Modal.Header closeButton>
         <Modal.Title
