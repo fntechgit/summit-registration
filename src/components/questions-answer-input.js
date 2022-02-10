@@ -194,9 +194,9 @@ export default class QuestionAnswersInput extends React.Component {
                           </div>
                           <div className="col-sm-8">                          
                             <Dropdown
-                                id={`${question.id}`}
+                                inputId={`${question.id}`}
                                 name={htmlLabel}
-                                aria-labelledby={`${htmlLabel} label`}
+                                ariaLabelledby={`${htmlLabel} label`}
                                 value={value}
                                 options={questionValues}
                                 onChange={this.handleChange}
@@ -211,9 +211,9 @@ export default class QuestionAnswersInput extends React.Component {
                           </div>
                           <div>                          
                             <Dropdown
-                                id={`${question.id}-mobile`}
+                                inputId={`${question.id}-mobile`}
                                 name={htmlLabel}
-                                aria-labelledby={`${htmlLabel} label`}
+                                ariaLabelledby={`${htmlLabel} label`}
                                 value={value}
                                 options={questionValues}
                                 onChange={this.handleChange}
