@@ -86,7 +86,7 @@ export default class QuestionAnswersInput extends React.Component {
         }
 
         const answered = question.type === 'CheckBox' && intialAnswers.find(ans => ans.question_id === question.id)?.answer === 'false' ? 
-                         false : intialAnswers.find(ans => ans.question_id === question.id)?.answer ? true: false;        
+                         false : intialAnswers.find(ans => ans.question_id === question.id)?.answer ? true: false;       
 
         switch(question.type) {
             case 'Text':
@@ -165,7 +165,7 @@ export default class QuestionAnswersInput extends React.Component {
                   return (
                     <div className="form-check abc-checkbox">
                         <input type="checkbox" id={`${ticket.id}_${question.id}`} checked={(answerValue === "true")}
-                            disabled={!allowEdit && answered} onChange={this.handleChange} className="form-check-input" />
+                            disabled={!allowEdit && (!question.mandatory || answered)} onChange={this.handleChange} className="form-check-input" />
                         <label className="form-check-label" htmlFor={`${ticket.id}_${question.id}`} >
                             <RawHTML>{htmlLabel}</RawHTML>
                         </label>
@@ -186,7 +186,7 @@ export default class QuestionAnswersInput extends React.Component {
                                 id={question.id}
                                 value={value}
                                 options={questionValues}
-                                disabled={!allowEdit && answered}
+                                disabled={!allowEdit && (!question.mandatory || answered)}
                                 onChange={this.handleChange}
                             />
                           </div>                        
@@ -200,7 +200,7 @@ export default class QuestionAnswersInput extends React.Component {
                                 id={question.id}
                                 value={value}
                                 options={questionValues}
-                                disabled={!allowEdit && answered}
+                                disabled={!allowEdit && (!question.mandatory || answered)}
                                 onChange={this.handleChange}
                             />
                           </div>                        
@@ -209,7 +209,7 @@ export default class QuestionAnswersInput extends React.Component {
                   );
             case 'CheckBoxList':
                 questionValues = questionValues.map(val => ({...val, value: val.id}));
-                answerValue = answerValue ? answerValue.split(',').map(ansVal => parseInt(ansVal)) : [];     
+                answerValue = answerValue ? answerValue.split(',').map(ansVal => parseInt(ansVal)) : [];
            
                   return(
                     <React.Fragment>
@@ -223,7 +223,7 @@ export default class QuestionAnswersInput extends React.Component {
                                   value={answerValue}
                                   options={questionValues}
                                   onChange={this.handleChange}
-                                  disabled={!allowEdit && answered}
+                                  disabled={!allowEdit && (!question.mandatory || answered)}
                               />
                           </div>                        
                       </div>
@@ -237,7 +237,7 @@ export default class QuestionAnswersInput extends React.Component {
                                 value={answerValue}
                                 options={questionValues}
                                 onChange={this.handleChange}
-                                disabled={!allowEdit && answered}
+                                disabled={!allowEdit && (!question.mandatory || answered)}
                             />
                         </div>                        
                     </div>
@@ -256,7 +256,7 @@ export default class QuestionAnswersInput extends React.Component {
                                   id={`${ticket.id}_${question.id}`}
                                   value={answerValue}
                                   options={questionValues}
-                                  disabled={!allowEdit && answered}
+                                  disabled={!allowEdit && (!question.mandatory || answered)}
                                   onChange={this.handleChange}
                                   inline
                               />
