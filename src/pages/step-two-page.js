@@ -101,7 +101,7 @@ class StepTwoPage extends React.Component {
 
         if(member) {
             const idToken = getIdToken();
-            let first_name = '' , last_name = '', email = '', company = '';
+            let first_name = '' , last_name = '', email = '', company = {name: '', id: null};
             if(idToken) {
                 try {
                     const verifier = new IdTokenVerifier();
@@ -109,7 +109,7 @@ class StepTwoPage extends React.Component {
                     first_name = member.first_name;
                     last_name = member.last_name;
                     email = member.email;
-                    company = invitation?.summit_id === summit.id ? window.INVITATION_DEFAULT_COMPANY : jwt.payload.company;
+                    company = {id: null, name: invitation?.summit_id === summit.id ? window.INVITATION_DEFAULT_COMPANY : jwt.payload.company};
                 }
                 catch (e){
                     log.error(e);
@@ -219,6 +219,7 @@ class StepTwoPage extends React.Component {
                 <div className="row">
                     <div className="col-md-8">
                         <BasicInfoForm 
+                            summitId={summit.id}
                             order={order} 
                             invitation={invitation?.summit_id === summit.id ? invitation : null}
                             errors={dirty? errors : {}} 

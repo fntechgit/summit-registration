@@ -73,7 +73,7 @@ export const checkOrderData = () => (dispatch, getState) => {
     }
   }  
 
-  if (owner_company !== company || owner_first_name !== first_name || owner_last_name !== last_name) {
+  if (owner_company !== company.name || owner_first_name !== first_name || owner_last_name !== last_name) {
       const newProfile = {
           first_name: owner_first_name,
           last_name: owner_last_name,
@@ -91,7 +91,7 @@ export const handleOrderChange = (order, errors = {}) => (dispatch, getState) =>
     if (currentStep === 2) {
         if (validator.isEmpty(order.first_name)) errors.first_name = T.translate("step_two.validator.first_name");
         if (validator.isEmpty(order.last_name)) errors.last_name = T.translate("step_two.validator.last_name");
-        if (validator.isEmpty(order.company)) errors.company = T.translate("step_two.validator.company");
+        if (validator.isEmpty(order.company.name)) errors.company = T.translate("step_two.validator.company");
         if (!validator.isEmail(order.email)) errors.email = T.translate("step_two.validator.email");
 
         order.tickets.forEach(tix => {
@@ -137,7 +137,7 @@ export const createReservation = (owner_email, owner_first_name, owner_last_name
         if (t.attendee_email === owner_email) {
             t.attendee_first_name = owner_first_name;
             t.attendee_last_name = owner_last_name;
-            t.attendee_company = owner_company;
+            t.attendee_company = owner_company.name;
         }
 
         // if the summit is only invite, assign the ticket to the order owner
@@ -145,7 +145,7 @@ export const createReservation = (owner_email, owner_first_name, owner_last_name
             t.attendee_email = owner_email;
             t.attendee_first_name = owner_first_name;
             t.attendee_last_name = owner_last_name;
-            t.attendee_company = owner_company;
+            t.attendee_company = owner_company.name;
         }
 
         return t;
@@ -163,7 +163,7 @@ export const createReservation = (owner_email, owner_first_name, owner_last_name
         params['access_token'] = accessToken;
     }
 
-    let normalizedEntity = {owner_email, owner_first_name, owner_last_name, owner_company, tickets};
+    let normalizedEntity = normalizeReservation({owner_email, owner_first_name, owner_last_name, owner_company, tickets});
 
     return postRequest(
         createAction(CREATE_RESERVATION),
@@ -474,3 +474,17 @@ export const updateOrderTickets = (tickets) => (dispatch, getState) => {
             throw e;
         });
 };
+
+const normalizeReservation = (entity) => {
+    const normalizedEntity = {...entity};
+
+    if(!entity.owner_company.id) {
+        normalizedEntity['owner_company'] = entity.owner_company.name;
+    } else {
+        delete(normalizedEntity['owner_company']);
+        normalizedEntity['owner_company_id'] = entity.owner_company.id;
+    }
+
+    return normalizedEntity;
+
+}
