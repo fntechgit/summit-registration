@@ -19,7 +19,9 @@ import {
   SUMMIT_NOT_FOUND, 
   SELECT_PURCHASE_SUMMIT,
   GET_SUMMIT_REFUND_POLICY, 
-  GET_SUGGESTED_SUMMITS
+  GET_SUGGESTED_SUMMITS,
+  SET_PURCHASE_EXTRA_QUESTIONS,
+  SET_SELECTED_EXTRA_QUESTIONS
 } from "../actions/summit-actions";
 
 
@@ -68,6 +70,8 @@ const summitReducer = (state = DEFAULT_STATE, action) => {
             let summit = payload.response;
             return {...state, summits: [ ...state.summits, summit ]};
         case SELECT_SUMMIT:
+            // setting an empty value until the main extra questions are fetched
+            payload.order_extra_questions = [];
             // from now on, all shows/summits are marked as virtual
             return {...state, selectedSummit: {...payload, is_virtual: true}};
             break;
@@ -75,6 +79,14 @@ const summitReducer = (state = DEFAULT_STATE, action) => {
             return {...state, selectedSummit: { ...state.selectedSummit, refund_policy: payload.response}};
         case GET_SUGGESTED_SUMMITS:
             return {...state, suggestedSummits: payload.response.data};
+        case SET_PURCHASE_EXTRA_QUESTIONS: {
+            const mainOrderExtraQuestions = payload.response.data;
+            return {...state, purchaseSummit: {...state.purchaseSummit, order_extra_questions: mainOrderExtraQuestions}}
+        }
+        case SET_SELECTED_EXTRA_QUESTIONS: {
+            const mainOrderExtraQuestions = payload.response.data;
+            return {...state, selectedSummit: {...state.selectedSummit, order_extra_questions: mainOrderExtraQuestions}}
+        }
         default:
             return state;
             break;

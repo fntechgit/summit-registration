@@ -70,8 +70,12 @@ class StepExtraQuestionsPage extends React.Component {
 
         this.handleTicketCancel = this.handleTicketCancel.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.onTicketsSave = this.onTicketsSave.bind(this);
+        this.handleTicketSave = this.handleTicketSave.bind(this);
         this.onSkip = this.onSkip.bind(this);
+        this.handleNewExtraQuestions = this.handleNewExtraQuestions.bind(this);
+        this.triggerFormSubmit = this.triggerFormSubmit.bind(this);
+
+        this.formRef = React.createRef();
     }
 
     componentDidMount() {
@@ -101,7 +105,29 @@ class StepExtraQuestionsPage extends React.Component {
         return null;
     }
 
-    onTicketsSave(ev) {
+    handleNewExtraQuestions (answersForm, ticket) {
+        const {summit} = this.props;
+        const qs = new QuestionsSet(summit.order_extra_questions);
+        let newAnswers = [];
+        Object.keys(answersForm).forEach(name => {
+            let question = qs.getQuestionByName(name);
+            if(!question){
+                console.log(`missing question for answer ${name}.`);
+                return;
+            }
+            if(answersForm[name] || answersForm[name].length > 0) {
+              newAnswers.push({ id: question.id, value: answersForm[name]});
+            }
+        });
+        const newTicket = {...ticket, extra_questions: newAnswers}
+        this.handleTicketSave(newTicket);
+      }
+    
+      triggerFormSubmit() {
+        this.formRef.current.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }))
+      }
+
+    handleTicketSave(ev) {
         let { tickets } = this.state;
         let { summit, getNow, extraQuestions, order } = this.props;
 
@@ -110,10 +136,6 @@ class StepExtraQuestionsPage extends React.Component {
             // validate each ticket
             let model = new TicketModel(ticket, summit, getNow());
 
-            if (!model.validateExtraQuestions(extraQuestions)) {
-                canSave = false;
-                Swal.fire("Validation Error", "Please answer mandatory questions.", "warning");
-            }
 
             if(!model.validateSummitDisclaimer()){
                 canSave = false;
@@ -212,7 +234,8 @@ class StepExtraQuestionsPage extends React.Component {
                                                 cancelTicket={this.handleTicketCancel}
                                                 summit={summit}
                                                 now={now}
-                                                errors={ticket.errors} />
+                                                errors={ticket.errors}
+                                                formRef={this.formRef} />
                                         </div>
                                     </div>
                                 </React.Fragment>
@@ -228,7 +251,7 @@ class StepExtraQuestionsPage extends React.Component {
                     <div className="col-md-12">
                         <button
                             className="btn btn-primary"
-                            onClick={this.onTicketsSave}>
+                            onClick={this.triggerFormSubmit}>
                             {T.translate("ticket_popup.save_changes")}
                         </button>
                     </div>

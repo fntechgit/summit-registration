@@ -25,6 +25,8 @@ import {
 
 import Swal from 'sweetalert2';
 
+import URI from 'urijs';
+
 import { LOGOUT_USER } from "openstack-uicore-foundation/lib/actions";
 import { setTotalSteps } from "./wizzard-actions";
 import { openWillLogoutModal } from "./auth-actions";
@@ -39,6 +41,9 @@ export const GET_SUGGESTED_SUMMITS      = 'GET_SUGGESTED_SUMMITS';
 export const GET_SUMMIT_REFUND_POLICY   = 'GET_SUMMIT_REFUND_POLICY';
 export const RECEIVE_MARKETING_SETTINGS = 'RECEIVE_MARKETING_SETTINGS';
 export const CLEAR_MARKETING_SETTINGS   = 'CLEAR_MARKETING_SETTINGS';
+export const RECEIVE_MAIN_ORDER_EXTRA_QUESTIONS = 'RECEIVE_MAIN_ORDER_EXTRA_QUESTIONS';
+export const SET_PURCHASE_EXTRA_QUESTIONS = 'SET_PURCHASE_EXTRA_QUESTIONS';
+export const SET_SELECTED_EXTRA_QUESTIONS     = 'SET_SELECTED_EXTRA_QUESTIONS';
 
 export const handleResetReducers = () => (dispatch, getState) => {
   dispatch(createAction(LOGOUT_USER)({}));
@@ -58,8 +63,12 @@ export const getSummitBySlug = (slug, updateSummit) => (dispatch, getState) => {
         `${window.API_BASE_URL}/api/public/v1/summits/all/${slug}`,
         customErrorHandler
     )(params)(dispatch).then((payload) => {
+          console.log('update summit=', updateSummit)
           if(updateSummit) {
             dispatch(createAction(SELECT_SUMMIT)(payload.response, false));
+            dispatch(getMainOrderExtraQuestions(false))
+          } else {
+            dispatch(getMainOrderExtraQuestions(true))
           }
           dispatch(setMarketingSettings(payload.response.id));
           dispatch(stopLoading());
@@ -220,6 +229,39 @@ export const setMarketingSettings = (summitId) => (dispatch) => {
         `${window.MARKETING_API_BASE_URL}/api/public/v1/config-values/all/shows/${summitId}`,
         authErrorHandler
     )(params)(dispatch);
+};
+
+export const getMainOrderExtraQuestions = (fromPurchase) => async (dispatch, getState) => {
+
+  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+  if (!accessToken) return;
+
+  const { summitState: {purchaseSummit, selectedSummit} } = getState();
+
+  console.log('from purchas', fromPurchase)
+
+  dispatch(startLoading());
+  
+  let apiUrl = URI(`${window.API_BASE_URL}/api/v1/summits/${fromPurchase ? purchaseSummit.id : selectedSummit.id}/order-extra-questions`);
+  apiUrl.addQuery('filter[]', 'class==MainQuestion');
+  apiUrl.addQuery('filter[]', 'usage==Ticket');
+  apiUrl.addQuery('expand', '*sub_question_rules,*sub_question,*values')
+  apiUrl.addQuery('access_token', accessToken);
+  apiUrl.addQuery('order', 'order');
+
+  return getRequest(
+      null,
+      createAction(RECEIVE_MAIN_ORDER_EXTRA_QUESTIONS),
+      `${apiUrl}`,
+      authErrorHandler
+  )({})(dispatch).then(({response}) => {
+    dispatch(fromPurchase ? createAction(SET_PURCHASE_EXTRA_QUESTIONS)({response}) : createAction(SET_SELECTED_EXTRA_QUESTIONS)({response}));
+    dispatch(stopLoading());
+  }).catch(e => {
+      console.log('ERROR: ', e);
+      dispatch(stopLoading());
+      return Promise.reject(e);
+  });
 };
 
 

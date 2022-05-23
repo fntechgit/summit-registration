@@ -16,6 +16,7 @@ import T from 'i18n-react/dist/i18n-react'
 import cloneDeep from "lodash.clonedeep";
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import { Input } from 'openstack-uicore-foundation/lib/components'
+import QuestionsSet from 'openstack-uicore-foundation/lib/utils/questions-set'
 import validator from "validator"
 import TicketModel from '../models/ticket';
 
@@ -62,6 +63,10 @@ class TicketPopup extends React.Component {
         this.handleTicketRole = this.handleTicketRole.bind(this);
         this.handleTicketName = this.handleTicketName.bind(this);
         this.handlePopupSave = this.handlePopupSave.bind(this);
+        this.handleNewExtraQuestions = this.handleNewExtraQuestions.bind(this);
+        this.triggerFormSubmit = this.triggerFormSubmit.bind(this);
+
+        this.formRef = React.createRef();
     }
 
     componentWillMount() {      
@@ -71,7 +76,7 @@ class TicketPopup extends React.Component {
         let {email, first_name, last_name, company, disclaimer_accepted_date, extra_questions} = owner;
         let formattedQuestions = [];
         extra_questions.map(q => {
-          let question = {question_id: q.question_id, answer: q.value};
+          let question = {question_id: q.question_id, value: q.value};
           formattedQuestions.push(question);
         })        
         this.setState({tempTicket: {
@@ -124,6 +129,28 @@ class TicketPopup extends React.Component {
             return null;
         }              
       }
+    }
+
+    handleNewExtraQuestions (answersForm, ticket) {
+      const {summit} = this.props;
+      const qs = new QuestionsSet(summit.order_extra_questions);
+      let newAnswers = [];
+      Object.keys(answersForm).forEach(name => {
+          let question = qs.getQuestionByName(name);
+          if(!question){
+              console.log(`missing question for answer ${name}.`);
+              return;
+          }
+          if(answersForm[name] || answersForm[name].length > 0) {
+            newAnswers.push({ id: question.id, value: answersForm[name]});
+          }
+      });
+      const newTicket = {...ticket, extra_questions: newAnswers}
+      this.handleTicketSave(newTicket);
+    }
+
+    triggerFormSubmit() {
+      this.formRef.current.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }))
     }
 
     handleTicketSave(){
@@ -223,27 +250,13 @@ class TicketPopup extends React.Component {
     handlePopupSave() {
 
       let {tempTicket: {disclaimer_accepted, attendee_first_name, attendee_last_name, attendee_company, attendee_email, extra_questions, errors}} = this.state;
-      let {summit:{registration_disclaimer_mandatory}, member, ticket:{owner}} = this.props;
+      let {summit:{registration_disclaimer_mandatory}, member} = this.props;
 
-      let extraQuestionsChanged = true;
 
-      if(owner) {
-        let originalExtraQuestions = [];
-        owner?.extra_questions.map(q => {
-          let question = {question_id: q.question_id, answer: q.value};
-          originalExtraQuestions.push(question);
-        })
-        
-        extraQuestionsChanged = JSON.stringify(originalExtraQuestions) !== JSON.stringify(extra_questions);        
-      }
-
-      let model = new TicketModel(this.state.tempTicket, this.props.summit, this.props.now);
-      let mandatoryExtraQuestions = model.validateExtraQuestions(this.props.extraQuestions);
-
-      let saveEnabled = errors && errors.attendee_email === '' && attendee_first_name && attendee_last_name && attendee_company && errors.constructor === Object && mandatoryExtraQuestions && extraQuestionsChanged;
+      let saveEnabled = errors && errors.attendee_email === '' && attendee_first_name && attendee_last_name && attendee_company && errors.constructor === Object;
       
       if (registration_disclaimer_mandatory && member.email === attendee_email) {
-        saveEnabled = errors.attendee_email === '' && attendee_first_name && attendee_last_name && attendee_company && mandatoryExtraQuestions && disclaimer_accepted;
+        saveEnabled = errors.attendee_email === '' && attendee_first_name && attendee_last_name && attendee_company && disclaimer_accepted;
       }
 
       // return the reverse value for disabled prop
@@ -405,13 +418,15 @@ class TicketPopup extends React.Component {
                             onChange={this.handleChange} 
                             summit={summit}
                             now={now}
-                            errors={errors}/>
+                            errors={errors}
+                            formRef={this.formRef}
+                            handleNewExtraQuestions={this.handleNewExtraQuestions} />
                         </div>
                         <div className="popup-footer-save">
                           <button 
                               className="btn btn-primary" 
                               disabled={this.handlePopupSave()}
-                              onClick={() => this.handleTicketSave()}>
+                              onClick={this.triggerFormSubmit}>
                                   {T.translate("ticket_popup.save_changes")}
                           </button>
                         </div>

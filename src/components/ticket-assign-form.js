@@ -13,8 +13,7 @@
 
 import React from 'react'
 import T from "i18n-react/dist/i18n-react";
-import {Input, RawHTML} from 'openstack-uicore-foundation/lib/components'
-import QuestionAnswersInput from './questions-answer-input';
+import {Input, RawHTML, ExtraQuestionsForm} from 'openstack-uicore-foundation/lib/components'
 
 import {daysBetweenDates, getFormatedDate} from '../utils/helpers';
 
@@ -82,7 +81,8 @@ class TicketAssignForm extends React.Component {
 
     render() {
 
-        let {guest, ownedTicket, owner, ticket, extraQuestions, status, summit, orderOwned, readOnly, now, shouldEditBasicInfo, fromTicketList, fromOrderList} = this.props;
+        let {guest, ownedTicket, owner, ticket, extraQuestions, status, summit, orderOwned, readOnly, now, shouldEditBasicInfo, fromTicketList, 
+            fromOrderList, formRef, handleNewExtraQuestions} = this.props;
         let showCancel = true;
         if(!shouldEditBasicInfo) shouldEditBasicInfo = false;
         if(this.props.hasOwnProperty('showCancel'))
@@ -91,6 +91,7 @@ class TicketAssignForm extends React.Component {
         ticket.disclaimer_accepted = ticket.disclaimer_accepted == null ? false : ticket.disclaimer_accepted;
         // if the user is purchasing a ticket, allow to edit the extra questions (fromTicketList === undefined && fromOrderList === undefined)
         const allow_extra_questions_edit = (fromTicketList === undefined && fromOrderList === undefined) || ownedTicket && summit.allow_update_attendee_extra_questions;
+
         return (
             <div className="ticket-assign-form">
                 <div className="row popup-basic-info">
@@ -305,14 +306,13 @@ class TicketAssignForm extends React.Component {
                         <div className="col-sm-6">{T.translate("ticket_popup.edit_preferences")}</div>
                         <div className="col-sm-6"></div>
                     </div>
-                    <QuestionAnswersInput
-                        id={`${ticket.id}_extra_questions`}
-                        allowEdit={allow_extra_questions_edit}
-                        answers={ticket.extra_questions}
-                        ticket={ticket}
-                        questions={extraQuestions}
-                        questions_type={'Ticket'}
-                        onChange={this._innerOnChange}
+                    <ExtraQuestionsForm 
+                        extraQuestions={extraQuestions}
+                        userAnswers={ticket.extra_questions}
+                        onAnswerChanges={(formAnswers) => handleNewExtraQuestions(formAnswers, ticket)}
+                        formRef={formRef}
+                        allowExtraQuestionsEdit={allow_extra_questions_edit}
+                        readOnly={readOnly}
                     />
                 </React.Fragment>
                 }
