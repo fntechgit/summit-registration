@@ -91,7 +91,7 @@ export const handleOrderChange = (order, errors = {}) => (dispatch, getState) =>
     if (currentStep === 2) {
         if (validator.isEmpty(order.first_name)) errors.first_name = T.translate("step_two.validator.first_name");
         if (validator.isEmpty(order.last_name)) errors.last_name = T.translate("step_two.validator.last_name");
-        if (validator.isEmpty(order.company.name)) errors.company = T.translate("step_two.validator.company");
+        if (validator.isEmpty(order.company.name || '')) errors.company = T.translate("step_two.validator.company");
         if (!validator.isEmail(order.email)) errors.email = T.translate("step_two.validator.email");
 
         order.tickets.forEach(tix => {
