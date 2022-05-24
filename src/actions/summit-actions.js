@@ -245,6 +245,8 @@ export const getMainOrderExtraQuestions = (fromPurchase) => async (dispatch, get
   apiUrl.addQuery('expand', '*sub_question_rules,*sub_question,*values')
   apiUrl.addQuery('access_token', accessToken);
   apiUrl.addQuery('order', 'order');
+  apiUrl.addQuery('page', 1);
+  apiUrl.addQuery('per_page', 100);
 
   return getRequest(
       null,
