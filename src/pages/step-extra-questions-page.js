@@ -25,6 +25,7 @@ import OrderSummary from "../components/order-summary";
 import StepRow from "../components/step-row";
 import history from '../history';
 import { stepDefs } from '../global/constants';
+import QuestionsSet from 'openstack-uicore-foundation/lib/utils/questions-set'
 
 class StepExtraQuestionsPage extends React.Component {
 
@@ -107,6 +108,7 @@ class StepExtraQuestionsPage extends React.Component {
 
     handleNewExtraQuestions (answersForm, ticket) {
         const {summit} = this.props;
+        const {tickets} = this.state; 
         const qs = new QuestionsSet(summit.order_extra_questions);
         let newAnswers = [];
         Object.keys(answersForm).forEach(name => {
@@ -116,11 +118,14 @@ class StepExtraQuestionsPage extends React.Component {
                 return;
             }
             if(answersForm[name] || answersForm[name].length > 0) {
-              newAnswers.push({ id: question.id, value: answersForm[name]});
+              newAnswers.push({ question_id: question.id, answer: `${answersForm[name]}`});
             }
         });
-        const newTicket = {...ticket, extra_questions: newAnswers}
-        this.handleTicketSave(newTicket);
+        const newTickets = this.state.tickets.map(t => {
+            t.extra_questions = newAnswers;
+            return t;
+        });
+        this.setState({...this.state, tickets: newTickets}, () => this.handleTicketSave())
       }
     
       triggerFormSubmit() {
@@ -235,7 +240,8 @@ class StepExtraQuestionsPage extends React.Component {
                                                 summit={summit}
                                                 now={now}
                                                 errors={ticket.errors}
-                                                formRef={this.formRef} />
+                                                formRef={this.formRef}
+                                                handleNewExtraQuestions={this.handleNewExtraQuestions} />
                                         </div>
                                     </div>
                                 </React.Fragment>

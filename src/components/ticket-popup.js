@@ -132,8 +132,8 @@ class TicketPopup extends React.Component {
     }
 
     handleNewExtraQuestions (answersForm, ticket) {
-      const {summit} = this.props;
-      const qs = new QuestionsSet(summit.order_extra_questions);
+      const {extraQuestions} = this.props;
+      const qs = new QuestionsSet(extraQuestions);
       let newAnswers = [];
       Object.keys(answersForm).forEach(name => {
           let question = qs.getQuestionByName(name);
@@ -142,11 +142,11 @@ class TicketPopup extends React.Component {
               return;
           }
           if(answersForm[name] || answersForm[name].length > 0) {
-            newAnswers.push({ id: question.id, value: answersForm[name]});
+            newAnswers.push({ question_id: question.id, answer: `${answersForm[name]}`});
           }
       });
       const newTicket = {...ticket, extra_questions: newAnswers}
-      this.handleTicketSave(newTicket);
+      this.setState({...this.state, tempTicket: newTicket}, () => this.handleTicketSave());
     }
 
     triggerFormSubmit() {
