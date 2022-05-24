@@ -63,7 +63,6 @@ export const getSummitBySlug = (slug, updateSummit) => (dispatch, getState) => {
         `${window.API_BASE_URL}/api/public/v1/summits/all/${slug}`,
         customErrorHandler
     )(params)(dispatch).then((payload) => {
-          console.log('update summit=', updateSummit)
           if(updateSummit) {
             dispatch(createAction(SELECT_SUMMIT)(payload.response, false));
             dispatch(getMainOrderExtraQuestions(false))
@@ -237,8 +236,6 @@ export const getMainOrderExtraQuestions = (fromPurchase) => async (dispatch, get
   if (!accessToken) return;
 
   const { summitState: {purchaseSummit, selectedSummit} } = getState();
-
-  console.log('from purchas', fromPurchase)
 
   dispatch(startLoading());
   
