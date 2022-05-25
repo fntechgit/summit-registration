@@ -69,7 +69,6 @@ class BasicInfoForm extends React.Component {
         doLogin(this.getBackURL());
     }
 
-
     render() {
         let { order, onChange, member, invitation, summitId } = this.props;
 

@@ -25,8 +25,9 @@ import {
 } from 'openstack-uicore-foundation/lib/methods';
 
 import Swal from 'sweetalert2';
-import { selectSummitById } from "./summit-actions";
+import {getMainOrderExtraQuestions, selectSummitById, setMarketingSettings} from "./summit-actions";
 import { openWillLogoutModal } from "./auth-actions";
+import {getAttendeeProfileForSummit} from "./user-actions";
 export const GET_INVITATION_BY_HASH       = 'GET_INVITATION_BY_HASH';
 export const GET_INVITATION_BY_HASH_ERROR = 'GET_INVITATION_BY_HASH_ERROR';
 export const RESET_INVITATION = 'RESET_INVITATION';
@@ -88,7 +89,14 @@ export const getInvitationByHash = (hash) => async (dispatch, getState) => {
         `${window.API_BASE_URL}/api/v1/summits/all/registration-invitations/${hash}`,
         customErrorHandler,
     )(params)(dispatch).then((payload) => {
-        dispatch(selectSummitById(payload.response.summit_id, true));
+        const {response : invitation } = payload;
+        const {summit_id : summitId} = invitation;
+
+        dispatch(selectSummitById(summitId, true));
+        dispatch(getAttendeeProfileForSummit(summitId));
+        dispatch(getMainOrderExtraQuestions(summitId));
+        dispatch(setMarketingSettings(summitId));
+
     }).catch((err) => {
         dispatch(createAction(GET_INVITATION_BY_HASH_ERROR)(err.res));
         //dispatch(handleResetTicket());

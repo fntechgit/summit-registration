@@ -82,7 +82,7 @@ class GuestsLayout extends React.Component {
     }
 
     handleNewExtraQuestions (answersForm, ticket) {
-      const {summit:{order_extra_questions}} = this.props;
+      const {mainExtraQuestions: order_extra_questions} = this.props;
       const qs = new QuestionsSet(order_extra_questions);
       let newAnswers = [];
       Object.keys(answersForm).forEach(name => {
@@ -281,6 +281,7 @@ const mapStateToProps = ({ ticketState, summitState }) => ({
   guestCompleted: ticketState.selectedTicket.completed,
   errors: ticketState.errors,
   summit: summitState.selectedSummit,
+  mainExtraQuestions:summitState.mainExtraQuestions,
   summits: summitState.summits,
   summitLoading: summitState.loading
 })

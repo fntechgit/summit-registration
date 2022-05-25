@@ -81,8 +81,10 @@ class TicketAssignForm extends React.Component {
 
     render() {
 
-        let {guest, ownedTicket, owner, ticket, extraQuestions, status, summit, orderOwned, readOnly, now, shouldEditBasicInfo, fromTicketList, 
-            fromOrderList, formRef, handleNewExtraQuestions} = this.props;
+        let { guest, ownedTicket, owner, ticket,
+            extraQuestions, status, summit, orderOwned, readOnly,
+            shouldEditBasicInfo, fromTicketList,
+            fromOrderList, formRef, handleNewExtraQuestions } = this.props;
         let showCancel = true;
         if(!shouldEditBasicInfo) shouldEditBasicInfo = false;
         if(this.props.hasOwnProperty('showCancel'))
@@ -306,11 +308,14 @@ class TicketAssignForm extends React.Component {
                         <div className="col-sm-6">{T.translate("ticket_popup.edit_preferences")}</div>
                         <div className="col-sm-6"></div>
                     </div>
-                    <ExtraQuestionsForm 
+                    <ExtraQuestionsForm
+                        questionContainerClassName="row form-group"
+                        questionLabelContainerClassName="col-sm-4"
+                        questionControlContainerClassName="col-sm-8 question-control-container"
                         extraQuestions={extraQuestions}
                         userAnswers={ticket.extra_questions}
                         onAnswerChanges={(formAnswers) => handleNewExtraQuestions(formAnswers, ticket)}
-                        formRef={formRef}
+                        ref={formRef}
                         allowExtraQuestionsEdit={allow_extra_questions_edit}
                         readOnly={readOnly}
                     />

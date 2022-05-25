@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-
+import history from '../history'
 import React from 'react'
 import { connect } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
@@ -29,7 +29,12 @@ class PrimaryLayout extends React.Component {
       let summitSlug = this.props.match.params.summit_slug;
 
       if (summitSlug) {
-          getSummitBySlug(summitSlug);
+          getSummitBySlug(summitSlug).then((summit) => {
+              if(summit.invite_only_registration){
+                  // we cant continue here... kick user to start
+                  history.push('/')
+              }
+          });
       }
     }
 
@@ -38,7 +43,12 @@ class PrimaryLayout extends React.Component {
         let newId = newProps.match.params.summit_slug;
 
         if (newId && newId != oldId) {
-            this.props.getSummitBySlug(newId);
+            this.props.getSummitBySlug(newId).then((summit) => {
+                if(summit.invite_only_registration){
+                    // we cant continue here... kick user to start
+                    history.push('/')
+                }
+            });
         }
     }
 

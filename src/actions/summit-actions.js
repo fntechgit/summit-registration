@@ -11,48 +11,47 @@
  * limitations under the License.
  **/
 
-import { authErrorHandler } from "openstack-uicore-foundation/lib/methods";
-import T from "i18n-react/dist/i18n-react";
-import history from '../history'
 import {
+    authErrorHandler,
+    createAction,
     getAccessToken,
     getRequest,
-    createAction,
-    stopLoading,
+    showMessage,
     startLoading,
-    showMessage
-} from 'openstack-uicore-foundation/lib/methods';
+    stopLoading
+} from "openstack-uicore-foundation/lib/methods";
+import T from "i18n-react/dist/i18n-react";
+import history from '../history'
 
 import Swal from 'sweetalert2';
 
 import URI from 'urijs';
 
-import { LOGOUT_USER } from "openstack-uicore-foundation/lib/actions";
-import { setTotalSteps } from "./wizzard-actions";
-import { openWillLogoutModal } from "./auth-actions";
+import {LOGOUT_USER} from "openstack-uicore-foundation/lib/actions";
+import {setTotalSteps} from "./wizzard-actions";
+import {clearAuthState, openWillLogoutModal} from "./auth-actions";
+import {getAttendeeProfileForSummit} from "./user-actions";
 
-
-export const GET_SUMMIT_BY_SLUG         = 'GET_SUMMIT_BY_SLUG';
-export const GET_SUMMIT_BY_ID           = 'GET_SUMMIT_BY_ID';
-export const SELECT_SUMMIT              = 'SELECT_SUMMIT';
-export const SUMMIT_NOT_FOUND           = 'SUMMIT_NOT_FOUND';
-export const SELECT_PURCHASE_SUMMIT     = 'SELECT_PURCHASE_SUMMIT';
-export const GET_SUGGESTED_SUMMITS      = 'GET_SUGGESTED_SUMMITS';
-export const GET_SUMMIT_REFUND_POLICY   = 'GET_SUMMIT_REFUND_POLICY';
+export const GET_SUMMIT_BY_SLUG = 'GET_SUMMIT_BY_SLUG';
+export const GET_SUMMIT_BY_ID = 'GET_SUMMIT_BY_ID';
+export const SELECT_SUMMIT = 'SELECT_SUMMIT';
+export const SUMMIT_NOT_FOUND = 'SUMMIT_NOT_FOUND';
+export const SELECT_PURCHASE_SUMMIT = 'SELECT_PURCHASE_SUMMIT';
+export const GET_SUGGESTED_SUMMITS = 'GET_SUGGESTED_SUMMITS';
+export const GET_SUMMIT_REFUND_POLICY = 'GET_SUMMIT_REFUND_POLICY';
 export const RECEIVE_MARKETING_SETTINGS = 'RECEIVE_MARKETING_SETTINGS';
-export const CLEAR_MARKETING_SETTINGS   = 'CLEAR_MARKETING_SETTINGS';
-export const RECEIVE_MAIN_ORDER_EXTRA_QUESTIONS = 'RECEIVE_MAIN_ORDER_EXTRA_QUESTIONS';
-export const SET_PURCHASE_EXTRA_QUESTIONS = 'SET_PURCHASE_EXTRA_QUESTIONS';
-export const SET_SELECTED_EXTRA_QUESTIONS     = 'SET_SELECTED_EXTRA_QUESTIONS';
+export const CLEAR_MARKETING_SETTINGS = 'CLEAR_MARKETING_SETTINGS';
+export const GET_MAIN_EXTRA_QUESTIONS = 'GET_MAIN_EXTRA_QUESTIONS';
+export const CLEAR_SUMMIT_STATE = 'CLEAR_SUMMIT_STATE';
 
-export const handleResetReducers = () => (dispatch, getState) => {
-  dispatch(createAction(LOGOUT_USER)({}));
+export const handleResetReducers = () => (dispatch) => {
+    dispatch(createAction(LOGOUT_USER)({}));
 }
 
-export const getSummitBySlug = (slug, updateSummit) => (dispatch, getState) => {  
+export const getSummitBySlug = (slug, updateSummit) => (dispatch) => {
 
     let params = {
-      expand: 'order_extra_questions.values,ticket_types,ticket_types.badge_type,ticket_types.badge_type.access_levels'
+        expand: 'ticket_types,ticket_types.badge_type,ticket_types.badge_type.access_levels'
     }
 
     dispatch(startLoading());
@@ -63,156 +62,161 @@ export const getSummitBySlug = (slug, updateSummit) => (dispatch, getState) => {
         `${window.API_BASE_URL}/api/public/v1/summits/all/${slug}`,
         customErrorHandler
     )(params)(dispatch).then((payload) => {
-          if(updateSummit) {
-            dispatch(createAction(SELECT_SUMMIT)(payload.response, false));
-            dispatch(getMainOrderExtraQuestions(false))
-          } else {
-            dispatch(getMainOrderExtraQuestions(true))
-          }
-          dispatch(setMarketingSettings(payload.response.id));
-          dispatch(stopLoading());
+            const summit = payload.response;
+            const { id: summitId } = summit;
+
+            if (updateSummit)
+                dispatch(createAction(SELECT_SUMMIT)(payload.response, false));
+            dispatch(getMainOrderExtraQuestions(summitId))
+            dispatch(setMarketingSettings(summitId));
+            dispatch(getAttendeeProfileForSummit(summitId));
+            dispatch(stopLoading());
+            return summit;
         }
     ).catch(e => {
         dispatch(createAction(SUMMIT_NOT_FOUND)({}))
         dispatch(stopLoading());
         return (e);
     });
-     
+
 }
 
-export const getUserSummits = (from) => (dispatch, getState) => {  
+export const getUserSummits = (from) => (dispatch, getState) => {
 
-  dispatch(startLoading());
+    dispatch(startLoading());
 
-  let { orderState: {memberOrders}, ticketState: {memberTickets}, summitState: {summits} } = getState();
+    let {orderState: {memberOrders}, ticketState: {memberTickets}, summitState: {summits}} = getState();
 
-  let summitsId;
+    let summitsId;
 
-  if(from === 'tickets') {    
-    summitsId = [... new Set(memberTickets.map(p => p.owner.summit_id))];
-  } else {
-    summitsId = [... new Set(memberOrders.map(p => p.summit_id))];
-  }
-    
-  const storedSummits = [... new Set(summits.map(p => p.id))];
-
-  summitsId = summitsId.filter(s => storedSummits.indexOf(s) == -1);
-  const summitCall = summitsId.map(s => dispatch(getSummitById(s)));
-  Promise.all([...summitCall]).then(() => {
-    dispatch(stopLoading());
+    if (from === 'tickets') {
+        summitsId = [...new Set(memberTickets.map(p => p.owner.summit_id))];
+    } else {
+        summitsId = [...new Set(memberOrders.map(p => p.summit_id))];
     }
-  ).catch(e => {
-    dispatch(stopLoading());
-    return (e);
-  });
+
+    const storedSummits = [...new Set(summits.map(p => p.id))];
+
+    summitsId = summitsId.filter(s => storedSummits.indexOf(s) == -1);
+    const summitCall = summitsId.map(s => dispatch(getSummitById(s)));
+    Promise.all([...summitCall]).then(() => {
+            dispatch(stopLoading());
+        }
+    ).catch(e => {
+        dispatch(stopLoading());
+        return (e);
+    });
 
 }
 
 export const getSummitById = (id, select = false) => (dispatch, getState) => {
-    
-  dispatch(startLoading());
-  
-  let params = {
-    expand: 'order_extra_questions.values,ticket_types,ticket_types.badge_type,ticket_types.badge_type.access_levels'
-  }
-  
-  return getRequest(
-      dispatch(startLoading()),
-      createAction(GET_SUMMIT_BY_ID),
-      `${window.API_BASE_URL}/api/public/v1/summits/all/${id}`,
-      authErrorHandler
-  )(params)(dispatch).then(() => {
-        select ? dispatch(selectSummitById(id)) : null;
-      }
-  ).catch(e => {
-    dispatch(stopLoading());
-    return (e);
-  });    
+    dispatch(startLoading());
+
+    let params = {
+        expand: 'ticket_types,ticket_types.badge_type,ticket_types.badge_type.access_levels'
+    }
+
+    return getRequest(
+        dispatch(startLoading()),
+        createAction(GET_SUMMIT_BY_ID),
+        `${window.API_BASE_URL}/api/public/v1/summits/all/${id}`,
+        authErrorHandler
+    )(params)(dispatch).then(() => {
+            select ? dispatch(selectSummitById(id)) : null;
+        }
+    ).catch(e => {
+        dispatch(stopLoading());
+        return (e);
+    });
 }
 
 export const getSuggestedSummits = () => (dispatch, getState) => {
 
-  dispatch(startLoading());
-  dispatch(createAction(CLEAR_MARKETING_SETTINGS)());
-  let params = {
-    filter: 'ticket_types_count>0',
-    expand: 'order_extra_questions.values,ticket_types,ticket_types.badge_type,ticket_types.badge_type.access_levels'
-  };
+    dispatch(startLoading());
+    dispatch(clearAuthState());
+    dispatch(createAction(CLEAR_SUMMIT_STATE)());
+    dispatch(createAction(CLEAR_MARKETING_SETTINGS)());
 
-  return getRequest(
-    dispatch(startLoading()),
-    createAction(GET_SUGGESTED_SUMMITS),
-    `${window.API_BASE_URL}/api/public/v1/summits/all`,
-    authErrorHandler
+    let params = {
+        filter: 'ticket_types_count>0',
+        expand: 'ticket_types,ticket_types.badge_type,ticket_types.badge_type.access_levels'
+    };
+
+    return getRequest(
+        dispatch(startLoading()),
+        createAction(GET_SUGGESTED_SUMMITS),
+        `${window.API_BASE_URL}/api/public/v1/summits/all`,
+        authErrorHandler
     )(params)(dispatch).then(() => {
-        dispatch(stopLoading());
-      }
+            dispatch(stopLoading());
+        }
     ).catch(e => {
-      dispatch(stopLoading());
-      return (e);
-    });    
+        dispatch(stopLoading());
+        return (e);
+    });
 
 }
 
 export const getSummitRefundPolicy = (id, select = false) => async (dispatch, getState) => {
- 
-  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
-  if (!accessToken) return;
 
-  let params = {
-    access_token : accessToken
-  };
-  
-  dispatch(startLoading());
-  
-  return getRequest(
-    dispatch(startLoading()),
-    createAction(GET_SUMMIT_REFUND_POLICY),
-    `${window.API_BASE_URL}/api/v1/summits/${id}/refund-policies`,
-    authErrorHandler
-  )(params)(dispatch).then((payload) => {
-    dispatch(stopLoading());
-  }).catch(e => {
-    dispatch(stopLoading());
-    return (e);
-  });  
+    const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+    if (!accessToken) return;
+
+    let params = {
+        access_token: accessToken
+    };
+
+    dispatch(startLoading());
+
+    return getRequest(
+        dispatch(startLoading()),
+        createAction(GET_SUMMIT_REFUND_POLICY),
+        `${window.API_BASE_URL}/api/v1/summits/${id}/refund-policies`,
+        authErrorHandler
+    )(params)(dispatch).then((payload) => {
+        dispatch(stopLoading());
+    }).catch(e => {
+        dispatch(stopLoading());
+        return (e);
+    });
 }
 
-export const selectSummit = (summit, updateSummit = true) => (dispatch, getState) => {  
-  return dispatch(getSummitBySlug(summit.slug, updateSummit));
+export const selectSummit = (summit, updateSummit = true) => (dispatch, getState) => {
+    return dispatch(getSummitBySlug(summit.slug, updateSummit));
 }
 
 export const selectPurchaseSummit = (slug) => (dispatch, getState) => {
+    dispatch(startLoading());
 
-  dispatch(startLoading());
+    let {summitState: {suggestedSummits}} = getState();
 
-  let { summitState: {suggestedSummits} } = getState();  
+    let summit = suggestedSummits.find(s => s.slug === slug);
 
-  let summit = suggestedSummits.find(s => s.slug === slug);    
+    dispatch(createAction(SELECT_PURCHASE_SUMMIT)(summit));
 
-  dispatch(createAction(SELECT_PURCHASE_SUMMIT)(summit));
+    dispatch(getAttendeeProfileForSummit(summit.id));
 
-  //const { ticket_types } = summit;
+    //const { ticket_types } = summit;
 
-  //const totalSteps = ticket_types.length > 0 && ticket_types[0].cost === 0 ? 3 : 4; 
+    //const totalSteps = ticket_types.length > 0 && ticket_types[0].cost === 0 ? 3 : 4;
 
-  dispatch(setTotalSteps(4));
+    dispatch(setTotalSteps(4));
 
-  history.push(`/a/${slug}/`);
+    history.push(`/a/${slug}/`);
 };
 
 export const selectSummitById = (id) => (dispatch, getState) => {
-  let { summitState: {summits} } = getState();
-  
-  let selectedSummit = summits.filter(s => s.id === id)[0];
-  
-  dispatch(startLoading());
+    let {summitState: {summits}} = getState();
 
-  if(selectedSummit) {  
-    dispatch(selectSummit(selectedSummit));
-  } else {
-    dispatch(getSummitById(id, true));
-  }
+    let selectedSummit = summits.filter(s => s.id === id)[0];
+
+    dispatch(startLoading());
+
+    if (selectedSummit) {
+        dispatch(selectSummit(selectedSummit));
+    } else {
+        dispatch(getSummitById(id, true));
+    }
 };
 
 export const setMarketingSettings = (summitId) => (dispatch) => {
@@ -230,96 +234,92 @@ export const setMarketingSettings = (summitId) => (dispatch) => {
     )(params)(dispatch);
 };
 
-export const getMainOrderExtraQuestions = (fromPurchase) => async (dispatch, getState) => {
+export const getMainOrderExtraQuestions = (summitId) => async (dispatch) => {
 
-  const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
-  if (!accessToken) return;
+    const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+    if (!accessToken) return;
 
-  const { summitState: {purchaseSummit, selectedSummit} } = getState();
+    dispatch(startLoading());
 
-  dispatch(startLoading());
-  
-  let apiUrl = URI(`${window.API_BASE_URL}/api/v1/summits/${fromPurchase ? purchaseSummit.id : selectedSummit.id}/order-extra-questions`);
-  apiUrl.addQuery('filter[]', 'class==MainQuestion');
-  apiUrl.addQuery('filter[]', 'usage==Ticket');
-  apiUrl.addQuery('expand', '*sub_question_rules,*sub_question,*values')
-  apiUrl.addQuery('access_token', accessToken);
-  apiUrl.addQuery('order', 'order');
-  apiUrl.addQuery('page', 1);
-  apiUrl.addQuery('per_page', 100);
+    let apiUrl = URI(`${window.API_BASE_URL}/api/v1/summits/${summitId}/order-extra-questions`);
+    apiUrl.addQuery('filter[]', 'class==MainQuestion');
+    apiUrl.addQuery('filter[]', 'usage==Ticket');
+    apiUrl.addQuery('expand', '*sub_question_rules,*sub_question,*values')
+    apiUrl.addQuery('access_token', accessToken);
+    apiUrl.addQuery('order', 'order');
+    apiUrl.addQuery('page', 1);
+    apiUrl.addQuery('per_page', 100);
 
-  return getRequest(
-      null,
-      createAction(RECEIVE_MAIN_ORDER_EXTRA_QUESTIONS),
-      `${apiUrl}`,
-      authErrorHandler
-  )({})(dispatch).then(({response}) => {
-    dispatch(fromPurchase ? createAction(SET_PURCHASE_EXTRA_QUESTIONS)({response}) : createAction(SET_SELECTED_EXTRA_QUESTIONS)({response}));
-    dispatch(stopLoading());
-  }).catch(e => {
-      console.log('ERROR: ', e);
-      dispatch(stopLoading());
-      return Promise.reject(e);
-  });
+    return getRequest(
+        null,
+        createAction(GET_MAIN_EXTRA_QUESTIONS),
+        `${apiUrl}`,
+        authErrorHandler
+    )({})(dispatch).then(() => {
+        dispatch(stopLoading());
+    }).catch(e => {
+        console.log('ERROR: ', e);
+        dispatch(stopLoading());
+        return Promise.reject(e);
+    });
 };
 
-
 export const customErrorHandler = (err, res) => (dispatch, state) => {
-  let code = err.status;
-  let msg = '';
+    let code = err.status;
+    let msg = '';
 
-  dispatch(stopLoading());
+    dispatch(stopLoading());
 
-  switch (code) {
-      case 403:
-          let error_message = {
-              title: 'ERROR',
-              html: T.translate("errors.user_not_authz"),
-              type: 'error'
-          };
+    switch (code) {
+        case 403:
+            let error_message = {
+                title: 'ERROR',
+                html: T.translate("errors.user_not_authz"),
+                type: 'error'
+            };
 
-          dispatch(showMessage( error_message, initLogOut ));
-          break;
-      case 401:
-          let currentLocation = window.location.pathname;
-          let clearing_session_state = window.clearing_session_state || false;
+            dispatch(showMessage(error_message, initLogOut));
+            break;
+        case 401:
+            let currentLocation = window.location.pathname;
+            let clearing_session_state = window.clearing_session_state || false;
 
-          dispatch({
-              type: CLEAR_SESSION_STATE,
-              payload: {}
-          });
+            dispatch({
+                type: CLEAR_SESSION_STATE,
+                payload: {}
+            });
 
-          if(!clearing_session_state) {
-              window.clearing_session_state = true;
-              console.log('authErrorHandler 401 - re login');
-              doLogin(currentLocation);
-          }
-          break;
-      // case 404:
-      //     msg = "";
+            if (!clearing_session_state) {
+                window.clearing_session_state = true;
+                console.log('authErrorHandler 401 - re login');
+                doLogin(currentLocation);
+            }
+            break;
+        // case 404:
+        //     msg = "";
 
-      //     if (err.response.body && err.response.body.message) msg = err.response.body.message;
-      //     else if (err.response.error && err.response.error.message) msg = err.response.error.message;
-      //     else msg = err.message;
+        //     if (err.response.body && err.response.body.message) msg = err.response.body.message;
+        //     else if (err.response.error && err.response.error.message) msg = err.response.error.message;
+        //     else msg = err.message;
 
-      //     Swal.fire("Not Found", msg, "warning");
+        //     Swal.fire("Not Found", msg, "warning");
 
-      //     break;
-      case 412:
-          for (var [key, value] of Object.entries(err.response.body.errors)) {
-              if (isNaN(key)) {
-                  msg += key + ': ';
-              }
+        //     break;
+        case 412:
+            for (var [key, value] of Object.entries(err.response.body.errors)) {
+                if (isNaN(key)) {
+                    msg += key + ': ';
+                }
 
-              msg += value + '<br>';
-          }
-          Swal.fire("Validation error", msg, "warning");
-          dispatch({
-              type: VALIDATE,
-              payload: {errors: err.response.body.errors}
-          });
-          break;
-      default:
-          // Swal.fire("ERROR", T.translate("errors.server_error"), "error");
-  }
+                msg += value + '<br>';
+            }
+            Swal.fire("Validation error", msg, "warning");
+            dispatch({
+                type: VALIDATE,
+                payload: {errors: err.response.body.errors}
+            });
+            break;
+        default:
+        // Swal.fire("ERROR", T.translate("errors.server_error"), "error");
+    }
 }

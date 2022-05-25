@@ -132,7 +132,7 @@ const mapStateToProps = ({ loggedUserState, ticketState, summitState }) => ({
     summit: summitState.selectedSummit,
     summits: summitState.summits,
     loadingSummits: summitState.loading,
-    extraQuestions: summitState.selectedSummit.order_extra_questions
+    extraQuestions: summitState.mainExtraQuestions
 })
   
 export default connect (

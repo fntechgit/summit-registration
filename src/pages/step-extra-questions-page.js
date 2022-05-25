@@ -31,8 +31,7 @@ class StepExtraQuestionsPage extends React.Component {
 
     constructor(props) {
         super(props);
-
-        let { order } = this.props;
+        let { order, attendee } = this.props;
         let uniqueOwners = [];
 
         let tickets = order.tickets.filter((ticket) => {
@@ -44,16 +43,19 @@ class StepExtraQuestionsPage extends React.Component {
             uniqueOwners.push(attendee_email);
             return true;
         }).map((ticket, index) => {
+
+            const ownerId = ticket.hasOwnProperty('owner_id') ? ticket.owner_id : (ticket.hasOwnProperty('owner') ? ticket.owner.id : 0);
+            const answers = attendee && attendee.id === ownerId ? attendee.extra_questions.map( q => ({question_id: q.question_id, value : q.value })) : [];
             let t = {
                 id: ticket.id,
-                owner_id: ticket.hasOwnProperty('owner_id') ? ticket.owner_id : (ticket.hasOwnProperty('owner') ? ticket.owner.id : 0),
+                owner_id: ownerId,
                 attendee_email: ticket.hasOwnProperty('owner') ? ticket.owner.email : '',
                 attendee_first_name: ticket.hasOwnProperty('owner') ? ticket.owner.first_name : '',
                 attendee_last_name: ticket.hasOwnProperty('owner') ? ticket.owner.last_name : '',
                 attendee_company: ticket.hasOwnProperty('owner') ? ticket.owner.company : '',
                 owner: ticket.hasOwnProperty('owner') ? ticket.owner : null,
                 disclaimer_accepted: null,
-                extra_questions: [],
+                extra_questions: answers,
                 errors: {
                     reassign_email: '',
                     attendee_email: '',
@@ -107,9 +109,8 @@ class StepExtraQuestionsPage extends React.Component {
     }
 
     handleNewExtraQuestions (answersForm, ticket) {
-        const {summit} = this.props;
-        const {tickets} = this.state; 
-        const qs = new QuestionsSet(summit.order_extra_questions);
+        const { mainExtraQuestions } = this.props;
+        const qs = new QuestionsSet(mainExtraQuestions);
         let newAnswers = [];
         Object.keys(answersForm).forEach(name => {
             let question = qs.getQuestionByName(name);
@@ -135,7 +136,6 @@ class StepExtraQuestionsPage extends React.Component {
     handleTicketSave(ev) {
         let { tickets } = this.state;
         let { summit, getNow, extraQuestions, order } = this.props;
-
         let canSave = true;
         tickets.forEach(function (ticket) {
             // validate each ticket
@@ -203,7 +203,7 @@ class StepExtraQuestionsPage extends React.Component {
         let { summit, extraQuestions, order, invitation } = this.props;
         if ((Object.entries(summit).length === 0 && summit.constructor === Object)) return null;
         order.status = 'Paid';
-        let hasValidInvitation = invitation?.summit_id == summit.id;
+        let hasValidInvitation = invitation?.summit_id === summit.id;
         return (
             <div className="step-extra-questions">
                 <OrderSummary order={order} summit={summit} type={'mobile'} />
@@ -267,13 +267,15 @@ class StepExtraQuestionsPage extends React.Component {
     }
 }
 
-const mapStateToProps = ({ loggedUserState, summitState, orderState, invitationState }) => ({
+const mapStateToProps = ({ loggedUserState, summitState, orderState, invitationState, userState }) => ({
     member: loggedUserState.isLoggedUser,
     summit: summitState.purchaseSummit,
+    mainExtraQuestions: summitState.mainExtraQuestions,
     order: orderState.purchaseOrder,
     selectedSummit : summitState.selectedSummit,
-    extraQuestions: summitState.purchaseSummit.order_extra_questions,
+    extraQuestions: summitState.mainExtraQuestions,
     invitation: invitationState.selectedInvitation,
+    attendee : userState.currentAttendee
 });
 
 export default connect(

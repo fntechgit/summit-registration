@@ -23,6 +23,7 @@ import {
 } from "openstack-uicore-foundation/lib/methods";
 import Swal from "sweetalert2";
 
+export const CLEAR_AUTH_STATE           = 'CLEAR_AUTH_STATE';
 export const CLOSE_SIGNIN_MODAL         = "CLOSE_SIGNIN_MODAL";
 export const FINISH_PASSWORDLESS_LOGIN  = "FINISH_PASSWORDLESS_LOGIN";
 export const GET_THIRD_PARTY_PROVIDERS  = "GET_THIRD_PARTY_PROVIDERS";
@@ -36,6 +37,11 @@ export const SET_PASSWORDLESS_LENGTH    = "SET_PASSWORDLESS_LENGTH";
 export const SET_PASSWORDLESS_LOGIN     = "SET_PASSWORDLESS_LOGIN";
 export const OPEN_WILL_LOGOUT_MODAL     = "OPEN_WILL_LOGOUT_MODAL";
 export const CLOSE_WILL_LOGOUT_MODAL    = "CLOSE_WILL_LOGOUT_MODAL";
+
+
+export const clearAuthState = () => (dispatch) => {
+    dispatch(createAction(CLEAR_AUTH_STATE)());
+}
 
 export const goToLogin = () => (dispatch) => {
   dispatch(createAction(GO_TO_LOGIN)());

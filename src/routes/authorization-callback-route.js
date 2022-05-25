@@ -17,6 +17,7 @@ import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AbstractAuthorizationCallbackRoute } from "openstack-uicore-foundation/lib/components";
 import { getUserInfo, getCurrentHref } from "openstack-uicore-foundation/lib/methods";
+
 import URI from "urijs";
 
 class AuthorizationCallbackRoute extends AbstractAuthorizationCallbackRoute {
