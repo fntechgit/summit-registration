@@ -179,7 +179,94 @@
       font-size: 10%;
     }
   }
+
+  .questions-form {
+    padding-bottom: 30px;
+    .extra-question-error {
+      display: block;
+      color: #e5424d;
+      font-weight: bold;
+      margin: 5px 0 15px;
+    }
+    .question-container {
+      margin-bottom: 10px;
+    }
+    .question-label-container {
+      display: block;
+      margin-bottom: 15px;
+    }
+    input {
+      background-color: @lblue_color_1;
+      border-color: @header_lblue_color;
+      color: @font_blue_2 !important;
+      &::placeholder {
+        color: @input_hint_color !important;
+      }
+    }
+    .css-bg1rzq-control, .css-1szy77t-control {    
+      background-color: @lblue_color_1;
+      border-color: @header_lblue_color;
+      .css-dvua67-singleValue {
+        color: @font_blue_2 !important;
+      }
+      .css-151xaom-placeholder {
+        color: @font_blue_2 !important;
+      }
+    }
+    textarea {
+      background-color: @lblue_color_1;
+      border-color: @header_lblue_color;
+      color: @font_blue_2 !important;
+      &::placeholder {
+        color: @input_hint_color !important;
+      }
+      &:disabled{
+        background-color: lightgray;        
+      }
+    }
+    .abc-checkbox label{
+      &::before {
+        background-color: @lblue_color_1;
+        border: 1px solid @header_lblue_color;
+        color: #3486cd;
+      }
+      &::after {
+        background-color: @lblue_color_1;        
+        color: @font_blue_2;
+        border: 1px solid @header_lblue_color;
+        padding-left: 2px;
+        padding-top: 0px;
+      }      
+    }
+    .form-check.abc-checkbox {
+      padding-left: 0px !important;
+      .form-check-label {
+        padding-left: 17px !important;
+        padding-top: 3px !important;
+
+        * {
+          display: inline;
+        }
+      }
+    }
+    .form-check.abc-radio {
+      width: 100% !important;
+      padding-left: 0px !important;
+      margin-left: 7px !important;      
+    }
+    .abc-radio label {
+      &::before {
+        background-color: @lblue_color_1;
+        border: 1px solid @header_lblue_color;
+        color: #3486cd;
+      }
+    }
+    .checkboxes-div {
+      margin: 0;      
+    }    
+  }
 }
+
 
 @media(min-width: 768px) {
   .ticket-assign-form{

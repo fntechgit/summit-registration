@@ -427,7 +427,7 @@ const mapStateToProps = ({ loggedUserState, orderState, summitState, ticketState
     orderLoading: orderState.loading,
     summit: summitState.selectedSummit,
     summitLoading: summitState.loading,
-    extraQuestions: summitState.selectedSummit.order_extra_questions,
+    extraQuestions: summitState.mainExtraQuestions,
     ticket: ticketState.selectedTicket,
     errors: ticketState.errors
 })

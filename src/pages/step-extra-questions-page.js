@@ -25,13 +25,13 @@ import OrderSummary from "../components/order-summary";
 import StepRow from "../components/step-row";
 import history from '../history';
 import { stepDefs } from '../global/constants';
+import QuestionsSet from 'openstack-uicore-foundation/lib/utils/questions-set'
 
 class StepExtraQuestionsPage extends React.Component {
 
     constructor(props) {
         super(props);
-
-        let { order } = this.props;
+        let { order, attendee } = this.props;
         let uniqueOwners = [];
 
         let tickets = order.tickets.filter((ticket) => {
@@ -43,16 +43,19 @@ class StepExtraQuestionsPage extends React.Component {
             uniqueOwners.push(attendee_email);
             return true;
         }).map((ticket, index) => {
+
+            const ownerId = ticket.hasOwnProperty('owner_id') ? ticket.owner_id : (ticket.hasOwnProperty('owner') ? ticket.owner.id : 0);
+            const answers = attendee && attendee.id === ownerId ? attendee.extra_questions.map( q => ({question_id: q.question_id, value : q.value })) : [];
             let t = {
                 id: ticket.id,
-                owner_id: ticket.hasOwnProperty('owner_id') ? ticket.owner_id : (ticket.hasOwnProperty('owner') ? ticket.owner.id : 0),
+                owner_id: ownerId,
                 attendee_email: ticket.hasOwnProperty('owner') ? ticket.owner.email : '',
                 attendee_first_name: ticket.hasOwnProperty('owner') ? ticket.owner.first_name : '',
                 attendee_last_name: ticket.hasOwnProperty('owner') ? ticket.owner.last_name : '',
                 attendee_company: ticket.hasOwnProperty('owner') ? ticket.owner.company : '',
                 owner: ticket.hasOwnProperty('owner') ? ticket.owner : null,
                 disclaimer_accepted: null,
-                extra_questions: [],
+                extra_questions: answers,
                 errors: {
                     reassign_email: '',
                     attendee_email: '',
@@ -70,8 +73,12 @@ class StepExtraQuestionsPage extends React.Component {
 
         this.handleTicketCancel = this.handleTicketCancel.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.onTicketsSave = this.onTicketsSave.bind(this);
+        this.handleTicketSave = this.handleTicketSave.bind(this);
         this.onSkip = this.onSkip.bind(this);
+        this.handleNewExtraQuestions = this.handleNewExtraQuestions.bind(this);
+        this.triggerFormSubmit = this.triggerFormSubmit.bind(this);
+
+        this.formRef = React.createRef();
     }
 
     componentDidMount() {
@@ -101,19 +108,39 @@ class StepExtraQuestionsPage extends React.Component {
         return null;
     }
 
-    onTicketsSave(ev) {
+    handleNewExtraQuestions (answersForm, ticket) {
+        const { mainExtraQuestions } = this.props;
+        const qs = new QuestionsSet(mainExtraQuestions);
+        let newAnswers = [];
+        Object.keys(answersForm).forEach(name => {
+            let question = qs.getQuestionByName(name);
+            if(!question){
+                console.log(`missing question for answer ${name}.`);
+                return;
+            }
+            if(answersForm[name] || answersForm[name].length > 0) {
+              newAnswers.push({ question_id: question.id, answer: `${answersForm[name]}`});
+            }
+        });
+        const newTickets = this.state.tickets.map(t => {
+            t.extra_questions = newAnswers;
+            return t;
+        });
+        this.setState({...this.state, tickets: newTickets}, () => this.handleTicketSave())
+      }
+    
+      triggerFormSubmit() {
+        this.formRef.current.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }))
+      }
+
+    handleTicketSave(ev) {
         let { tickets } = this.state;
         let { summit, getNow, extraQuestions, order } = this.props;
-
         let canSave = true;
         tickets.forEach(function (ticket) {
             // validate each ticket
             let model = new TicketModel(ticket, summit, getNow());
 
-            if (!model.validateExtraQuestions(extraQuestions)) {
-                canSave = false;
-                Swal.fire("Validation Error", "Please answer mandatory questions.", "warning");
-            }
 
             if(!model.validateSummitDisclaimer()){
                 canSave = false;
@@ -176,7 +203,7 @@ class StepExtraQuestionsPage extends React.Component {
         let { summit, extraQuestions, order, invitation } = this.props;
         if ((Object.entries(summit).length === 0 && summit.constructor === Object)) return null;
         order.status = 'Paid';
-        let hasValidInvitation = invitation?.summit_id == summit.id;
+        let hasValidInvitation = invitation?.summit_id === summit.id;
         return (
             <div className="step-extra-questions">
                 <OrderSummary order={order} summit={summit} type={'mobile'} />
@@ -212,7 +239,9 @@ class StepExtraQuestionsPage extends React.Component {
                                                 cancelTicket={this.handleTicketCancel}
                                                 summit={summit}
                                                 now={now}
-                                                errors={ticket.errors} />
+                                                errors={ticket.errors}
+                                                formRef={this.formRef}
+                                                handleNewExtraQuestions={this.handleNewExtraQuestions} />
                                         </div>
                                     </div>
                                 </React.Fragment>
@@ -228,7 +257,7 @@ class StepExtraQuestionsPage extends React.Component {
                     <div className="col-md-12">
                         <button
                             className="btn btn-primary"
-                            onClick={this.onTicketsSave}>
+                            onClick={this.triggerFormSubmit}>
                             {T.translate("ticket_popup.save_changes")}
                         </button>
                     </div>
@@ -238,13 +267,15 @@ class StepExtraQuestionsPage extends React.Component {
     }
 }
 
-const mapStateToProps = ({ loggedUserState, summitState, orderState, invitationState }) => ({
+const mapStateToProps = ({ loggedUserState, summitState, orderState, invitationState, userState }) => ({
     member: loggedUserState.isLoggedUser,
     summit: summitState.purchaseSummit,
+    mainExtraQuestions: summitState.mainExtraQuestions,
     order: orderState.purchaseOrder,
     selectedSummit : summitState.selectedSummit,
-    extraQuestions: summitState.purchaseSummit.order_extra_questions,
+    extraQuestions: summitState.mainExtraQuestions,
     invitation: invitationState.selectedInvitation,
+    attendee : userState.currentAttendee
 });
 
 export default connect(

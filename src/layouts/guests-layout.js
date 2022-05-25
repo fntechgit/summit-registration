@@ -19,6 +19,8 @@ import cloneDeep from "lodash.clonedeep";
 import TicketAssignForm from '../components/ticket-assign-form';
 import TicketOptions from '../components/ticket-options';
 
+import QuestionsSet from 'openstack-uicore-foundation/lib/utils/questions-set'
+
 import { getTicketByHash, getTicketPDFByHash,
   regenerateTicketHash, handleTicketChange, assignTicketByHash } from '../actions/ticket-actions'
 
@@ -46,9 +48,11 @@ class GuestsLayout extends React.Component {
     this.handleTicketSave = this.handleTicketSave.bind(this);
     this.handleTicketUpdate = this.handleTicketUpdate.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handlePopupSave = this.handlePopupSave.bind(this);
-    this.handleMandatoryExtraQuestions = this.handleMandatoryExtraQuestions.bind(this);
     this.handleHashRegenerate = this.handleHashRegenerate.bind(this);
+    this.handleNewExtraQuestions = this.handleNewExtraQuestions.bind(this);
+    this.triggerFormSubmit = this.triggerFormSubmit.bind(this);
+
+    this.formRef = React.createRef();
   }
 
     componentDidMount() {
@@ -75,6 +79,28 @@ class GuestsLayout extends React.Component {
               this.handleTicketUpdate();
           }
       }
+    }
+
+    handleNewExtraQuestions (answersForm, ticket) {
+      const {mainExtraQuestions: order_extra_questions} = this.props;
+      const qs = new QuestionsSet(order_extra_questions);
+      let newAnswers = [];
+      Object.keys(answersForm).forEach(name => {
+          let question = qs.getQuestionByName(name);
+          if(!question){
+              console.log(`missing question for answer ${name}.`);
+              return;
+          }
+          if(answersForm[name] || answersForm[name].length > 0) {
+            newAnswers.push({ question_id: question.id, answer: `${answersForm[name]}`});
+          }
+      });
+      const newTicket = {...ticket, extra_questions: newAnswers}
+      this.setState({...this.state, tempTicket: newTicket}, () => this.handleTicketSave());
+    }
+  
+    triggerFormSubmit() {
+      this.formRef.current.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }))
     }
 
     handleTicketUpdate() {
@@ -136,42 +162,14 @@ class GuestsLayout extends React.Component {
       });        
     }
 
-    handleMandatoryExtraQuestions() {
-      let {summit: {order_extra_questions}} = this.props;
-      let {tempTicket: {extra_questions}} = this.state;
-      let answeredQuestions = true;      
-      if(order_extra_questions.length > 0 && extra_questions.length > 0){
-        order_extra_questions.map(eq => {
-          if(eq.mandatory === true && answeredQuestions === true) {
-            let findEq = extra_questions.find(q => q.question_id === eq.id);            
-            switch(eq.type) {
-              case 'TextArea': 
-              case 'Text':
-              case 'ComboBox':
-              case 'RadioButtonList':
-              case 'CheckBoxList':
-                  return answeredQuestions = findEq && findEq.answer !== "" ? true : false;
-              case 'CheckBox':
-                  return answeredQuestions = findEq && findEq.answer === "true" ? true : false;
-              //case 'RadioButton': (dont think this one will be ever used; will discuss to be removed from admin) is always answered                                
-            }
-          }
-        });
-      } else if (order_extra_questions.length > 0 && extra_questions.length === 0) {        
-        answeredQuestions = false;
-      }
-      return answeredQuestions;
-    }
-
     handlePopupSave() {
       let {tempTicket: {disclaimer_accepted, attendee_first_name, attendee_last_name, attendee_company}} = this.state;
       let {summit:{registration_disclaimer_mandatory}} = this.props;
 
-      let mandatoryExtraQuestions = this.handleMandatoryExtraQuestions();
-      let saveEnabled = attendee_first_name && attendee_last_name && attendee_company && mandatoryExtraQuestions;
+      let saveEnabled = attendee_first_name && attendee_last_name && attendee_company;
       
       if (registration_disclaimer_mandatory) {
-        saveEnabled = attendee_first_name && attendee_last_name && attendee_company && mandatoryExtraQuestions && disclaimer_accepted;
+        saveEnabled = attendee_first_name && attendee_last_name && attendee_company && disclaimer_accepted;
       }
 
       // return the reverse value for disabled prop
@@ -244,7 +242,9 @@ class GuestsLayout extends React.Component {
                     extraQuestions={order_extra_questions}
                     errors={errors}
                     guest={true}
-                    summit={summit}/>
+                    summit={summit}
+                    formRef={this.formRef}
+                    handleNewExtraQuestions={this.handleNewExtraQuestions}/>
               </div>
               <div className="col-sm-4">
                 <TicketOptions 
@@ -261,8 +261,7 @@ class GuestsLayout extends React.Component {
                 <div className="row submit-buttons-wrapper">
                     <div className="col-md-12">                      
                         <button className="btn btn-primary continue-btn" 
-                          disabled={this.handlePopupSave()} 
-                          onClick={() =>this.handleTicketSave(tempTicket)}>
+                          onClick={this.triggerFormSubmit}>
                             {T.translate("guests.save")}
                         </button>
                     </div>
@@ -282,6 +281,7 @@ const mapStateToProps = ({ ticketState, summitState }) => ({
   guestCompleted: ticketState.selectedTicket.completed,
   errors: ticketState.errors,
   summit: summitState.selectedSummit,
+  mainExtraQuestions:summitState.mainExtraQuestions,
   summits: summitState.summits,
   summitLoading: summitState.loading
 })

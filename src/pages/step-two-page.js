@@ -115,7 +115,8 @@ class StepTwoPage extends React.Component {
                     log.error(e);
                 }
             }
-            order = {...order, email, first_name : first_name ?? '', last_name: last_name ?? '', company: company ?? ''}; 
+
+            order = {...order, email, first_name : first_name ?? (invitation ? invitation.first_name : ''), last_name: last_name ?? (invitation ? invitation.last_name : ''), company: company ?? ''};
         }
         this.props.handleOrderChange(order);
     }
