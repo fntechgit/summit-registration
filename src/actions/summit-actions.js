@@ -236,12 +236,10 @@ export const setMarketingSettings = (summitId) => (dispatch) => {
 
 export const getMainOrderExtraQuestions = (summitId) => async (dispatch) => {
 
-    const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
-    if (!accessToken) return;
 
     dispatch(startLoading());
 
-    let apiUrl = URI(`${window.API_BASE_URL}/api/v1/summits/${summitId}/order-extra-questions`);
+    let apiUrl = URI(`${window.API_BASE_URL}/api/public/v1/summits/${summitId}/order-extra-questions`);
     apiUrl.addQuery('filter[]', 'class==MainQuestion');
     apiUrl.addQuery('filter[]', 'usage==Ticket');
     apiUrl.addQuery('expand', '*sub_question_rules,*sub_question,*values')
