@@ -243,7 +243,6 @@ export const getMainOrderExtraQuestions = (summitId) => async (dispatch) => {
     apiUrl.addQuery('filter[]', 'class==MainQuestion');
     apiUrl.addQuery('filter[]', 'usage==Ticket');
     apiUrl.addQuery('expand', '*sub_question_rules,*sub_question,*values')
-    apiUrl.addQuery('access_token', accessToken);
     apiUrl.addQuery('order', 'order');
     apiUrl.addQuery('page', 1);
     apiUrl.addQuery('per_page', 100);
