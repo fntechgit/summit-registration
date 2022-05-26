@@ -30,7 +30,6 @@ class BasicInfoForm extends React.Component {
         this.getBackURL = this.getBackURL.bind(this);
         this.onClickLogin = this.onClickLogin.bind(this);
         this.handleCompanyError = this.handleCompanyError.bind(this);
-
     }
 
     hasErrors(field) {
@@ -98,7 +97,7 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="first_name"
-                            className={`form-control ${!!invitation ? 'disabled' : ''}`}
+                            className={`form-control`}
                             error={this.hasErrors('first_name')}
                             disabled={!!invitation}
                             onChange={onChange}
@@ -113,7 +112,7 @@ class BasicInfoForm extends React.Component {
                     <div className="col-md-6">
                         <Input
                             id="last_name"
-                            className={`form-control ${!!invitation ? 'disabled' : ''}`}
+                            className={`form-control`}
                             error={this.hasErrors('last_name')}
                             disabled={!!invitation}
                             onChange={onChange}
@@ -145,10 +144,10 @@ class BasicInfoForm extends React.Component {
                             id="company"
                             summitId={summitId}
                             error={this.hasErrors('company')}
-                            className={`dropdown ${!!invitation ? 'disabled' : ''}`}
+                            className={`dropdown`}
                             onChange={onChange}
                             onError={(e) => this.handleCompanyError()}
-                            value={!!invitation ? {id: null, name: window.INVITATION_DEFAULT_COMPANY} : order.company}
+                            value={order.company}
                         />
                     </div>
                 </div>
