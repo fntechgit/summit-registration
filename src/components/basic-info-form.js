@@ -99,7 +99,6 @@ class BasicInfoForm extends React.Component {
                             id="first_name"
                             className={`form-control`}
                             error={this.hasErrors('first_name')}
-                            disabled={!!invitation}
                             onChange={onChange}
                             value={order.first_name}
                         />
@@ -114,7 +113,6 @@ class BasicInfoForm extends React.Component {
                             id="last_name"
                             className={`form-control`}
                             error={this.hasErrors('last_name')}
-                            disabled={!!invitation}
                             onChange={onChange}
                             value={order.last_name}
                         />
