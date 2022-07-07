@@ -53,9 +53,10 @@ export default class TicketInput extends React.Component {
             ticketTypes && 
             <div className="ticket-input-box">
                 {ticketTypes.map(t => {
-                    let quantity = selection.filter(sel => sel.type_id == t.id).length;                    
+                    let quantity = selection.filter(sel => sel.type_id == t.id).length;
+                    let canSell = t.quantity_2_sell === 0 || t.quantity_2_sell > t.quantity_sold;
                       return (
-                        <div className={`ticket-wrapper ${t.quantity_2_sell == 0 ? 'sold_out' : ''} ${quantity == 0 ? 'no-tickets' :''}`} key={`ttype_${t.id}`}>
+                        <div className={`ticket-wrapper ${!canSell? 'sold_out' : ''} ${quantity == 0 ? 'no-tickets' :''}`} key={`ttype_${t.id}`}>
                             <div className="row">
                                 <div className="col-md-5">
                                     <div className="ticket-type">{t.name}</div>
@@ -64,15 +65,15 @@ export default class TicketInput extends React.Component {
                                     </div>
                                 </div>
                                 <div className="col-md-7">
-                                    {t.quantity_2_sell > 0 ? 
+                                    {canSell ?
                                     <div className="form-inline ticket-quantity">
                                         <button aria-label='substract' className="btn btn-default" onClick={this.substractTicket.bind(this, t.id)}>
                                             <i className="fa fa-minus"></i>
                                         </button>
-                                        <div role="status" className="quantity-value" style={{opacity : t.quantity_2_sell > 0 ? '1' : '0.4'}}>{quantity}</div>
+                                        <div role="status" className="quantity-value" style={{opacity : canSell ? '1' : '0.4'}}>{quantity}</div>
                                         <button aria-label='add' className="btn btn-default" onClick={this.addTicket.bind(this, t.id)} 
                                           disabled={(t.max_quantity_per_order > 0 && t.max_quantity_per_order <= quantity) ||
-                                          (quantity >= t.quantity_2_sell - t.quantity_sold)}>
+                                          (t.quantity_2_sell > 0 && quantity >= t.quantity_2_sell - t.quantity_sold)}>
                                             <i className="fa fa-plus"></i>
                                         </button>
                                     </div>
@@ -81,7 +82,7 @@ export default class TicketInput extends React.Component {
                                 </div>
                             </div>
                             <div className="ticket-expiration">
-                                {t.quantity_2_sell > 0 ?
+                                { canSell ?
                                   renderPromoTillDate(t)
                                   :
                                   <div className="sold-out-text">

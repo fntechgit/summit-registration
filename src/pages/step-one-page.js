@@ -12,131 +12,149 @@
  **/
 
 import React from "react";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import T from "i18n-react/dist/i18n-react";
 import moment from "moment";
 import TicketInput from "../components/ticket-input";
 import StepRow from "../components/step-row";
 import SubmitButtons from "../components/submit-buttons";
-import { handleOrderChange, handleResetOrder } from "../actions/order-actions";
-import { getNow } from "../actions/timer-actions";
+import {handleOrderChange, handleResetOrder} from "../actions/order-actions";
+import {getNow} from "../actions/timer-actions";
 import history from "../history";
-
 import "../styles/step-one-page.less";
+import {getAllowedTicketTypes} from "../actions/summit-actions";
+import {openSignInModal} from "../actions/auth-actions";
 
 class StepOnePage extends React.Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {};
+        this.state = {};
+        this.step = 1;
 
-    this.step = 1;
-
-    this.handleAddTicket = this.handleAddTicket.bind(this);
-    this.handleSubstractTicket = this.handleSubstractTicket.bind(this);
-    this.handleTicketToSale = this.handleTicketToSale.bind(this);    
-  }
-
-  componentDidMount() {
-    // reset order state , specifying the current step number
-    this.props.handleResetOrder(this.step);
-  }
-
-  handleAddTicket(ticketTypeId) {
-    let order = { ...this.props.order };
-    let randomNumber = moment().valueOf();
-    // @see https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
-    order.tickets = [...order.tickets, { type_id: ticketTypeId, tempId: randomNumber }];
-    this.props.handleOrderChange(order);
-  }
-
-  handleSubstractTicket(ticketTypeId) {
-    let order = { ...this.props.order };
-    let idx = order.tickets.findIndex((t) => t.type_id == ticketTypeId);
-
-    if (idx !== -1) {
-      // @see https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
-      order.tickets = [...order.tickets.slice(0, idx), ...order.tickets.slice(idx + 1)];
-      this.props.handleOrderChange(order);
+        this.handleAddTicket = this.handleAddTicket.bind(this);
+        this.handleSubstractTicket = this.handleSubstractTicket.bind(this);
+        this.handleTicketToSale = this.handleTicketToSale.bind(this);
     }
-  }
 
-  handleTicketToSale() {
-    let {summit, invitation, now} = this.props;
-    let hasValidInvitation = invitation?.summit_id == summit.id;
-    let invitationHasTicketTypes = invitation?.allowed_ticket_types.length > 0;
+    componentDidMount() {
+        // reset order state , specifying the current step number
+        let { handleResetOrder, allowedTicketTypes, getAllowedTicketTypes, summit } = this.props;
+        handleResetOrder(this.step);
+        getAllowedTicketTypes(summit?.id)
+    }
 
-    if((Object.entries(summit).length === 0 && summit.constructor === Object))
-      return [];
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        let {allowedTicketTypes, getAllowedTicketTypes, summit } = this.props;
+        if(!allowedTicketTypes.length){
+            getAllowedTicketTypes(summit?.id)
+        }
+    }
 
-    return summit.ticket_types.filter(
-      (tt) => {
-                let itsOnSellPeriod = (tt.sales_start_date == null && tt.sales_end_date == null) || (now >= tt.sales_start_date && now <= tt.sales_end_date);
-                return hasValidInvitation && invitationHasTicketTypes?
-                    invitation.allowed_ticket_types.includes(tt.id) && itsOnSellPeriod
-                    :
-                    itsOnSellPeriod;
-              }
-    );
-  }
+    handleAddTicket(ticketTypeId) {
+        let order = {...this.props.order};
+        let randomNumber = moment().valueOf();
+        // @see https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
+        order.tickets = [...order.tickets, {type_id: ticketTypeId, tempId: randomNumber}];
+        this.props.handleOrderChange(order);
+    }
 
-  render() {
-    let { summit, order, now } = this.props;
-    if (Object.entries(summit).length === 0 && summit.constructor === Object) return null;
+    handleSubstractTicket(ticketTypeId) {
+        let order = {...this.props.order};
+        let idx = order.tickets.findIndex((t) => t.type_id == ticketTypeId);
 
-    // let now = this.props.getNow();
-    //order.status = 'Reserved';
-    // filter tickets types
-    let ticketsTypesToSell = this.handleTicketToSale();      
+        if (idx !== -1) {
+            // @see https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
+            order.tickets = [...order.tickets.slice(0, idx), ...order.tickets.slice(idx + 1)];
+            this.props.handleOrderChange(order);
+        }
+    }
 
-    return (
-      <div className="step-one">
-        {now >= summit.registration_begin_date && now <= summit.registration_end_date && ticketsTypesToSell.length > 0 ? (
-          <React.Fragment>
-            <StepRow step={this.step} />
-            <div className="row">
-              <div className="col-md-8">
-                <div className="row">
-                  <div className="col-md-12">
-                    <h3>{T.translate("step_one.choose_tickets")}</h3>
-                  </div>
-                  <div className="col-md-12">
-                    <TicketInput
-                      ticketTypes={ticketsTypesToSell}
-                      summit={summit}
-                      selection={order.tickets}
-                      add={this.handleAddTicket}
-                      substract={this.handleSubstractTicket}
-                    />
-                    {now <= summit.registration_begin_date && history.push("/a/member/orders")}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4"></div>
+    handleTicketToSale() {
+
+        let { summit, now, allowedTicketTypes } = this.props;
+
+        if ((Object.entries(summit).length === 0 && summit.constructor === Object))
+            return [];
+
+        return allowedTicketTypes.filter(
+            (tt) => {
+                return (tt.sales_start_date == null && tt.sales_end_date == null) || (now >= tt.sales_start_date && now <= tt.sales_end_date);
+            }
+        );
+    }
+
+    render() {
+        let { summit, order, now, allowedTicketTypes, member, openSignInModal } = this.props;
+
+        if (Object.entries(summit).length === 0 && summit.constructor === Object) {
+            return null;
+        }
+
+        if(!member){
+            openSignInModal();
+            return null;
+        }
+
+        if(!allowedTicketTypes.length)
+            return null;
+
+        // let now = this.props.getNow();
+        // order.status = 'Reserved';
+        // filter tickets types
+        let ticketsTypesToSell = this.handleTicketToSale();
+
+        return (
+            <div className="step-one">
+                {now >= summit.registration_begin_date && now <= summit.registration_end_date && ticketsTypesToSell.length > 0 ? (
+                    <React.Fragment>
+                        <StepRow step={this.step}/>
+                        <div className="row">
+                            <div className="col-md-8">
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <h3>{T.translate("step_one.choose_tickets")}</h3>
+                                    </div>
+                                    <div className="col-md-12">
+                                        <TicketInput
+                                            ticketTypes={ticketsTypesToSell}
+                                            summit={summit}
+                                            selection={order.tickets}
+                                            add={this.handleAddTicket}
+                                            substract={this.handleSubstractTicket}
+                                        />
+                                        {now <= summit.registration_begin_date && history.push("/a/member/orders")}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-4"></div>
+                        </div>
+                        <SubmitButtons step={this.step} canContinue={order.tickets.length > 0}/>
+                    </React.Fragment>
+                ) : (
+                    <div className="no-tickets-text">
+                        <h3>{T.translate("step_one.no_tickets")}</h3>
+                    </div>
+                )}
             </div>
-            <SubmitButtons step={this.step} canContinue={order.tickets.length > 0} />
-          </React.Fragment>
-        ) : (
-          <div className="no-tickets-text">
-            <h3>{T.translate("step_one.no_tickets")}</h3>
-          </div>
-        )}
-      </div>
-    );
-  }
+        );
+    }
 }
 
-const mapStateToProps = ({ loggedUserState, summitState, orderState, invitationState, timerState }) => ({
-  member: loggedUserState.member,
-  summit: summitState.purchaseSummit,
-  order: orderState.purchaseOrder,
-  now: timerState.now,
-  errors: orderState.errors,
-  invitation: invitationState.selectedInvitation,
+const mapStateToProps = ({loggedUserState, summitState, orderState, invitationState, timerState}) => ({
+    member: loggedUserState.member,
+    summit: summitState.purchaseSummit,
+    allowedTicketTypes: summitState.allowedTicketTypes,
+    order: orderState.purchaseOrder,
+    now: timerState.now,
+    errors: orderState.errors,
+    invitation: invitationState.selectedInvitation,
 });
 
 export default connect(mapStateToProps, {
-  handleOrderChange,
-  handleResetOrder,
-  getNow
+    handleOrderChange,
+    handleResetOrder,
+    getNow,
+    getAllowedTicketTypes,
+    openSignInModal,
 })(StepOnePage);

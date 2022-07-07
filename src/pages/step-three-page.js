@@ -131,12 +131,13 @@ class StepThreePage extends React.Component {
     }
 
     async handleStripe(ev, stripe, cardElement) {
-        let {order} = this.props;
+        let {order, member} = this.props;
         let stripeErrors = Object.values(ev).filter(x => x.required === true && x.message === '');
 
         if (stripeErrors.length === 3) {
             const { error, token } = await stripe.createToken(cardElement, {
                 name: `${order.first_name} ${order.last_name}`,
+                email: member.email,
                 address_line1: order.billing_address,
                 address_line2: order.billing_address_two,
                 address_city: order.billing_city,

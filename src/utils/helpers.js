@@ -44,6 +44,7 @@ export const getFormatedTime = (datetime, time_zone = false) => {
 }
 
 export const getBackURL = (slugReplacement) => {
+
 	let defaultLocation = '/a/member/orders';
 	let url      = URI(window.location.href);
 	let location = url.pathname();
@@ -51,10 +52,11 @@ export const getBackURL = (slugReplacement) => {
 		location = defaultLocation;
 	}
 	// if we are at invitation url , dont replace slug
-	const isInvitationUrl = location.includes("/a/invitations");
+	const isInvitationUrl = location.includes("/a/invitations")
+	const isSelectSummitUrl = /\/a\/?/gm.test(location);
 	// todo: this regex is very vague we need to be more specific on what to replace
 	// otherwise could lead to bugs
-	if (slugReplacement && !isInvitationUrl) {
+	if (slugReplacement && !isInvitationUrl && !isSelectSummitUrl) {
 		location = location.replace(/\/[^\/]*$/, `/${slugReplacement}`);
 	}
 

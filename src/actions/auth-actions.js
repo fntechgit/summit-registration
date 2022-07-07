@@ -49,6 +49,7 @@ export const goToLogin = () => (dispatch) => {
 
 export const openSignInModal = () => (dispatch) => {
   dispatch(createAction(OPEN_SIGNIN_MODAL)());
+  dispatch(stopLoading());
 };
 
 export const closeSignInModal = () => (dispatch) => {

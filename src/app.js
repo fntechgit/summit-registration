@@ -110,7 +110,6 @@ class App extends React.PureComponent {
                   <div className="header row">
                       <div className="header-top">                          
                           <HeaderTitle summit={summit}/>
-                          {location !== rootLocation && 
                             <div className="header-user">
                                 <AuthButton isLoggedUser={isLoggedUser} 
                                             member={member}
@@ -121,7 +120,6 @@ class App extends React.PureComponent {
                                             location={location} clearState={this.props.handleResetReducers}/>
                             
                             </div>
-                          }
                       </div>
                   </div>
                   <Switch>
