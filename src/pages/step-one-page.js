@@ -39,7 +39,7 @@ class StepOnePage extends React.Component {
 
     componentDidMount() {
         // reset order state , specifying the current step number
-        let { handleResetOrder, allowedTicketTypes, getAllowedTicketTypes, summit } = this.props;
+        let { handleResetOrder, getAllowedTicketTypes, summit } = this.props;
         handleResetOrder(this.step);
         getAllowedTicketTypes(summit?.id)
     }

@@ -27,7 +27,7 @@ class TicketInfoForm extends React.Component {
         this.addTicket = this.addTicket.bind(this);
         this.removeTicket = this.removeTicket.bind(this);
         this.ticketInfoChange = this.ticketInfoChange.bind(this);
-
+        this.getTicketEmail = this.getTicketEmail.bind(this);
     }
 
     addTicket(ticketTypeId, ev) {
@@ -60,6 +60,12 @@ class TicketInfoForm extends React.Component {
         return '';
     }
 
+    getTicketEmail(ticketIdx, order, firstTicket, tix , ticketType){
+        if(ticketType.audience  === 'WithInvitation' )
+            return tix.attendee_email = order.email;
+        return  (ticketIdx === 0 && order.tickets.length === 1 && !firstTicket) ?
+            tix.attendee_email = order.email : tix.attendee_email ? tix.attendee_email : ''
+    }
 
     render() {
         let {order, ticketType, summit, now} = this.props;
@@ -69,9 +75,10 @@ class TicketInfoForm extends React.Component {
           return tixId == ticketType.id
         });
 
+        let canSell = ticketType.quantity_2_sell === 0 || ticketType.quantity_2_sell > ticketType.quantity_sold;
         // if sales_start_date == ticketType.sales_end_date == null then the ticket type could be sell all the registration period
 
-        if (ticketType.quantity_2_sell > 0 && ( (ticketType.sales_start_date == null && ticketType.sales_end_date == null) || (now >= ticketType.sales_start_date && now <= ticketType.sales_end_date )) ) {
+        if (canSell && ( (ticketType.sales_start_date == null && ticketType.sales_end_date == null) || (now >= ticketType.sales_start_date && now <= ticketType.sales_end_date )) ) {
             const ticketLabel = orderedTickets.length > 1 ? 
               T.translate("step_two.tickets") : T.translate("step_two.ticket")
             return (
@@ -121,9 +128,8 @@ class TicketInfoForm extends React.Component {
                                       placeholder={T.translate("step_two.placeholders.email")}
                                       error={this.hasErrors(`tix_email_${tix.tempId}`)}
                                       onChange={this.ticketInfoChange.bind(this, tix.tempId, i, 'attendee_email')}
-                                      value={
-                                        (i === 0 && order.tickets.length === 1 && !firstTicket) ? 
-                                      tix.attendee_email = order.email : tix.attendee_email ? tix.attendee_email : '' }
+                                      readOnly={ticketType.audience === 'WithInvitation'}
+                                      value={this.getTicketEmail(i, order, firstTicket, tix, ticketType)}
                                   />
                                 </div>
                               </div>
@@ -146,9 +152,8 @@ class TicketInfoForm extends React.Component {
                                     placeholder={T.translate("step_two.placeholders.email")}
                                     error={this.hasErrors(`tix_email_${tix.tempId}`)}
                                     onChange={this.ticketInfoChange.bind(this, tix.tempId, i, 'attendee_email')}
-                                    value={
-                                      (i === 0 && order.tickets.length === 1 && !firstTicket) ? 
-                                      tix.attendee_email = order.email : tix.attendee_email ? tix.attendee_email : '' }
+                                    readOnly={ticketType.audience === 'WithInvitation'}
+                                    value={this.getTicketEmail(i, order, firstTicket, tix, ticketType)}
                                 />
                             </div>
                             <div className="col-md-2">
@@ -169,7 +174,7 @@ class TicketInfoForm extends React.Component {
                     }
                   
                     {(ticketType.max_quantity_per_order > 0 && ticketType.max_quantity_per_order > orderedTickets.length) 
-                      && (orderedTickets.length < ticketType.quantity_2_sell - ticketType.quantity_sold) &&                    
+                      && (ticketType.quantity_2_sell === 0 || (orderedTickets.length < ticketType.quantity_2_sell - ticketType.quantity_sold)) &&
                       <div className="row ticket-add-wrapper">
                           <div className="col-md-10 text-right">
                               <button className="btn btn-primary" onClick={this.addTicket.bind(this, ticketType.id)}>
