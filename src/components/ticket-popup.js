@@ -150,7 +150,12 @@ class TicketPopup extends React.Component {
     }
 
     triggerFormSubmit() {
-      this.formRef.current.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }))
+      const {extraQuestions} = this.props;
+      if(extraQuestions.length > 0){
+        this.formRef.current.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+        return;
+      }
+      this.handleTicketSave();
     }
 
     handleTicketSave(){
