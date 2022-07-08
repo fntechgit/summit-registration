@@ -43,6 +43,7 @@ export const RECEIVE_MARKETING_SETTINGS = 'RECEIVE_MARKETING_SETTINGS';
 export const CLEAR_MARKETING_SETTINGS = 'CLEAR_MARKETING_SETTINGS';
 export const GET_MAIN_EXTRA_QUESTIONS = 'GET_MAIN_EXTRA_QUESTIONS';
 export const CLEAR_SUMMIT_STATE = 'CLEAR_SUMMIT_STATE';
+export const GET_SUMMIT_ALLOWED_TICKET_TYPES = 'GET_SUMMIT_ALLOWED_TICKET_TYPES';
 
 export const handleResetReducers = () => (dispatch) => {
     dispatch(createAction(LOGOUT_USER)({}));
@@ -78,7 +79,28 @@ export const getSummitBySlug = (slug, updateSummit) => (dispatch) => {
         dispatch(stopLoading());
         return (e);
     });
+}
 
+export const getAllowedTicketTypes = (summitId) =>  async (dispatch, getState) => {
+    const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+    if (!accessToken) return;
+    let params = {
+        access_token: accessToken
+    };
+
+    dispatch(startLoading());
+
+    return getRequest(
+        dispatch(startLoading()),
+        createAction(GET_SUMMIT_ALLOWED_TICKET_TYPES),
+        `${window.API_BASE_URL}/api/v1/summits/${summitId}/ticket-types/allowed`,
+        authErrorHandler
+    )(params)(dispatch).then((payload) => {
+        dispatch(stopLoading());
+    }).catch(e => {
+        dispatch(stopLoading());
+        return (e);
+    });
 }
 
 export const getUserSummits = (from) => (dispatch, getState) => {

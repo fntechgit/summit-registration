@@ -69,7 +69,7 @@ class BasicInfoForm extends React.Component {
     }
 
     render() {
-        let { order, onChange, member, invitation, summitId } = this.props;
+        let { order, onChange, member, summitId } = this.props;
 
         return (
             <div className="basic-info">

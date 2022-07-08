@@ -27,11 +27,14 @@ import {
 import Swal from 'sweetalert2';
 import {getMainOrderExtraQuestions, selectSummitById, setMarketingSettings} from "./summit-actions";
 import { openWillLogoutModal } from "./auth-actions";
-import {getAttendeeProfileForSummit} from "./user-actions";
+import { getAttendeeProfileForSummit } from "./user-actions";
+
 export const GET_INVITATION_BY_HASH       = 'GET_INVITATION_BY_HASH';
 export const GET_INVITATION_BY_HASH_ERROR = 'GET_INVITATION_BY_HASH_ERROR';
 export const RESET_INVITATION = 'RESET_INVITATION';
 export const INVALID_INVITATION = 'INVALID_INVITATION';
+export const GET_MY_INVITATION = 'GET_MY_INVITATION';
+export const GET_MY_INVITATION_ERROR = 'GET_MY_INVITATION_ERROR';
 
 const customErrorHandler = (err, res) => (dispatch) => {
     let code = err.status;
@@ -103,3 +106,25 @@ export const getInvitationByHash = (hash) => async (dispatch, getState) => {
         dispatch(stopLoading());
     });
 };
+
+export const getMyInvitation = (summitId) => async (dispatch, getState) => {
+
+    const accessToken = await getAccessToken().catch(_ => dispatch(openWillLogoutModal()));
+    if (!accessToken) return;
+
+    dispatch(startLoading());
+
+    let params = {
+        access_token: accessToken,
+    };
+
+    return getRequest(
+        createAction(RESET_INVITATION),
+        createAction(GET_MY_INVITATION),
+        `${window.API_BASE_URL}/api/v1/summits/${summitId}/registration-invitations/me`,
+        null,
+    )(params)(dispatch).catch((err) => {
+        dispatch(createAction(GET_MY_INVITATION_ERROR)(err.res));
+       dispatch(stopLoading());
+    });
+}

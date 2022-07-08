@@ -12,65 +12,73 @@
  **/
 
 import React from 'react';
-import { connect } from 'react-redux';
-
+import {connect} from 'react-redux';
 import NotFoundSummit from '../components/not-found-summit';
-
 import {getSuggestedSummits, selectPurchaseSummit} from '../actions/summit-actions';
-import { handleResetOrder } from '../actions/order-actions'
+import {handleResetOrder} from '../actions/order-actions'
 import {getNow} from '../actions/timer-actions';
+import {openSignInModal} from "../actions/auth-actions";
 
 
 class SelectSummitPage extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
-        this.state = {
-
-        };
+        this.state = {};
 
         this.handleSummitSelect = this.handleSummitSelect.bind(this);
     }
 
     componentWillMount() {
-      
+
     }
 
     componentDidMount() {
-      let {getSuggestedSummits} = this.props;
-      this.props.handleResetOrder();
-      getSuggestedSummits();
+        let {getSuggestedSummits, member, openSignInModal, handleResetOrder} = this.props;
+        handleResetOrder();
+        getSuggestedSummits();
+        if (!member) {
+            openSignInModal();
+        }
     }
 
     handleSummitSelect(slug) {
-      this.props.selectPurchaseSummit(slug);
+        let {selectPurchaseSummit, member, openSignInModal} = this.props;
+        if (!member) {
+            openSignInModal();
+            return;
+        }
+        selectPurchaseSummit(slug);
     }
 
-    render(){
-      let {suggestedSummits, loading} = this.props;      
-      let slug = this.props.match.params.summit_slug;
+    render() {
+        let {suggestedSummits, loading} = this.props;
+        let slug = this.props.match.params.summit_slug;
 
         return (
             <div>
-              {!loading &&  <NotFoundSummit slug={slug} now={this.props.getNow()} summits={suggestedSummits} selectPurchaseSummit={this.handleSummitSelect}/>}
+                {!loading && <NotFoundSummit slug={slug} now={this.props.getNow()} summits={suggestedSummits}
+                                             selectPurchaseSummit={this.handleSummitSelect}/>}
             </div>
         );
     }
 }
 
-const mapStateToProps = ({ summitState  }) => ({
-  suggestedSummits: summitState.suggestedSummits,
-  loading: summitState.loading
+const mapStateToProps = ({summitState, loggedUserState}) => ({
+    member: loggedUserState.member,
+    suggestedSummits: summitState.suggestedSummits,
+    loading: summitState.loading
 })
 
 export default connect(
-  mapStateToProps,
-  {
-      getSuggestedSummits,
-      selectPurchaseSummit,
-      getNow,
-      handleResetOrder,
-  }
+    mapStateToProps,
+    {
+        getSuggestedSummits,
+        selectPurchaseSummit,
+        getNow,
+        handleResetOrder,
+        openSignInModal,
+    }
 )(SelectSummitPage);
 

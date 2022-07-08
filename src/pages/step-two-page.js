@@ -30,6 +30,7 @@ import '../styles/step-two-page.less';
 import T from "i18n-react/dist/i18n-react";
 import IdTokenVerifier from 'idtoken-verifier';
 import { stepDefs } from "../global/constants";
+import {getAllowedTicketTypes} from "../actions/summit-actions";
 
 class StepTwoPage extends React.Component {
 
@@ -106,8 +107,8 @@ class StepTwoPage extends React.Component {
                 try {
                     const verifier = new IdTokenVerifier();
                     let jwt = verifier.decode(idToken);
-                    first_name = member.first_name;
-                    last_name = member.last_name;
+                    first_name = member.first_name || (invitation?.summit_id === summit.id  ? invitation.first_name : '');
+                    last_name = member.last_name || (invitation?.summit_id === summit.id  ? invitation.last_name : '');
                     email = member.email;
                     company = {id: null, name: invitation?.summit_id === summit.id ? window.INVITATION_DEFAULT_COMPANY : jwt.payload.company};
                 }
@@ -116,7 +117,7 @@ class StepTwoPage extends React.Component {
                 }
             }
 
-            order = {...order, email, first_name : first_name ?? (invitation ? invitation.first_name : ''), last_name: last_name ?? (invitation ? invitation.last_name : ''), company: company ?? ''};
+            order = {...order, email, first_name : first_name, last_name: last_name, company: company ?? ''};
         }
         this.props.handleOrderChange(order);
     }
@@ -132,12 +133,13 @@ class StepTwoPage extends React.Component {
     }
 
     componentDidMount() {
-        let {order:{tickets}} = this.props;
+        let {order:{tickets}, getAllowedTicketTypes, summit } = this.props;
         if (!tickets || tickets.length === 0) {
             history.push(stepDefs[0]);
             return;
         }
         window.scrollTo(0, 0);
+        getAllowedTicketTypes(summit?.id)
     }
 
     handleTicketInfoChange(ticketId, field, value) {
@@ -192,27 +194,29 @@ class StepTwoPage extends React.Component {
     }
 
     handleTicketToSale() {
-        let {summit, invitation} = this.props;
-        let hasValidInvitation = invitation?.summit_id == summit.id;
-        let invitationHasTicketTypes = invitation?.allowed_ticket_types.length > 0;
 
-        if(Object.entries(summit).length === 0 && summit.constructor === Object)
+        let { summit, now, allowedTicketTypes } = this.props;
+
+        if ((Object.entries(summit).length === 0 && summit.constructor === Object))
             return [];
 
-        return summit.ticket_types.filter(
+        return allowedTicketTypes.filter(
             (tt) => {
-                return hasValidInvitation && invitationHasTicketTypes ?
-                invitation.allowed_ticket_types.includes(tt.id):tt
+                return (tt.sales_start_date == null && tt.sales_end_date == null) || (now >= tt.sales_start_date && now <= tt.sales_end_date);
             }
         );
-      }
+    }
 
     render(){
-        let {summit, order, invitation, errors, member} = this.props;
+
+        let {summit, order, invitation, errors, member, allowedTicketTypes} = this.props;
         let {dirty} = this.state;
         const disclaimer = getMarketingValue('registration_in_person_disclaimer');
-        let ticketsTypesToSell = this.handleTicketToSale();
         if((Object.entries(summit).length === 0 && summit.constructor === Object) ) return null;
+        if(!allowedTicketTypes.length) return null;
+
+        let ticketsTypesToSell = this.handleTicketToSale();
+
         return (
             <div className="step-two">
                 <OrderSummary order={order} summit={summit} type={'mobile'} />
@@ -222,11 +226,10 @@ class StepTwoPage extends React.Component {
                         <BasicInfoForm 
                             summitId={summit.id}
                             order={order} 
-                            invitation={invitation?.summit_id === summit.id ? invitation : null}
-                            errors={dirty? errors : {}} 
+                            errors={dirty? errors : {}}
                             onChange={this.handleChange} 
                             member={member}/>
-                        {invitation?.summit_id !== summit.id && ticketsTypesToSell.map((t,i) => (
+                        {ticketsTypesToSell.map((t,i) => (
                             <TicketInfoForm
                                 now={this.props.getNow()}
                                 key={`tixinfo_${t.ticket_type_id}_${i}`}
@@ -269,13 +272,15 @@ const mapStateToProps = ({ loggedUserState, summitState, orderState, baseState, 
     errors: orderState.errors,
     marketingSettings: baseState.marketingSettings,
     invitation: invitationState.selectedInvitation,
+    allowedTicketTypes: summitState.allowedTicketTypes,
 })
 
 export default connect (
     mapStateToProps,
     {
         handleOrderChange,
-        getNow
+        getNow,
+        getAllowedTicketTypes
     }
 )(StepTwoPage);
 

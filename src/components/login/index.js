@@ -67,7 +67,7 @@ const LoginComponent = ({
       autoFocus={true}
       keyboard={true}
     >
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title
           style={{
             display: "flex",

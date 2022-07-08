@@ -23,6 +23,7 @@ import {
     GET_SUGGESTED_SUMMITS,
     GET_MAIN_EXTRA_QUESTIONS,
     CLEAR_SUMMIT_STATE,
+    GET_SUMMIT_ALLOWED_TICKET_TYPES,
 } from "../actions/summit-actions";
 
 
@@ -37,6 +38,7 @@ const DEFAULT_STATE = {
     summits: [],
     suggestedSummits: [],
     mainExtraQuestions: [],
+    allowedTicketTypes: [],
 };
 
 const summitReducer = (state = DEFAULT_STATE, action) => {
@@ -89,6 +91,10 @@ const summitReducer = (state = DEFAULT_STATE, action) => {
         case GET_MAIN_EXTRA_QUESTIONS: {
             const mainOrderExtraQuestions = payload.response.data;
             return {...state, mainExtraQuestions: mainOrderExtraQuestions}
+        }
+        case GET_SUMMIT_ALLOWED_TICKET_TYPES:{
+            const allowedTicketTypes = payload.response.data;
+            return {...state, allowedTicketTypes: allowedTicketTypes}
         }
         default:
             return state;

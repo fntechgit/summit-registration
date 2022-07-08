@@ -46,7 +46,7 @@
     "moment": "^2.22.0",
     "moment-timezone": "^0.5.27",
     "node-sass": "^4.14.1",
-    "openstack-uicore-foundation": "3.0.94",
+    "openstack-uicore-foundation": "3.0.97",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "qrcode.react": "^1.0.0",
     "react": "^16.9.0",
