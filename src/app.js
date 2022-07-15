@@ -15,7 +15,6 @@ import React from 'react'
 import { Switch, Route, Router, Redirect } from 'react-router-dom'
 import PrimaryLayout from "./layouts/primary-layout"
 import DashboardLayout from "./layouts/dashboard-layout"
-import InviteesLayout from "./layouts/invitees-layout";
 import GuestsLayout from "./layouts/guests-layout"
 import AuthorizedRoute from './routes/authorized-route'
 import AuthorizationCallbackRoute from "./routes/authorization-callback-route"
@@ -124,7 +123,6 @@ class App extends React.PureComponent {
                   </div>
                   <Switch>
                       <AuthorizedRoute isLoggedUser={isLoggedUser} doLogin={this.onClickLogin.bind(this)} backUrl={backUrl} path="/a/member" component={DashboardLayout} />
-                      <AuthorizedRoute isLoggedUser={isLoggedUser} doLogin={this.onClickLogin.bind(this)} backUrl={backUrl} path="/a/invitations/:invitation_hash" component={InviteesLayout}/>
                       <AuthorizationCallbackRoute onUserAuth={onUserAuth} path='/auth/callback' getUserInfo={getUserInfo} />
                       <LogOutCallbackRoute doLogout={doLogout}  path='/auth/logout'/>
                       <Route path="/a/guests/:ticket_hash" component={GuestsLayout}/>
