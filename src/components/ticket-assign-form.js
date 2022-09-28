@@ -72,7 +72,7 @@ class TicketAssignForm extends React.Component {
 
     handleFormatReassignDate(days) {
         let {summit, now} = this.props;
-        let reassign_date = summit?.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date
+        let reassign_date = summit.end_date
         if (days) {
             return daysBetweenDates(now, reassign_date, summit.time_zone.name).length;
         }

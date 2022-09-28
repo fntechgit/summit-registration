@@ -22,7 +22,7 @@ class TicketModel {
     }
 
     handlePastSummit(){
-        let reassign_date = this.summit.reassign_ticket_till_date && this.summit.reassign_ticket_till_date < this.summit.end_date ? this.summit.reassign_ticket_till_date : this.summit.end_date;
+        let reassign_date = this.summit.end_date;
         //console.log(`Ticket::handlePastSummit this.summit.reassign_ticket_till_date ${this.summit.reassign_ticket_till_date} this.summit.end_date ${this.summit.end_date}`);
         return this.now > reassign_date;
     }
