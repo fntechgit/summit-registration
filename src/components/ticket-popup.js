@@ -442,7 +442,10 @@ class TicketPopup extends React.Component {
                           <div className="ticket-reassign-form">
                               {member.email !== owner.email &&
                               <React.Fragment>
-                                <p>{T.translate("ticket_popup.reassign_text")} <br/> <b>{owner.email}</b></p>
+                                <p>
+                                  {T.translate("ticket_popup.reassign_text")} <br/> <b>{owner.email}</b>
+                                  {` (${t("ticket_popup.reassign_before")} ${this.handleFormatReassignDate()})`}
+                                  </p>
                                 <button className="btn btn-primary" onClick={() => this.handleTicketReassign(true)}>{T.translate("ticket_popup.reassign_me")}</button>  
                                 <div className="popup-separator">
                                   <div><hr/></div>
