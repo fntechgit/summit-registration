@@ -381,7 +381,7 @@ class TicketPopup extends React.Component {
                       <TabPanel ref={this.popUpPanelRef} className="popup-panel popup-panel--assign">
                         <div className="popup-scroll">
                           <div className="ticket-assign-form">
-                            <p>{T.translate("ticket_popup.assign_text")} {this.handleFormatReassignDate()}</p>
+                            <p>{T.translate("ticket_popup.assign_text")}</p>
                             <button className="btn btn-primary" onClick={() => this.handleTicketAssign(true)}>
                               {T.translate("ticket_popup.assign_me")}
                             </button>
