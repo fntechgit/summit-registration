@@ -419,12 +419,13 @@ class TicketPopup extends React.Component {
                             orderOwned={orderOwned}
                             owner={owner}
                             extraQuestions={extraQuestions}
-                            readOnly={now > reassign_date}
+                            canReassign={now < reassign_date}
                             onChange={this.handleChange} 
                             summit={summit}
                             now={now}
                             errors={errors}
                             formRef={this.formRef}
+                            shouldEditBasicInfo={true}
                             handleNewExtraQuestions={this.handleNewExtraQuestions} />
                         </div>
                         <div className="popup-footer-save">

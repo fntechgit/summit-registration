@@ -44,7 +44,6 @@ class GuestsLayout extends React.Component {
     };
 
     this.handleTicketDownload = this.handleTicketDownload.bind(this);
-    this.handleReassignDate = this.handleReassignDate.bind(this);
     this.handleTicketSave = this.handleTicketSave.bind(this);
     this.handleTicketUpdate = this.handleTicketUpdate.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -96,7 +95,7 @@ class GuestsLayout extends React.Component {
           }
       });
       const newTicket = {...ticket, extra_questions: newAnswers}
-      this.setState({...this.state, tempTicket: newTicket}, () => this.handleTicketSave());
+      this.setState({...this.state, tempTicket: newTicket}, () => this.handleTicketSave(newTicket));
     }
   
     triggerFormSubmit() {
@@ -181,14 +180,8 @@ class GuestsLayout extends React.Component {
       this.props.regenerateTicketHash(ticketHash);
     }
 
-    handleReassignDate() {
-      let {summit} = this.props;
-      let reassign_date = summit?.reassign_ticket_till_date && summit.reassign_ticket_till_date < summit.end_date ? summit.reassign_ticket_till_date : summit.end_date;
-      return reassign_date;
-    }
-    
     render() {
-      let {ticket: {owner, invalidHash, completed}, ticket, errors, ticketLoading, summitLoading, summit, summit:{order_extra_questions}, summits} = this.props;
+      let {ticket: {owner, invalidHash, completed}, ticket, errors, ticketLoading, summitLoading, summit, summits, mainExtraQuestions: order_extra_questions} = this.props;
       let now = this.props.getNow();
       let {tempTicket} = this.state;
       
@@ -244,6 +237,8 @@ class GuestsLayout extends React.Component {
                     guest={true}
                     summit={summit}
                     formRef={this.formRef}
+                    canReassign={false}
+                    shouldEditBasicInfo={true}
                     handleNewExtraQuestions={this.handleNewExtraQuestions}/>
               </div>
               <div className="col-sm-4">
@@ -257,7 +252,7 @@ class GuestsLayout extends React.Component {
                   loading={loading}
                 />
               </div>
-              {now < this.handleReassignDate() &&
+              {now < summit.end_date &&
                 <div className="row submit-buttons-wrapper">
                     <div className="col-md-12">                      
                         <button className="btn btn-primary continue-btn" 
