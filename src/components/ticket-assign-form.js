@@ -92,7 +92,7 @@ class TicketAssignForm extends React.Component {
         let {extra_questions, input_email} = this.state;
         ticket.disclaimer_accepted = ticket.disclaimer_accepted == null ? false : ticket.disclaimer_accepted;
         // if the user is purchasing a ticket, allow to edit the extra questions (fromTicketList === undefined && fromOrderList === undefined)
-        const allow_extra_questions_edit = (fromTicketList === undefined && fromOrderList === undefined) || ownedTicket && !summit.allow_update_attendee_extra_questions;
+        const allow_extra_questions_edit = (fromTicketList === undefined && fromOrderList === undefined) || ownedTicket && summit.allow_update_attendee_extra_questions;
 
         return (
             <div className="ticket-assign-form">
@@ -151,7 +151,7 @@ class TicketAssignForm extends React.Component {
                     </div>
                 </div>
                 <div className="field-wrapper-mobile">
-                    <div>{T.translate("ticket_popup.edit_email")}{!canReassign && T.translate("ticket_popup.edit_required_star")}</div>
+                    <div>{T.translate("ticket_popup.edit_email")}{canReassign && T.translate("ticket_popup.edit_required_star")}</div>
                     <div>
                         {status === 'UNASSIGNED' ?
                             <span>
@@ -187,7 +187,7 @@ class TicketAssignForm extends React.Component {
                                     />
                                     :
                                     <span>{ticket.attendee_email}
-                                        {shouldEditBasicInfo && !guest && !canReassign && orderOwned && <span
+                                        {shouldEditBasicInfo && !guest && canReassign && orderOwned && <span
                                             onClick={() => this.setState({input_email: true})}> | <u>Change</u></span>}
                         </span>
                                 }
