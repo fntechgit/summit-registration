@@ -95,7 +95,7 @@ class TicketOptions extends React.Component {
                     </div>
                   </div>
                 }
-                {!guest && summit.start_date > now && order && order?.status === 'Paid' && order?.amount > 0 && order?.amount > order?.refunded_amount &&
+                {!guest && summit.registration_allowed_refund_request_till_date > now && order && order?.status === 'Paid' && order?.amount > 0 && order?.amount > order?.refunded_amount &&
                 <div className="row">
                     <div className="col-md-12 text-center">
                         <a onClick={this.props.cancelOrder} className="cancel">{T.translate("order_info.cancel_order")}</a>
