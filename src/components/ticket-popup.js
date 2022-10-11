@@ -363,7 +363,7 @@ class TicketPopup extends React.Component {
                 <Tabs selectedTabClassName="popup-tabs--active" >
                     <TabList className="popup-tabs">
                         {status.text === 'UNASSIGNED' && <Tab>{T.translate("ticket_popup.tab_assign")}</Tab>}
-                        <Tab>{T.translate("ticket_popup.tab_edit")}</Tab>
+                        {status.text !== 'UNASSIGNED' && <Tab>{T.translate("ticket_popup.tab_edit")}</Tab>}
                         {status.text !== 'UNASSIGNED' && 
                           now < reassign_date &&
                           (!fromTicketList || (fromTicketList && orderOwned)) &&
@@ -408,35 +408,37 @@ class TicketPopup extends React.Component {
                         </div>
                       </TabPanel>
                     }
-                    <TabPanel ref={this.popUpPanelRef} className="popup-panel popup-panel--edit">
-                        <div className="popup-scroll">
-                          <TicketAssignForm 
-                            ticket={tempTicket} 
-                            status={status.text} 
-                            ownedTicket={fromTicketList || owner? owner.email === member.email : false }
-                            fromTicketList={fromTicketList}
-                            fromOrderList={fromOrderList}
-                            orderOwned={orderOwned}
-                            owner={owner}
-                            extraQuestions={extraQuestions}
-                            canReassign={now < reassign_date}
-                            onChange={this.handleChange} 
-                            summit={summit}
-                            now={now}
-                            errors={errors}
-                            formRef={this.formRef}
-                            shouldEditBasicInfo={true}
-                            handleNewExtraQuestions={this.handleNewExtraQuestions} />
-                        </div>
-                        <div className="popup-footer-save">
-                          <button 
-                              className="btn btn-primary" 
-                              disabled={this.handlePopupSave()}
-                              onClick={this.triggerFormSubmit}>
-                                  {T.translate("ticket_popup.save_changes")}
-                          </button>
-                        </div>
-                    </TabPanel>
+                    {status.text !== 'UNASSIGNED' && 
+                      <TabPanel ref={this.popUpPanelRef} className="popup-panel popup-panel--edit">
+                          <div className="popup-scroll">
+                            <TicketAssignForm 
+                              ticket={tempTicket} 
+                              status={status.text} 
+                              ownedTicket={fromTicketList || owner? owner.email === member.email : false }
+                              fromTicketList={fromTicketList}
+                              fromOrderList={fromOrderList}
+                              orderOwned={orderOwned}
+                              owner={owner}
+                              extraQuestions={extraQuestions}
+                              canReassign={now < reassign_date}
+                              onChange={this.handleChange} 
+                              summit={summit}
+                              now={now}
+                              errors={errors}
+                              formRef={this.formRef}
+                              shouldEditBasicInfo={true}
+                              handleNewExtraQuestions={this.handleNewExtraQuestions} />
+                          </div>
+                          <div className="popup-footer-save">
+                            <button 
+                                className="btn btn-primary" 
+                                disabled={this.handlePopupSave()}
+                                onClick={this.triggerFormSubmit}>
+                                    {T.translate("ticket_popup.save_changes")}
+                            </button>
+                          </div>
+                      </TabPanel>
+                    }
                     {status.text !== 'UNASSIGNED' && now < reassign_date && (!fromTicketList || (fromTicketList && orderOwned)) &&
                       <TabPanel ref={this.popUpPanelRef} className="popup-panel popup-panel--reassign">
                         <div className="popup-scroll">
