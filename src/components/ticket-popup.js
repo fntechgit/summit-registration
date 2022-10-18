@@ -373,7 +373,15 @@ class TicketPopup extends React.Component {
                           (!fromTicketList && member.email !== owner.email && now < reassign_date) &&
                           <Tab>{T.translate("ticket_popup.tab_notify")}</Tab>
                         }
-                        { orderOwned && summit.start_date > now && ticket.final_amount > 0 && ticket.final_amount > ticket.refunded_amount &&
+                        { 
+                          orderOwned && 
+                          (summit.registration_allowed_refund_request_till_date ? 
+                            summit.registration_allowed_refund_request_till_date > now
+                            :
+                            summit.start_date > now 
+                          ) && 
+                          ticket.final_amount > 0 && 
+                          ticket.final_amount > ticket.refunded_amount &&
                         <Tab>{T.translate("ticket_popup.tab_refund")}</Tab>
                         }
                     </TabList>
@@ -480,7 +488,14 @@ class TicketPopup extends React.Component {
                         </div>
                       </TabPanel>
                     }
-                    {orderOwned && summit.start_date > now && ticket.final_amount > 0 && ticket.final_amount > ticket.refunded_amount &&
+                    {orderOwned && 
+                      (summit.registration_allowed_refund_request_till_date ? 
+                        summit.registration_allowed_refund_request_till_date > now 
+                        :
+                        summit.start_date > now
+                      ) && 
+                      ticket.final_amount > 0 && 
+                      ticket.final_amount > ticket.refunded_amount &&
                         <TabPanel ref={this.popUpPanelRef} className="popup-panel">
                             <div className="popup-scroll">
                                 <div className="ticket-refund-button">
