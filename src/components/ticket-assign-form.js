@@ -82,7 +82,7 @@ class TicketAssignForm extends React.Component {
     render() {
 
         let { guest, ownedTicket, owner, ticket,
-            extraQuestions, status, summit, orderOwned, readOnly,
+            extraQuestions, status, summit, orderOwned, canReassign,
             shouldEditBasicInfo, fromTicketList,
             fromOrderList, formRef, handleNewExtraQuestions } = this.props;
         let showCancel = true;
@@ -92,20 +92,20 @@ class TicketAssignForm extends React.Component {
         let {extra_questions, input_email} = this.state;
         ticket.disclaimer_accepted = ticket.disclaimer_accepted == null ? false : ticket.disclaimer_accepted;
         // if the user is purchasing a ticket, allow to edit the extra questions (fromTicketList === undefined && fromOrderList === undefined)
-        const allow_extra_questions_edit = (fromTicketList === undefined && fromOrderList === undefined) || ownedTicket && summit.allow_update_attendee_extra_questions;
+        const canEditTicketData = (fromTicketList === undefined && fromOrderList === undefined) || ownedTicket && summit.allow_update_attendee_extra_questions;
 
         return (
             <div className="ticket-assign-form">
                 <div className="row popup-basic-info">
                     <div className="col-sm-6">{T.translate("ticket_popup.edit_basic_info")}</div>
                     <div className="col-sm-6">
-                        {!readOnly && T.translate("ticket_popup.edit_required")}
+                        {T.translate("ticket_popup.edit_required")}
                     </div>
                 </div>
                 <div className="row field-wrapper">
                     <div className="col-sm-4">
                         {T.translate("ticket_popup.edit_email")}
-                        {!readOnly && T.translate("ticket_popup.edit_required_star")}
+                        {canReassign && T.translate("ticket_popup.edit_required_star")}
                     </div>
                     <div className="col-sm-8">
                         {status === 'UNASSIGNED' ?
@@ -142,7 +142,7 @@ class TicketAssignForm extends React.Component {
                                     />
                                     :
                                     <span>{ticket.attendee_email}
-                                        {shouldEditBasicInfo && <span
+                                        {shouldEditBasicInfo && !guest && canReassign && orderOwned && <span
                                             onClick={() => this.setState({input_email: true})}> | <u>Change</u></span>}
                         </span>
                                 }
@@ -151,7 +151,7 @@ class TicketAssignForm extends React.Component {
                     </div>
                 </div>
                 <div className="field-wrapper-mobile">
-                    <div>{T.translate("ticket_popup.edit_email")}{!readOnly && T.translate("ticket_popup.edit_required_star")}</div>
+                    <div>{T.translate("ticket_popup.edit_email")}{canReassign && T.translate("ticket_popup.edit_required_star")}</div>
                     <div>
                         {status === 'UNASSIGNED' ?
                             <span>
@@ -187,7 +187,7 @@ class TicketAssignForm extends React.Component {
                                     />
                                     :
                                     <span>{ticket.attendee_email}
-                                        {shouldEditBasicInfo && !guest && !readOnly && orderOwned && <span
+                                        {shouldEditBasicInfo && !guest && canReassign && orderOwned && <span
                                             onClick={() => this.setState({input_email: true})}> | <u>Change</u></span>}
                         </span>
                                 }
@@ -201,33 +201,33 @@ class TicketAssignForm extends React.Component {
                         {T.translate("ticket_popup.edit_required_star")}
                     </div>
                     <div className="col-sm-8">
-                        {(owner && owner.first_name)?
-                            <span>{ticket.attendee_first_name}</span>
-                            :
-                            (shouldEditBasicInfo ? <Input
+                        {
+                            (shouldEditBasicInfo && canEditTicketData ? 
+                            <Input
                                 id="attendee_first_name"
                                 className="form-control"
                                 error={this.hasErrors('attendee_first_name')}
                                 onChange={this._innerOnChange}
-                                value={ticket.attendee_first_name}/>:
-                                <span>{ticket.attendee_first_name}</span>
-                            )
+                                value={ticket.attendee_first_name}/>
+                            :
+                            <span>{ticket.attendee_first_name}</span>)
                         }
                     </div>
                 </div>
                 <div className="field-wrapper-mobile">
                     <div>{T.translate("ticket_popup.edit_first_name")}{T.translate("ticket_popup.edit_required_star")}</div>
                     <div>
-                        {(owner && owner.first_name)?
-                            <span>{ticket.attendee_first_name}</span>
-                            :
-                            (shouldEditBasicInfo ? <Input
+                        {
+                            (shouldEditBasicInfo && canEditTicketData ? 
+                            <Input
                                 id="attendee_first_name"
                                 className="form-control"
                                 error={this.hasErrors('attendee_first_name')}
                                 onChange={this._innerOnChange}
                                 value={ticket.attendee_first_name}
-                            />: <span>{ticket.attendee_first_name}</span>)
+                            />
+                            : 
+                            <span>{ticket.attendee_first_name}</span>)
                         }
                     </div>
                 </div>
@@ -237,32 +237,34 @@ class TicketAssignForm extends React.Component {
                         {T.translate("ticket_popup.edit_required_star")}
                     </div>
                     <div className="col-sm-8">
-                        {(owner && owner.last_name)?
-                            <span>{ticket.attendee_last_name}</span>
-                            :
-                            (shouldEditBasicInfo ? <Input
+                        {
+                            (shouldEditBasicInfo && canEditTicketData ? 
+                            <Input
                                 id="attendee_last_name"
                                 className="form-control"
                                 error={this.hasErrors('attendee_last_name')}
                                 onChange={this._innerOnChange}
                                 value={ticket.attendee_last_name}
-                            />:  <span>{ticket.attendee_last_name}</span>)
+                            />
+                            :
+                            <span>{ticket.attendee_last_name}</span>)
                         }
                     </div>
                 </div>
                 <div className="field-wrapper-mobile">
                     <div>{T.translate("ticket_popup.edit_last_name")}{ T.translate("ticket_popup.edit_required_star")}</div>
                     <div>
-                        {(owner && owner.last_name) ?
-                            <span>{ticket.attendee_last_name}</span>
-                            :
-                            (shouldEditBasicInfo ? <Input
+                        {
+                            (shouldEditBasicInfo && canEditTicketData ? 
+                            <Input
                                 id="attendee_last_name"
                                 className="form-control"
                                 error={this.hasErrors('attendee_last_name')}
                                 onChange={this._innerOnChange}
                                 value={ticket.attendee_last_name}
-                            />:  <span>{ticket.attendee_last_name}</span>)
+                            />
+                            :
+                            <span>{ticket.attendee_last_name}</span>)
                         }
                     </div>
                 </div>
@@ -271,16 +273,17 @@ class TicketAssignForm extends React.Component {
                         <div
                             className="col-sm-4">{T.translate("ticket_popup.edit_company")}{ T.translate("ticket_popup.edit_required_star")}</div>
                         <div className="col-sm-8">
-                            {readOnly ?
-                                <span>{ticket.attendee_company}</span>
-                                :
-                                (shouldEditBasicInfo ? <Input
+                            {
+                                (shouldEditBasicInfo && canEditTicketData ? 
+                                <Input
                                     id="attendee_company"
                                     className="form-control"
                                     error={this.hasErrors('attendee_company')}
                                     onChange={this._innerOnChange}
                                     value={ticket.attendee_company}
-                                />: <span>{ticket.attendee_company}</span>)
+                                />
+                                :
+                                <span>{ticket.attendee_company}</span>)
                             }
                         </div>
                     </div>
@@ -288,16 +291,17 @@ class TicketAssignForm extends React.Component {
                 <div className="field-wrapper-mobile">
                     <div>{T.translate("ticket_popup.edit_company")}{T.translate("ticket_popup.edit_required_star")}</div>
                     <div>
-                        {readOnly ?
-                            <span>{ticket.attendee_company}</span>
-                            :
-                            (shouldEditBasicInfo ?<Input
+                        {
+                            (shouldEditBasicInfo && canEditTicketData ?
+                            <Input
                                 id="attendee_company"
                                 className="form-control"
                                 error={this.hasErrors('attendee_company')}
                                 onChange={this._innerOnChange}
                                 value={ticket.attendee_company}
-                            />:<span>{ticket.attendee_company}</span>)
+                            />
+                            :
+                            <span>{ticket.attendee_company}</span>)
                         }
                     </div>
                 </div>
@@ -316,8 +320,8 @@ class TicketAssignForm extends React.Component {
                         userAnswers={ticket.extra_questions}
                         onAnswerChanges={(formAnswers) => handleNewExtraQuestions(formAnswers, ticket)}
                         ref={formRef}
-                        allowExtraQuestionsEdit={allow_extra_questions_edit}
-                        readOnly={readOnly}
+                        allowExtraQuestionsEdit={canEditTicketData}
+                        readOnly={false}
                     />
                 </React.Fragment>
                 }
